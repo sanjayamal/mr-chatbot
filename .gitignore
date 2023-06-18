@@ -45,3 +45,5 @@ venv/
 __pycache__
 __pycache__/
 .idea
+
+node_modules/

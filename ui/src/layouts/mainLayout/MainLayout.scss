@@ -1,0 +1,9 @@
+.login-btn {
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 480px) {
+  .login-btn span:nth-child(2) {
+    display: none;
+  }
+}
