@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import {
   CContent,
-  CHeader,
   CImage,
   CLayout,
   CMenu,
