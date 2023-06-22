@@ -2,11 +2,15 @@ import { RouterProvider } from "react-router-dom";
 import { routers } from "./routes";
 import { Suspense } from "react";
 import { Loader } from "./components";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 const App = () => {
   return (
     <Suspense fallback={<Loader />}>
-      <RouterProvider router={routers} />
+      <Provider store={store}>
+        <RouterProvider router={routers} />
+      </Provider>
     </Suspense>
   );
 };
