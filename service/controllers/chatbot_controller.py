@@ -1,15 +1,24 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint, current_app
 from services.chatbot_service import ChatbotService
 from repositories.chatbot_repository import ChatbotRepository
+from flask_cors import cross_origin
 
 chatbot_bp = Blueprint('chatbot_bp',__name__)
 chatbot_repository = ChatbotRepository()
 chatbot_service = ChatbotService(chatbot_repository)
 
-@chatbot_bp.route('/api/v1/<string:user_id>/bot', methods=['POST'])
+@chatbot_bp.route('/api/v1/bot-create', methods=['POST'])
 def create_bot():
+    # get user detail
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
 
-    return 'Hello, World!'
+    # extract request body
+    files = request.files.getlist('files')
+    chatbot_name = request.form['name']
+    text_source = request.form['text']
+    description = request.form['description']
+    response = chatbot_service.create_chatbot(current_app._get_current_object(),user_id, files, chatbot_name, text_source, description)
+    return response
 
 
 @chatbot_bp.route('/api/v1/<string:user_id>/bots', methods=['get'])
@@ -22,10 +31,13 @@ def get_bot(user_id, bot_id):
     return 'Hello, World I am new bot!'
 
 
+@cross_origin(supports_credentials=True)
 @chatbot_bp.route('/api/v1/process-source', methods=['POST'])
 def process_source():
     try:
+        current_app.logger.info('processing start')
         files = request.files.getlist('files')
+        current_app.logger.info('processing files')
         response = chatbot_service.process_source(files)
 
         return jsonify(response), 200

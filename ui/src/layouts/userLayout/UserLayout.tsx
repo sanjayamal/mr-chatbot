@@ -44,7 +44,7 @@ const App: React.FC = () => {
     }
   };
   return (
-    <CLayout style={{ background: "#ffff" }}>
+    <CLayout style={{ background: "#ffff", minHeight: "100vh" }}>
       <CSider
         breakpoint="lg"
         collapsedWidth="0"

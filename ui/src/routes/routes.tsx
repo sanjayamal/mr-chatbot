@@ -11,6 +11,9 @@ const ChatbotPublish = React.lazy(
 const ChatbotSetting = React.lazy(
   () => import("../pages/chatbot/components/setting/Setting")
 );
+const ChatbotCreation = React.lazy(
+  () => import("../pages/chatbotCreation/ChatbotCreation")
+);
 
 const MainLayout = React.lazy(() => import("../layouts/mainLayout/MainLayout"));
 const UserLayout = React.lazy(() => import("../layouts/userLayout/UserLayout"));
@@ -35,16 +38,27 @@ export const routers = createBrowserRouter([
         path: "bots",
         element: <Bots />,
       },
+    ],
+  },
+
+  {
+    path: "/bot",
+    element: <UserLayout />,
+    children: [
       {
-        path: "bots/:botId",
+        path: ":botId",
         element: <Chatbot />,
       },
       {
-        path: "/bots/:botId/setting",
+        path: "create",
+        element: <ChatbotCreation />,
+      },
+      {
+        path: ":botId/setting",
         element: <ChatbotSetting />,
       },
       {
-        path: "/bots/:botId/publish",
+        path: ":botId/publish",
         element: <ChatbotPublish />,
       },
     ],

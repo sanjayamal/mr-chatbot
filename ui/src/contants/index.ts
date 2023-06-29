@@ -1,0 +1,1 @@
+export const TextCharacterCountLimit:number=100

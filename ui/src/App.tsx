@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Loader } from "./components";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import './App.scss'
 
 const App = () => {
   return (

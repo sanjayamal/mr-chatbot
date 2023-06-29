@@ -24,13 +24,13 @@ const BotItem: React.FC<IBotItem> = ({
   const handleOnClick = (pathName: string) => {
     let path: string = botId;
     if (pathName.length > 0) {
-      path = `${botId}/${pathName}`;
+      path = `/bot/${botId}/${pathName}`;
     }
     navigate(path);
   };
   return (
     <CCard
-      style={{ width: "auto", marginTop: 16 }}
+      style={{ width: "auto", marginTop: 16, backgroundColor: "#f5f7f5" }}
       actions={[
         <CSettingOutlined
           key="setting"
@@ -51,7 +51,12 @@ const BotItem: React.FC<IBotItem> = ({
         }}
       >
         <CMeta
-          avatar={<CAvatar src={profilePictureUrl} />}
+          avatar={
+            <CAvatar
+              src={profilePictureUrl}
+              size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+            />
+          }
           title={name}
           description={description}
         />

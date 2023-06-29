@@ -1,6 +1,7 @@
 from datetime import datetime
-
+from sqlalchemy.dialects.postgresql import JSON
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
@@ -53,14 +54,15 @@ class Chatbot(db.Model):
     text_source = db.Column(db.String())
     number_of_characters = db.Column(db.Integer())
     status = db.Column(db.Integer(), default=0)
+    description = db.Column(db.String())
 
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
-    channels = db.relationship('ChatbotChannel', backref='chatbots', lazy=True)
+    channels = db.relationship('ChatbotChannel', backref='chatbots', lazy=True,cascade='all, delete-orphan')
 
     def __init__(self, id, user_id, name, model, temperature, prompt_message,
-                 text_source, number_of_characters, status):
+                 text_source, number_of_characters, status,description):
         self.id = id,
         self.user_id = user_id,
         self.name = name,
@@ -70,6 +72,7 @@ class Chatbot(db.Model):
         self.text_source = text_source
         self.number_of_characters = number_of_characters
         self.status = status
+        self.description = description
 
     def __repr__(self):
         return f"<Chatbot {self.name}>"
@@ -85,6 +88,7 @@ class Chatbot(db.Model):
             'textSource': self.text_source,
             'numberOfCharacters': self.number_of_characters,
             'status': self.status,
+            'description': self.description,
             'createdDate': str(self.created_at),
             'updatedData': str(self.updated_at)
         }
@@ -97,6 +101,14 @@ class ChatbotChannel(db.Model):
     chatbot_id = db.Column(db.String(), db.ForeignKey('chatbots.id'))
     type = db.Column(db.String())
     created_at = db.Column(db.DateTime, default=datetime.now)
+
+    chatbot_channel_histories = relationship('ChatbotChannelHistory', back_populates='chatbot_channel')
+
+    _mapper_args_ = {
+        'polymorphic_identity': 'chatbot_channels',
+        'with_polymorphic': '*',
+        "polymorphic_on": type
+    }
 
     def __init__(self, id, chatbot_id, type):
         self.id = id,
@@ -116,7 +128,7 @@ class ChatbotChannel(db.Model):
         }
 
 
-class ChatbotChannelMain(db.Model):
+class ChatbotChannelMain(ChatbotChannel):
     __tablename__ = 'chatbot_channel_main'
 
     id = db.Column(db.String(), primary_key=True)
@@ -130,12 +142,15 @@ class ChatbotChannelMain(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
-    chatbot_channels = db.relationship('ChatBotChannel', backref='chatbot_channel_main')
+    chatbot_channels = db.relationship('ChatbotChannel', backref='chatbot_channel_main')
 
-    def __init__(self, id, chatbot_channel_id, initial_message, display_name, profile_picture_url,
+    __mapper_args__ = {
+        'polymorphic_identity': 'chatbot_channel_main',
+    }
+    def __init__(self, id, chatbot_id, initial_message, display_name, profile_picture_url,
                  user_message_color, chat_bubble_color, type):
         self.id = id
-        self.chatbot_channel_id = chatbot_channel_id
+        self.chatbot_id = chatbot_id
         self.initial_message = initial_message
         self.display_name = display_name
         self.profile_picture_url = profile_picture_url
@@ -157,4 +172,27 @@ class ChatbotChannelMain(db.Model):
             'userMessageColor': self.user_message_color,
             'chatBubbleColor': self.chat_bubble_color,
             'createdDate': str(self.created_at),
+        }
+
+class ChatbotChannelHistory(db.Model):
+    _tablename_ = 'chatbot_channel_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    chatbot_channel_id = db.Column(db.String(), db.ForeignKey('chatbot_channels.id'))
+    history_metadata = db.Column(JSON)
+    human_message = db.Column(db.Text())
+    human_message_time = db.Column(db.DateTime, default=None)
+    ai_message = db.Column(db.Text())
+    ai_message_time = db.Column(db.DateTime, default=None)
+    chatbot_channel = db.relationship('ChatbotChannel', back_populates='chatbot_channel_histories')
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    def __repr__(self):
+        return f"<ChatBotChannelHistory {self.domain_name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'chatbotChannelId': self.chatbot_channel_id,
         }

@@ -11,9 +11,17 @@ export interface IChatbot {
   description: string;
   createdDate: string;
   updatedData: string;
+  profilePictureUrl: string;
 }
 
 export interface IInitialChatbotState {
-  chatbot: IChatbot;
-  chatbots: Array<IChatbot>;
+  chatbot: { data: IChatbot; isLoading: boolean };
+  chatbots: { data: Array<IChatbot>; isLoading: boolean };
+  botDataSource: {
+    files: Array<any>;
+    text: string;
+    filesCharacterCount: number;
+    textCharacterCount: number;
+  };
+  isProcessingDataSource: boolean;
 }

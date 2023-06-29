@@ -1,2 +1,2 @@
 export { default as chatbotSlice } from "./chatbotSlice";
-export * from "./chatbotAction";
+export * from "./chatbotSlice";

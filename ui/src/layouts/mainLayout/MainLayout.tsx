@@ -57,7 +57,7 @@ const MainLayout: React.FC = () => {
     }
   };
   return (
-    <CLayout>
+    <CLayout style={{ minHeight: "100vh" }}>
       <CHeader style={{ padding: 0, background: "#ffff" }}>
         <div
           style={{
@@ -95,7 +95,7 @@ const MainLayout: React.FC = () => {
       <CContent
         style={{
           background: "#ffff",
-          height: "calc(100vh - 131px)",
+          height: "auto",
         }}
       >
         <Outlet />
