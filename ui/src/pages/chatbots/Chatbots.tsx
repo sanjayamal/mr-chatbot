@@ -20,7 +20,28 @@ const Chatbots = () => {
   const chatbots = useAppSelector(selectChatbots);
   const dispatch = useAppDispatch();
 
-  const { data: chatbotsData, isLoading } = chatbots;
+  // const { data: chatbotsData, isLoading } = chatbots;
+
+  const { data: chatbotsData, isLoading } = {
+    data: [
+      {
+        id: "4545",
+        name: "Rajitha",
+        description: "test",
+        profilePictureUrl: "",
+        userId: "",
+        model: "",
+        temperature: 0,
+        promptMessage: "",
+        textSource: "",
+        numberOfCharacters: "",
+        status: 0,
+        createdDate: "",
+        updatedData: "",
+      },
+    ],
+    isLoading: false,
+  };
 
   useEffect(() => {
     dispatch(getChatbots({}));
@@ -64,7 +85,7 @@ const Chatbots = () => {
                       botId={id}
                       name={name}
                       description={description}
-                      profilePictureUrl={profilePictureUrl ?? BotIcon}
+                      profilePictureUrl={profilePictureUrl || BotIcon}
                     />
                   </CCol>
                 )

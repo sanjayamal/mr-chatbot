@@ -56,6 +56,10 @@ const MainLayout: React.FC = () => {
       return "";
     }
   };
+
+  const onClickLogin = () => {
+    navigate("/login");
+  };
   return (
     <CLayout style={{ minHeight: "100vh" }}>
       <CHeader style={{ padding: 0, background: "#ffff" }}>
@@ -87,6 +91,7 @@ const MainLayout: React.FC = () => {
             icon={<CLoginOutlined />}
             size="small"
             className="login-btn"
+            onClick={onClickLogin}
           >
             Log In
           </CButton>

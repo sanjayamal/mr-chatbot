@@ -106,12 +106,12 @@ const chatbotSlice = createSlice({
       state.chatbot.data = action.payload;
     },
     setBotDataSource: (state, action: PayloadAction<any>) => {
-      if (action.payload?.typeOfData == "file") {
+      if (action.payload?.typeOfData === "file") {
         state.botDataSource = {
           ...state.botDataSource,
           files: action.payload.source,
         };
-      } else if (action.payload?.typeOfData == "text") {
+      } else if (action.payload?.typeOfData === "text") {
         state.botDataSource = {
           ...state.botDataSource,
           text: action.payload.source,

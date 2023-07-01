@@ -24,9 +24,9 @@ const BotItem: React.FC<IBotItem> = ({
   const handleOnClick = (pathName: string) => {
     let path: string = botId;
     if (pathName.length > 0) {
-      path = `/bot/${botId}/${pathName}`;
+      path = `${botId}/${pathName}`;
     }
-    navigate(path);
+    navigate(`/bot/${path}`);
   };
   return (
     <CCard

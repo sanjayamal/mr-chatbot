@@ -2,6 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import { ErrorPage } from "../components";
 import React from "react";
 
+const MainLayout = React.lazy(() => import("../layouts/mainLayout/MainLayout"));
+const UserLayout = React.lazy(() => import("../layouts/userLayout/UserLayout"));
+
 const Home = React.lazy(() => import("../pages/home/Home"));
 const Bots = React.lazy(() => import("../pages/chatbots/Chatbots"));
 const Chatbot = React.lazy(() => import("../pages/chatbot/Chatbot"));
@@ -15,8 +18,10 @@ const ChatbotCreation = React.lazy(
   () => import("../pages/chatbotCreation/ChatbotCreation")
 );
 
-const MainLayout = React.lazy(() => import("../layouts/mainLayout/MainLayout"));
-const UserLayout = React.lazy(() => import("../layouts/userLayout/UserLayout"));
+const Registration = React.lazy(
+  () => import("../pages/registration/Registration")
+);
+const Login = React.lazy(() => import("../pages/login/Login"));
 
 export const routers = createBrowserRouter([
   {
@@ -38,29 +43,31 @@ export const routers = createBrowserRouter([
         path: "bots",
         element: <Bots />,
       },
+      {
+        path: "bot/:botId",
+        element: <Chatbot />,
+      },
+      {
+        path: "bot/create",
+        element: <ChatbotCreation />,
+      },
+      {
+        path: "bot/:botId/setting",
+        element: <ChatbotSetting />,
+      },
+      {
+        path: "bot/:botId/publish",
+        element: <ChatbotPublish />,
+      },
     ],
   },
 
   {
-    path: "/bot",
-    element: <UserLayout />,
-    children: [
-      {
-        path: ":botId",
-        element: <Chatbot />,
-      },
-      {
-        path: "create",
-        element: <ChatbotCreation />,
-      },
-      {
-        path: ":botId/setting",
-        element: <ChatbotSetting />,
-      },
-      {
-        path: ":botId/publish",
-        element: <ChatbotPublish />,
-      },
-    ],
+    path: "/sign-up",
+    element: <Registration />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);

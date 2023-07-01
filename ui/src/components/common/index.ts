@@ -12,8 +12,9 @@ import {
   Empty as CEmpty,
   message as CMessage,
   Result as CResult,
-  Statistic as CStatistic ,
-  Spin as SSpin
+  Statistic as CStatistic,
+  Spin as SSpin,
+  Divider as CDivider,
 } from "antd";
 
 const { TextArea: CTextArea } = CInput;
@@ -37,5 +38,6 @@ export {
   CMessage,
   CResult,
   CStatistic,
-  SSpin
+  SSpin,
+  CDivider,
 };

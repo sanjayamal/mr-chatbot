@@ -7,6 +7,9 @@ import {
   InboxOutlined as CInboxOutlined,
 } from "@ant-design/icons";
 
+import { FcGoogle as CFcGoogle } from "react-icons/fc";
+import { FaFacebook as CFaFacebook } from "react-icons/fa";
+
 export {
   CLoginOutlined,
   CArrowLeftOutlined,
@@ -14,4 +17,6 @@ export {
   CEditOutlined,
   CSettingOutlined,
   CInboxOutlined,
+  CFcGoogle,
+  CFaFacebook
 };
