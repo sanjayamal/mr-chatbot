@@ -15,6 +15,13 @@ import {
   Statistic as CStatistic,
   Spin as SSpin,
   Divider as CDivider,
+  Tooltip as CToolTip,
+  Select as CSelect,
+  Slider as CSlider,
+  List as CList,
+  Space as CSpace,
+  ColorPicker as CColorPicker,
+  Modal as CModal,
 } from "antd";
 
 const { TextArea: CTextArea } = CInput;
@@ -40,4 +47,11 @@ export {
   CStatistic,
   SSpin,
   CDivider,
+  CToolTip,
+  CSelect,
+  CSlider,
+  CList,
+  CSpace,
+  CColorPicker,
+  CModal,
 };

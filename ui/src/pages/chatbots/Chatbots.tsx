@@ -79,13 +79,17 @@ const Chatbots = () => {
               </div>
             ) : (
               chatbotsData.map(
-                ({ id, name, description, profilePictureUrl }: IChatbot) => (
+                ({
+                  id,
+                  name,
+                  description,
+                }: Pick<IChatbot, "id" | "name" | "description">) => (
                   <CCol className="gutter-row" xs={24} sm={12} md={6} lg={8}>
                     <BotItem
                       botId={id}
                       name={name}
                       description={description}
-                      profilePictureUrl={profilePictureUrl || BotIcon}
+                      profilePictureUrl={BotIcon}
                     />
                   </CCol>
                 )

@@ -2,9 +2,7 @@ import {
   CButton,
   CCol,
   CForm,
-  CInput,
   CRow,
-  CTextArea,
   TitleWithBackButton,
   DataSource,
   CStatistic,
@@ -12,46 +10,50 @@ import {
   CMessage,
   RcFile,
 } from "../../components";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  createChatbot,
+  getChatbotDataSource,
+  retrainChatbot,
   selectBotDataSource,
   selectIsProcessingDataSource,
 } from "../../store/chatbot";
 import { TextCharacterCountLimit } from "../../contants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-interface IFormInput {
-  name: string;
-  description: string;
-}
+function RetrainChatbot() {
+  const { handleSubmit } = useForm();
 
-function ChatbotCreation() {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<IFormInput>({
-    defaultValues: {
-      name: "",
-      description: "",
-    },
-  });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const botDataSource = useAppSelector(selectBotDataSource);
-  const { files, filesCharacterCount, text } = botDataSource;
+  const {
+    files,
+    filesCharacterCount,
+    text,
+    existingFiles,
+    existingFilesCharacterCount,
+  } = botDataSource;
   const isProcessingDataSource = useAppSelector(selectIsProcessingDataSource);
   const dispatch = useAppDispatch();
+  const { botId } = useParams();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    if (filesCharacterCount + text.length < TextCharacterCountLimit) {
+  useEffect(() => {
+    if (botId) {
+      dispatch(getChatbotDataSource(botId));
+    }
+  }, [botId]);
+
+  const onSubmit: SubmitHandler<any> = (data) => {
+    if (
+      filesCharacterCount + existingFilesCharacterCount + text.length <
+      TextCharacterCountLimit
+    ) {
       CMessage.error(
         `There should be a minimum of ${TextCharacterCountLimit} characters for the chatbot to work`
       );
     } else {
       const formData = new FormData();
-      formData.append("name", data.name);
       files.forEach((file: any) => {
         formData.append("files", file as RcFile);
       });
@@ -59,7 +61,7 @@ function ChatbotCreation() {
 
       setIsSubmitting(true);
 
-      dispatch(createChatbot({ formData }))
+      dispatch(retrainChatbot({ formData, chatbotId: botId }))
         .unwrap()
         .then(() => {
           setIsSubmitting(false);
@@ -68,58 +70,25 @@ function ChatbotCreation() {
           setIsSubmitting(false);
         });
     }
-    console.log(data);
   };
 
   return (
     <>
       <CRow>
         <CCol>
-          <TitleWithBackButton title="Create Chatbot" />
+          <TitleWithBackButton title="Retrain Chatbot" />
         </CCol>
       </CRow>
       <CRow style={{ marginLeft: "1.5rem" }}>
         <CCol md={12}>
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
-            <Controller
-              name="name"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Please Enter a Name" }}
-              render={({ field }) => (
-                <CForm.Item
-                  label="Name"
-                  validateStatus={errors.name ? "error" : ""}
-                  help={errors.name && errors.name.message}
-                  required
-                >
-                  <CInput {...field} />
-                </CForm.Item>
-              )}
-            />
-            <DataSource isEdit={false} />
-            <Controller
-              name="description"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Please Enter a Description" }}
-              render={({ field }) => (
-                <CForm.Item
-                  label="Description"
-                  validateStatus={errors.description ? "error" : ""}
-                  help={errors.description && errors.description.message}
-                  required
-                >
-                  <CTextArea {...field} rows={3} />
-                </CForm.Item>
-              )}
-            />
+            <DataSource isEdit />
             <SSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
-              <CRow>
+              <CRow className="margin-top-1rem">
                 <CCol span={6}>
                   <CStatistic
-                    title={`${files.length} File(s)`}
-                    value={filesCharacterCount}
+                    title={`${files.length + existingFiles.length} File(s)`}
+                    value={filesCharacterCount + existingFilesCharacterCount}
                   />
                 </CCol>
                 <CCol span={6}>
@@ -140,7 +109,7 @@ function ChatbotCreation() {
                   disabled={isProcessingDataSource || isSubmitting}
                   loading={isSubmitting}
                 >
-                  Create Chatbot
+                  Retrain Chatbot
                 </CButton>
               </CCol>
             </CRow>
@@ -151,4 +120,4 @@ function ChatbotCreation() {
   );
 }
 
-export default ChatbotCreation;
+export default RetrainChatbot;

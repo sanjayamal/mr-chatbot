@@ -5,6 +5,7 @@ from dotenv import dotenv_values
 from controllers.chatbot_controller import chatbot_bp
 from flask_cors import CORS
 
+
 app = Flask(__name__)
 CORS(app,supports_credentials=True)
 config = dotenv_values(".env")

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CMessage, CUploadProps, CUpload, File, RcFile } from "../../../common";
 import { CInboxOutlined } from "../../../common/icons";
 import { useAppDispatch } from "../../../../hooks";
@@ -7,13 +7,15 @@ import {
   setBotDataSource,
   setBotDataSourceProcessingStatus,
 } from "../../../../store/chatbot";
+import { useParams } from "react-router-dom";
 
 const { Dragger } = CUpload;
 
 const UploadFile = () => {
-  const [fileList, setFileList] = useState<Array<File>>([]);
-  
+  const { botId } = useParams();
   const dispatch = useAppDispatch();
+
+  const [fileList, setFileList] = useState<Array<File>>([]);
 
   const handleFileUpload = (droppedFile: File) => {
     const updatedFileList: Array<any> = [...fileList, droppedFile];

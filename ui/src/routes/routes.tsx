@@ -22,6 +22,10 @@ const Registration = React.lazy(
   () => import("../pages/registration/Registration")
 );
 const Login = React.lazy(() => import("../pages/login/Login"));
+const PublicBot = React.lazy(() => import("../pages/chatbot-iframe/PublicBot"));
+const RetrainChatbot = React.lazy(
+  () => import("../pages/retrainChatbot/RetrainChatbot")
+);
 
 export const routers = createBrowserRouter([
   {
@@ -56,8 +60,12 @@ export const routers = createBrowserRouter([
         element: <ChatbotSetting />,
       },
       {
-        path: "bot/:botId/publish",
+        path: "bot/:botId/edit",
         element: <ChatbotPublish />,
+      },
+      {
+        path: "bot/:botId/retrain",
+        element: <RetrainChatbot />,
       },
     ],
   },
@@ -69,5 +77,9 @@ export const routers = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/bot-iframe/:botId",
+    element: <PublicBot />,
   },
 ]);

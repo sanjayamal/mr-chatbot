@@ -6,12 +6,30 @@ export interface IChatbot {
   temperature: number;
   promptMessage: string;
   textSource: string;
-  numberOfCharacters: string;
+  numberOfCharacters: number;
   status: number;
   description: string;
   createdDate: string;
   updatedData: string;
+}
+
+export type IChatbotSetting = Pick<
+  IChatbot,
+  | "name"
+  | "model"
+  | "temperature"
+  | "promptMessage"
+  | "numberOfCharacters"
+  | "description"
+  | "textSource"
+>;
+
+export interface IPublishChatbot {
+  displayName: string;
+  initialMessage: string;
   profilePictureUrl: string;
+  userMessageColor: string;
+  chatBubbleColor: string;
 }
 
 export interface IInitialChatbotState {
@@ -22,6 +40,10 @@ export interface IInitialChatbotState {
     text: string;
     filesCharacterCount: number;
     textCharacterCount: number;
+    existingFiles: Array<any>;
+    existingFilesCharacterCount: number;
   };
   isProcessingDataSource: boolean;
+  chatbotSetting: { data: IChatbotSetting; isLoading: boolean };
+  publishChatbot: { data: IPublishChatbot; isLoading: boolean };
 }

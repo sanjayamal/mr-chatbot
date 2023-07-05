@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IChatbot, IInitialChatbotState } from "../../interfaces";
+import {
+  IChatbot,
+  IChatbotSetting,
+  IInitialChatbotState,
+  IPublishChatbot,
+} from "../../interfaces";
 import { RootState } from "../index";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
@@ -7,6 +12,12 @@ import {
   getChatbotsAPI,
   processBotDataSourceDetailAPI,
   createChatbotAPI,
+  getChatbotSettingAPI,
+  getPublishChatbotDetailAPI,
+  updateChatbotSettingAPI,
+  updatePublishChatbotDetailAPI,
+  retrainChatbotAPI,
+  getChatbotDataSourceAPI,
 } from "../../services";
 
 const chatbot: IChatbot = {
@@ -17,14 +28,30 @@ const chatbot: IChatbot = {
   temperature: 0,
   promptMessage: "",
   textSource: "",
-  numberOfCharacters: "",
+  numberOfCharacters: 0,
   status: 0,
   description: "",
   createdDate: "",
   updatedData: "",
-  profilePictureUrl: "",
 };
 
+const chatbotSetting: IChatbotSetting = {
+  name: "",
+  model: "gpt-3.5-turbo",
+  promptMessage: "",
+  temperature: 0,
+  textSource: "",
+  description: "",
+  numberOfCharacters: 0,
+};
+
+const publishChatbot: IPublishChatbot = {
+  initialMessage: "Hi! What can I help you with?",
+  userMessageColor: "#5688C7",
+  chatBubbleColor: "#5688C7",
+  displayName: "",
+  profilePictureUrl: "",
+};
 const initialChatbotState: IInitialChatbotState = {
   chatbot: { data: chatbot, isLoading: false },
   chatbots: { data: [], isLoading: false },
@@ -33,8 +60,18 @@ const initialChatbotState: IInitialChatbotState = {
     text: "",
     filesCharacterCount: 0,
     textCharacterCount: 0,
+    existingFiles: [],
+    existingFilesCharacterCount: 0,
   },
   isProcessingDataSource: false,
+  chatbotSetting: {
+    data: chatbotSetting,
+    isLoading: false,
+  },
+  publishChatbot: {
+    data: publishChatbot,
+    isLoading: false,
+  },
 };
 
 const getFilesCharacterCount = (
@@ -95,6 +132,86 @@ export const createChatbot = createAsyncThunk(
   }
 );
 
+export const getBotSettings = createAsyncThunk(
+  "chatbot/getBotSettings",
+  async (chatbotId: string, { dispatch, rejectWithValue }) => {
+    try {
+      const response: any = await getChatbotSettingAPI(chatbotId);
+      dispatch(setChatbotSettings(response.data));
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getPublishBotDetails = createAsyncThunk(
+  "chatbot/getPublishBotDetails",
+  async (chatbotId: string, { dispatch, rejectWithValue }) => {
+    try {
+      const response: any = await getPublishChatbotDetailAPI(chatbotId);
+      dispatch(setPublishChatbot(response.data));
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const updateBotSetting = createAsyncThunk(
+  "chatbot/updateBotSetting",
+  async ({ formData, chatbotId }: any, { rejectWithValue }) => {
+    try {
+      const response: any = await updateChatbotSettingAPI(formData, chatbotId);
+      //TODO - notification handle
+      return response;
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const updatePublishBotDetails = createAsyncThunk(
+  "chatbot/updatePublishBotDetails",
+  async ({ formData, chatbotId }: any, { rejectWithValue }) => {
+    try {
+      const response: any = await updatePublishChatbotDetailAPI(
+        formData,
+        chatbotId
+      );
+      //TODO - notification handle
+      return response;
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getChatbotDataSource = createAsyncThunk(
+  "chatbot/getPublishBotDetails",
+  async (chatbotId: string, { dispatch, rejectWithValue }) => {
+    try {
+      const response: any = await getChatbotDataSourceAPI(chatbotId);
+      // dispatch(setPublishChatbot(response.data));
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const retrainChatbot = createAsyncThunk(
+  "chatbot/retrainChatbot",
+  async ({ formData, chatbotId }: any, { rejectWithValue }) => {
+    try {
+      const response: any = await retrainChatbotAPI(
+        formData,
+        chatbotId
+      );
+      //TODO - notification handle
+      return response;
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
 const chatbotSlice = createSlice({
   name: "bot",
   initialState: initialChatbotState,
@@ -131,6 +248,12 @@ const chatbotSlice = createSlice({
         filesCharacterCount: action.payload.count,
       };
     },
+    setChatbotSettings: (state, action: PayloadAction<any>) => {
+      state.chatbotSetting = action.payload;
+    },
+    setPublishChatbot: (state, action: PayloadAction<any>) => {
+      state.publishChatbot = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -151,6 +274,24 @@ const chatbotSlice = createSlice({
       })
       .addCase(getChatbot.rejected, (state, action) => {
         state.chatbot.isLoading = false;
+      })
+      .addCase(getBotSettings.pending, (state) => {
+        state.chatbotSetting.isLoading = true;
+      })
+      .addCase(getBotSettings.fulfilled, (state, action) => {
+        state.chatbotSetting.isLoading = false;
+      })
+      .addCase(getBotSettings.rejected, (state, action) => {
+        state.chatbotSetting.isLoading = false;
+      })
+      .addCase(getPublishBotDetails.pending, (state) => {
+        state.publishChatbot.isLoading = true;
+      })
+      .addCase(getPublishBotDetails.fulfilled, (state, action) => {
+        state.publishChatbot.isLoading = false;
+      })
+      .addCase(getPublishBotDetails.rejected, (state, action) => {
+        state.publishChatbot.isLoading = false;
       });
   },
 });
@@ -170,12 +311,20 @@ export const selectBotDataSource = (state: RootState) => {
 export const selectIsProcessingDataSource = (state: RootState) => {
   return state.bot.isProcessingDataSource;
 };
+export const selectChatbotSettings = (state: RootState) => {
+  return state.bot.chatbotSetting;
+};
+export const selectPublishChatbotDetails = (state: RootState) => {
+  return state.bot.publishChatbot;
+};
 export const {
   setChatbot,
   setChatbots,
   setBotDataSource,
   setBotDataSourceProcessingStatus,
   setBotDataSourceDetail,
+  setChatbotSettings,
+  setPublishChatbot,
 } = chatbotSlice.actions;
 
 export default chatbotSlice;

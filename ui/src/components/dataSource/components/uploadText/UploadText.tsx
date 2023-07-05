@@ -1,5 +1,8 @@
-import { useAppDispatch } from "../../../../hooks";
-import { setBotDataSource } from "../../../../store/chatbot";
+import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import {
+  selectBotDataSource,
+  setBotDataSource,
+} from "../../../../store/chatbot";
 import { CTextArea, CTypography } from "../../../common";
 
 const UploadText = () => {
@@ -7,6 +10,9 @@ const UploadText = () => {
   const handleOnChange = (text: string) => {
     dispatch(setBotDataSource({ source: text, typeOfData: "text" }));
   };
+
+  const botDataSource = useAppSelector(selectBotDataSource);
+  const { text } = botDataSource;
 
   return (
     <>
@@ -25,6 +31,7 @@ const UploadText = () => {
         style={{ height: 120 }}
         onChange={(event: any) => handleOnChange(event.target.value)}
         rows={5}
+        value={text}
       />
     </>
   );

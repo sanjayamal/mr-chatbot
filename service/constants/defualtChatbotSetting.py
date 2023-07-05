@@ -1,4 +1,4 @@
-model = 'gpt-4'
+model = 'gpt-3.5-turbo'
 temperature = 0.5
 prompt_message = """"I want you to act as a document that I am having a conversation with.
 Your name is "AI Assistant". 
