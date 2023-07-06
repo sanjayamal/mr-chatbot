@@ -38,8 +38,8 @@ const Login = () => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const onClick = (e: any) => {
-    navigate("/sign-up");
+  const onClick = (path: string) => {
+    navigate(path);
   };
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {};
@@ -53,9 +53,12 @@ const Login = () => {
       >
         <CCard
           title={
-            <>
+            <div
+              onClick={() => onClick("/")}
+              style={{ cursor: "context-menu" }}
+            >
               <CAvatar style={{ marginRight: "15px" }} /> Mr.Chatbot
-            </>
+            </div>
           }
           bordered={false}
         >
@@ -112,7 +115,7 @@ const Login = () => {
                 </CButton>
               </CCol>
               <CCol span={24}>
-                <CButton type="link" onClick={onClick}>
+                <CButton type="link" onClick={() => onClick("/sign-up")}>
                   Create an account
                 </CButton>
               </CCol>

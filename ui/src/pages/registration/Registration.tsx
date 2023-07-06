@@ -41,8 +41,8 @@ const Registration = () => {
   const password = useRef({});
   password.current = watch("password", "");
 
-  const onClick = (e: any) => {
-    navigate("/login");
+  const onClick = (path: string) => {
+    navigate(path);
   };
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {};
@@ -56,9 +56,9 @@ const Registration = () => {
       >
         <CCard
           title={
-            <>
+            <div onClick={() => onClick("/")} style={{ cursor:"context-menu"}}>
               <CAvatar style={{ marginRight: "15px" }} /> Mr.Chatbot
-            </>
+            </div>
           }
           bordered={false}
         >
@@ -133,7 +133,7 @@ const Registration = () => {
                 >
                   Sign up
                 </CButton>
-                <CButton type="link" onClick={onClick}>
+                <CButton type="link" onClick={() => onClick("/login")}>
                   Already have an account? Log in
                 </CButton>
               </CCol>
