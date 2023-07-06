@@ -1,10 +1,12 @@
 import React from "react";
-import { MainSection } from "./components";
+import { Features, MainSection, Reviews } from "./components";
 
 const Home = () => {
   return (
     <div>
       <MainSection />
+      <Features />
+      <Reviews />
     </div>
   );
 };

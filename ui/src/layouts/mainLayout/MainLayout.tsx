@@ -22,8 +22,8 @@ const MainLayout: React.FC = () => {
       key: "home",
     },
     {
-      label: "Features",
-      key: "feature",
+      label: "Docs",
+      key: "docs",
     },
     {
       label: "Pricing",
