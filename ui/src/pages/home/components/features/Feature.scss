@@ -1,3 +1,20 @@
-.feature-card {
-  height: 100%;
+.feature-animation {
+  max-width: 23rem;
+  margin-top: -4rem;
+}
+
+.feature-animation-cost {
+  max-width: 23rem;
+  margin-top: -7rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .feature-animation {
+    max-width: auto;
+    margin-top: 0;
+  }
+  .feature-animation-cost {
+    max-width: auto;
+    margin-top: 0;
+  }
 }
