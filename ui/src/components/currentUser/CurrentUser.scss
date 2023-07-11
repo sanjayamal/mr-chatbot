@@ -1,0 +1,10 @@
+.name-hide{
+    display: block;
+}
+
+@media screen and (max-width: 784px) {
+    .name-hide{
+        display: none;
+    }
+  }
+  

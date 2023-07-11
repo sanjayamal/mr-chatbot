@@ -22,7 +22,10 @@ import {
   Space as CSpace,
   ColorPicker as CColorPicker,
   Modal as CModal,
+  Dropdown as CDropdown,
+  MenuProps as CMenuProps,
 } from "antd";
+import { type } from "os";
 
 const { TextArea: CTextArea } = CInput;
 export * from "./Layout";
@@ -54,4 +57,8 @@ export {
   CSpace,
   CColorPicker,
   CModal,
+  CDropdown,
 };
+
+ 
+  export type{ CMenuProps,}

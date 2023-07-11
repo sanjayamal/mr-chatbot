@@ -8,14 +8,17 @@ import {
   CHeader,
   CImage,
   CButton,
+  CurrentUser,
 } from "../../components";
 import logo from "../../assets/images/logo.jpg";
 import { CLoginOutlined } from "../../components/common/icons";
 import { useNavigate } from "react-router-dom";
 import "./MainLayout.scss";
+import { useAuth } from "../../hooks";
 
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
+  const auth = useAuth();
   const items = [
     {
       label: "Home",
@@ -49,6 +52,8 @@ const MainLayout: React.FC = () => {
           return "/feature";
         case "pricing":
           return "/pricing";
+        case "docs":
+          return "/docs";
         default:
           return "/";
       }
@@ -66,7 +71,7 @@ const MainLayout: React.FC = () => {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
             alignItems: "center",
           }}
         >
@@ -86,15 +91,19 @@ const MainLayout: React.FC = () => {
             }}
             onClick={onClick}
           />
-          <CButton
-            type="text"
-            icon={<CLoginOutlined />}
-            size="small"
-            className="login-btn"
-            onClick={onClickLogin}
-          >
-            Log In
-          </CButton>
+          {auth.user ? (
+            <CurrentUser isNameHide />
+          ) : (
+            <CButton
+              type="text"
+              icon={<CLoginOutlined />}
+              size="small"
+              className="login-btn"
+              onClick={onClickLogin}
+            >
+              Log In
+            </CButton>
+          )}
         </div>
       </CHeader>
       <CContent

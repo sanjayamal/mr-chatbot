@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ErrorPage } from "../components";
+import { ErrorPage, Protected } from "../components";
 import React from "react";
 
 const MainLayout = React.lazy(() => import("../layouts/mainLayout/MainLayout"));
@@ -27,6 +27,9 @@ const RetrainChatbot = React.lazy(
   () => import("../pages/retrainChatbot/RetrainChatbot")
 );
 
+const ChangePassword = React.lazy(
+  () => import("../pages/changePassword/ChangePassword")
+);
 export const routers = createBrowserRouter([
   {
     path: "",
@@ -41,31 +44,59 @@ export const routers = createBrowserRouter([
   },
   {
     path: "/",
-    element: <UserLayout />,
+    element: (
+      <Protected>
+        <UserLayout />
+      </Protected>
+    ),
     children: [
       {
         path: "bots",
-        element: <Bots />,
+        element: (
+          <Protected>
+            <Bots />
+          </Protected>
+        ),
       },
       {
         path: "bot/:botId",
-        element: <Chatbot />,
+        element: (
+          <Protected>
+            <Chatbot />
+          </Protected>
+        ),
       },
       {
         path: "bot/create",
-        element: <ChatbotCreation />,
+        element: (
+          <Protected>
+            <ChatbotCreation />
+          </Protected>
+        ),
       },
       {
         path: "bot/:botId/setting",
-        element: <ChatbotSetting />,
+        element: (
+          <Protected>
+            <ChatbotSetting />
+          </Protected>
+        ),
       },
       {
         path: "bot/:botId/edit",
-        element: <ChatbotPublish />,
+        element: (
+          <Protected>
+            <ChatbotPublish />
+          </Protected>
+        ),
       },
       {
         path: "bot/:botId/retrain",
-        element: <RetrainChatbot />,
+        element: (
+          <Protected>
+            <RetrainChatbot />
+          </Protected>
+        ),
       },
     ],
   },
@@ -81,5 +112,13 @@ export const routers = createBrowserRouter([
   {
     path: "/bot-iframe/:botId",
     element: <PublicBot />,
+  },
+  {
+    path: "/change-password",
+    element: (
+      <Protected>
+        <ChangePassword />
+      </Protected>
+    ),
   },
 ]);

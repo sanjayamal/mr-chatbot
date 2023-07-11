@@ -6,8 +6,10 @@ import {
   ApiOutlined as CApiOutlined,
   InboxOutlined as CInboxOutlined,
   RobotOutlined as CRobotOutlined,
-  DeleteOutlined as CDeleteOutlined ,
-  PlusOutlined as CPlusOutlined
+  DeleteOutlined as CDeleteOutlined,
+  PlusOutlined as CPlusOutlined,
+  UserOutlined as CUserOutlined,
+  LogoutOutlined as CLogoutOutlined,
 } from "@ant-design/icons";
 
 import { FcGoogle as CFcGoogle } from "react-icons/fc";
@@ -24,5 +26,7 @@ export {
   CFaFacebook,
   CRobotOutlined,
   CDeleteOutlined,
-  CPlusOutlined
+  CPlusOutlined,
+  CUserOutlined,
+  CLogoutOutlined,
 };

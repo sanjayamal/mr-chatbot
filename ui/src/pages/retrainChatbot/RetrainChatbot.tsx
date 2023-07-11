@@ -18,7 +18,7 @@ import {
   selectBotDataSource,
   selectIsProcessingDataSource,
 } from "../../store/chatbot";
-import { TextCharacterCountLimit } from "../../contants";
+import { TextCharacterCountLimit } from "../../constants";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 

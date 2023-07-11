@@ -7,7 +7,7 @@ import {
   CMenu,
   CSider,
 } from "../../components/common";
-import { AppFooter } from "../../components";
+import { AppFooter, CurrentUser } from "../../components";
 import logo from "../../assets/images/logo.jpg";
 import "./UserLayout.scss";
 
@@ -48,21 +48,37 @@ const App: React.FC = () => {
       <CSider
         breakpoint="lg"
         collapsedWidth="0"
-        style={{ background: "#ffff" }}
+        style={{
+          background: "#ffff",
+        }}
       >
-        <CImage
-          width={50}
-          src={logo}
-          preview={false}
-          style={{ marginLeft: "10px" }}
-          onClick={() => navigate("/")}
-        />
-        <CMenu
-          mode="inline"
-          defaultSelectedKeys={["chatbots"]}
-          items={items}
-          onClick={onClick}
-        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "100vh",
+          }}
+        >
+          <div>
+            <CImage
+              width={50}
+              src={logo}
+              preview={false}
+              style={{ marginLeft: "10px" }}
+              onClick={() => navigate("/")}
+            />
+            <CMenu
+              mode="inline"
+              defaultSelectedKeys={["chatbots"]}
+              items={items}
+              onClick={onClick}
+            />
+          </div>
+          <div className="margin-bottom-1rem">
+            <CurrentUser isNameHide={false} />
+          </div>
+        </div>
       </CSider>
       <CLayout style={{ background: "#ffff" }}>
         <CContent

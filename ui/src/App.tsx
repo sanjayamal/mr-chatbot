@@ -4,13 +4,16 @@ import { Suspense } from "react";
 import { Loader } from "./components";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import './App.scss'
+import { AuthProvider } from "./contexts";
+import "./App.scss";
 
 const App = () => {
   return (
     <Suspense fallback={<Loader />}>
       <Provider store={store}>
-        <RouterProvider router={routers} />
+        <AuthProvider>
+          <RouterProvider router={routers} />
+        </AuthProvider>
       </Provider>
     </Suspense>
   );

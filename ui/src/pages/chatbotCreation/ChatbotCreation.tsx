@@ -19,7 +19,7 @@ import {
   selectBotDataSource,
   selectIsProcessingDataSource,
 } from "../../store/chatbot";
-import { TextCharacterCountLimit } from "../../contants";
+import { TextCharacterCountLimit } from "../../constants";
 import { useState } from "react";
 
 interface IFormInput {
