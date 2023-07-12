@@ -24,8 +24,9 @@ import {
   Modal as CModal,
   Dropdown as CDropdown,
   MenuProps as CMenuProps,
+  Segmented as CSegmented,
+  Badge as CBadge,
 } from "antd";
-import { type } from "os";
 
 const { TextArea: CTextArea } = CInput;
 export * from "./Layout";
@@ -58,7 +59,8 @@ export {
   CColorPicker,
   CModal,
   CDropdown,
+  CSegmented,
+  CBadge,
 };
 
- 
-  export type{ CMenuProps,}
+export type { CMenuProps };

@@ -30,6 +30,9 @@ const RetrainChatbot = React.lazy(
 const ChangePassword = React.lazy(
   () => import("../pages/changePassword/ChangePassword")
 );
+
+const Pricing = React.lazy(() => import("../pages/pricing/Pricing"));
+
 export const routers = createBrowserRouter([
   {
     path: "",
@@ -112,6 +115,21 @@ export const routers = createBrowserRouter([
   {
     path: "/bot-iframe/:botId",
     element: <PublicBot />,
+  },
+  {
+    path: "/pricing",
+    element: <Pricing />,
+  },
+  {
+    path: "/pricing",
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <Pricing />,
+      },
+    ],
   },
   {
     path: "/change-password",
