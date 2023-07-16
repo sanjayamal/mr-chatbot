@@ -13,7 +13,7 @@ import {
   message as CMessage,
   Result as CResult,
   Statistic as CStatistic,
-  Spin as SSpin,
+  Spin as CSpin,
   Divider as CDivider,
   Tooltip as CToolTip,
   Select as CSelect,
@@ -26,6 +26,7 @@ import {
   MenuProps as CMenuProps,
   Segmented as CSegmented,
   Badge as CBadge,
+  notification as CNotification,
 } from "antd";
 
 const { TextArea: CTextArea } = CInput;
@@ -49,7 +50,7 @@ export {
   CMessage,
   CResult,
   CStatistic,
-  SSpin,
+  CSpin,
   CDivider,
   CToolTip,
   CSelect,
@@ -61,6 +62,7 @@ export {
   CDropdown,
   CSegmented,
   CBadge,
+  CNotification,
 };
 
 export type { CMenuProps };

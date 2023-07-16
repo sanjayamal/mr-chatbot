@@ -60,6 +60,7 @@ const App: React.FC = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               minHeight: "100vh",
+              height: "auto",
             }}
           >
             <div>

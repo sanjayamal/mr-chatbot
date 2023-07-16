@@ -6,9 +6,9 @@ import {
   TitleWithBackButton,
   DataSource,
   CStatistic,
-  SSpin,
   CMessage,
   RcFile,
+  CSpin,
 } from "../../components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -83,7 +83,7 @@ function RetrainChatbot() {
         <CCol md={12}>
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
             <DataSource isEdit />
-            <SSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
+            <CSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
               <CRow className="margin-top-1rem">
                 <CCol span={6}>
                   <CStatistic
@@ -98,7 +98,7 @@ function RetrainChatbot() {
                   />
                 </CCol>
               </CRow>
-            </SSpin>
+            </CSpin>
             <CRow>
               <CCol span={12}>
                 <CButton

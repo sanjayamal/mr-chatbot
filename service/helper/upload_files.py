@@ -1,4 +1,6 @@
+import io
 import mimetypes
+import os
 
 import boto3
 from flask import jsonify
@@ -10,10 +12,15 @@ def upload_files_to_store(files,user_id,chatbot_id):
     file_object_name = []
     try:
         for file in files:
+            file_data = file.read()
+            file.seek(0)
             object_name = file_dir + "/" + file.filename
             file_object_name.append(object_name)
             content_type = mimetypes.guess_type(file.filename)[0] or 'application/octet-stream'
-            s3.upload_fileobj(file, 'chatbot-store-dev-buket', object_name,ExtraArgs={'ContentType' : content_type})
+            if content_type == 'application/octet-stream' and file.filename.endswith('.pdf'):
+                content_type = 'application/pdf'
+
+            s3.upload_fileobj(file, os.getenv("S3_BUCKET_NAME"), object_name,ExtraArgs={'ContentType' : content_type})
         return file_object_name,None
     except Exception as e:
         return file_object_name,e

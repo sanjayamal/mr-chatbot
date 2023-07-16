@@ -8,19 +8,21 @@ import {
   TitleWithBackButton,
   DataSource,
   CStatistic,
-  SSpin,
   CMessage,
   RcFile,
+  CSpin,
 } from "../../components";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   createChatbot,
+  resetBotDataSourceDetail,
   selectBotDataSource,
   selectIsProcessingDataSource,
 } from "../../store/chatbot";
 import { TextCharacterCountLimit } from "../../constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   name: string;
@@ -43,7 +45,13 @@ function ChatbotCreation() {
   const { files, filesCharacterCount, text } = botDataSource;
   const isProcessingDataSource = useAppSelector(selectIsProcessingDataSource);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    return () => {
+      dispatch(resetBotDataSourceDetail());
+    };
+  }, []);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     if (filesCharacterCount + text.length < TextCharacterCountLimit) {
       CMessage.error(
@@ -56,19 +64,20 @@ function ChatbotCreation() {
         formData.append("files", file as RcFile);
       });
       formData.append("text", text);
+      formData.append("description", data.description);
 
       setIsSubmitting(true);
 
-      dispatch(createChatbot({ formData }))
+      dispatch(createChatbot(formData))
         .unwrap()
         .then(() => {
           setIsSubmitting(false);
+          navigate("/bots");
         })
         .catch(() => {
           setIsSubmitting(false);
         });
     }
-    console.log(data);
   };
 
   return (
@@ -114,7 +123,7 @@ function ChatbotCreation() {
                 </CForm.Item>
               )}
             />
-            <SSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
+            <CSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
               <CRow>
                 <CCol span={6}>
                   <CStatistic
@@ -129,7 +138,7 @@ function ChatbotCreation() {
                   />
                 </CCol>
               </CRow>
-            </SSpin>
+            </CSpin>
             <CRow>
               <CCol span={12}>
                 <CButton

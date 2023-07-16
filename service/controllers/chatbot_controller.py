@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify, Blueprint, current_app
+
+from repositories.channel_repository import ChannelRepository
 from services.chatbot_service import ChatbotService
 from repositories.chatbot_repository import ChatbotRepository
 from flask_cors import cross_origin
 
-chatbot_bp = Blueprint('chatbot_bp',__name__)
+chatbot_bp = Blueprint('chatbot_bp', __name__)
 chatbot_repository = ChatbotRepository()
-chatbot_service = ChatbotService(chatbot_repository)
+channel_repository = ChannelRepository()
+chatbot_service = ChatbotService(chatbot_repository, channel_repository)
+
 
 @chatbot_bp.route('/api/v1/bot-create', methods=['POST'])
 def create_bot():
@@ -21,9 +25,13 @@ def create_bot():
     return response
 
 
-@chatbot_bp.route('/api/v1/<string:user_id>/bots', methods=['get'])
-def get_bots(user_id):
-    return 'Hello, World!'
+@chatbot_bp.route('/api/v1/bots', methods=['get'])
+@cross_origin(supports_credentials=True)
+def get_bots():
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.get_chatbots(user_id)
+    return response
+
 
 
 @chatbot_bp.route('/api/v1/<string:user_id>/bot/<string:bot_id>', methods=['get'])
@@ -31,8 +39,8 @@ def get_bot(user_id, bot_id):
     return 'Hello, World I am new bot!'
 
 
-@cross_origin(supports_credentials=True)
 @chatbot_bp.route('/api/v1/process-source', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def process_source():
     try:
         current_app.logger.info('processing start')

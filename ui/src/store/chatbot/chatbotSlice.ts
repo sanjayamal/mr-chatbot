@@ -19,6 +19,8 @@ import {
   retrainChatbotAPI,
   getChatbotDataSourceAPI,
 } from "../../services";
+import { successNotification, errorNotification } from "../../components";
+import { NotificationType } from "../../constants";
 
 const chatbot: IChatbot = {
   id: "",
@@ -89,9 +91,9 @@ const getFilesCharacterCount = (
 
 export const getChatbots = createAsyncThunk(
   "chatbot/getChatbots",
-  async ({ dispatch }: any) => {
+  async (_: void, { dispatch }) => {
     const response: any = await getChatbotsAPI();
-    dispatch(setChatbots(response.data));
+    dispatch(setChatbots(response));
   }
 );
 
@@ -121,12 +123,23 @@ export const getBotDataSourceDetail = createAsyncThunk(
 
 export const createChatbot = createAsyncThunk(
   "chatbot/create-bot",
-  async (formData: any, { rejectWithValue }) => {
+  async (formData: any, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await createChatbotAPI(formData);
-      //TODO - notification handle
+      const { title, message } = response;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return response;
     } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return rejectWithValue(e);
     }
   }
@@ -201,10 +214,7 @@ export const retrainChatbot = createAsyncThunk(
   "chatbot/retrainChatbot",
   async ({ formData, chatbotId }: any, { rejectWithValue }) => {
     try {
-      const response: any = await retrainChatbotAPI(
-        formData,
-        chatbotId
-      );
+      const response: any = await retrainChatbotAPI(formData, chatbotId);
       //TODO - notification handle
       return response;
     } catch (e: any) {
@@ -216,7 +226,7 @@ const chatbotSlice = createSlice({
   name: "bot",
   initialState: initialChatbotState,
   reducers: {
-    setChatbots(state, action: PayloadAction<Array<IChatbot>>) {
+    setChatbots(state, action: any) {
       state.chatbots.data = action.payload;
     },
     setChatbot(state, action: PayloadAction<IChatbot>) {
@@ -253,6 +263,16 @@ const chatbotSlice = createSlice({
     },
     setPublishChatbot: (state, action: PayloadAction<any>) => {
       state.publishChatbot = action.payload;
+    },
+    resetBotDataSourceDetail: (state) => {
+      state.botDataSource = {
+        files: [],
+        text: "",
+        filesCharacterCount: 0,
+        textCharacterCount: 0,
+        existingFiles: [],
+        existingFilesCharacterCount: 0,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -325,6 +345,7 @@ export const {
   setBotDataSourceDetail,
   setChatbotSettings,
   setPublishChatbot,
+  resetBotDataSourceDetail,
 } = chatbotSlice.actions;
 
 export default chatbotSlice;

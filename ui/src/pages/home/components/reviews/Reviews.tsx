@@ -2,8 +2,7 @@ import { CAvatar, CCol, CRow, CTypography } from "../../../../components";
 import reviewer from "../../../../assets/images/reviewer.png";
 
 const Reviews = () => {
-  const comment =
-    "This is amazing, It makes business more attractive";
+  const comment = "This is amazing, It makes business more attractive";
   const name = "John cena";
   const position = "Full-stack Developer";
   return (
@@ -11,12 +10,13 @@ const Reviews = () => {
       gutter={[8, 8]}
       style={{ marginLeft: 0, marginRight: 0, marginTop: "2rem" }}
     >
-      {[1, 2].map(() => (
+      {[1, 2].map((id) => (
         <CCol
           className="gutter-row"
           xs={{ span: 16, offset: 4 }}
           sm={{ span: 10, offset: 1 }}
           md={{ span: 8, offset: 3 }}
+          key={id}
         >
           <div>
             <div

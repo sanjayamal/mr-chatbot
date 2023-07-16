@@ -1,7 +1,7 @@
 import { API } from "../helpers/axios";
 
 export const getChatbotsAPI = async () => {
-  const response = await API.get("/chatbot");
+  const response = await API.get("/bots");
   return response.data;
 };
 

@@ -1,4 +1,4 @@
-from entities.model import db
+from entities.model import db, Chatbot
 
 
 class ChatbotRepository:
@@ -6,8 +6,14 @@ class ChatbotRepository:
     def __int__(self):
         self.db = db
 
-    def create_chatbot(self, chatbot, chatbot_channel_main=None):
+    def add_chatbot(self, chatbot):
         db.session.add(chatbot)
-        if chatbot_channel_main is not None:
-            db.session.add(chatbot_channel_main)
         db.session.commit()
+
+    def get_chatbots_by_user_id(self, user_id):
+        try:
+            chatbots =Chatbot.query.filter_by(user_id=user_id).all()
+            return chatbots
+        except Exception as err:
+            print(err)
+            return err

@@ -10,16 +10,20 @@ import {
   CCard,
   CMeta,
   CModal,
+  CSpin,
   CToolTip,
 } from "../../../../components/common";
 import { useNavigate } from "react-router-dom";
 import { EmbedSection } from "../../../chatbot/components";
+import { PuffLoader } from "react-spinners";
+import { ChatbotStatus } from "../../../../constants";
 
 interface IBotItem {
   botId: string;
   name: string;
   description: string;
   profilePictureUrl: string;
+  status: number;
 }
 
 const BotItem: React.FC<IBotItem> = ({
@@ -27,6 +31,7 @@ const BotItem: React.FC<IBotItem> = ({
   name,
   description,
   profilePictureUrl,
+  status,
 }) => {
   const navigate = useNavigate();
   const handleOnClick = (pathName: string) => {
@@ -45,7 +50,16 @@ const BotItem: React.FC<IBotItem> = ({
     });
   };
   return (
-    <>
+    <CSpin
+      tip="Chatbot is being created..."
+      indicator={
+        <PuffLoader
+          color="#36d7b7"
+          cssOverride={{ marginTop: "-50px", marginLeft: "-38px" }}
+        />
+      }
+      spinning={status == ChatbotStatus.PENDING}
+    >
       <CCard
         style={{ width: "auto", marginTop: 16, backgroundColor: "#f5f7f5" }}
         actions={[
@@ -86,7 +100,7 @@ const BotItem: React.FC<IBotItem> = ({
           />
         </div>
       </CCard>
-    </>
+    </CSpin>
   );
 };
 

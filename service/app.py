@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
-CORS(app,supports_credentials=True)
+CORS(app, supports_credentials=True)
 config = dotenv_values(".env")
 
 app.config["SECRET_KEY"] = config.get("APP_SECRET")

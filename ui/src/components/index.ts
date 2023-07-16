@@ -8,3 +8,4 @@ export * from "./bot";
 export * from "./codeBlock";
 export * from "./protectedRoute";
 export * from "./currentUser";
+export * from "./notification";

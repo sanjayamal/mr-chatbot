@@ -29,7 +29,7 @@ const UploadFile = () => {
     updateFileDetail(updatedFileList);
   };
 
-  const updateFileDetail = (files: Array<File>) => {
+  const updateFileDetail = (files: Array<any>) => {
     dispatch(setBotDataSource({ source: files, typeOfData: "file" }));
     dispatch(setBotDataSourceProcessingStatus(true));
 

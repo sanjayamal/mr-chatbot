@@ -1,5 +1,9 @@
+import os
 import threading
 import uuid
+
+from constants.common_constants import internal_server_error_type, internal_server_error_title, \
+    chatbot_creation_error_msg, chatbot_creation_success_msg, get_chatbots_error_msg, chatbot_creation_success_title
 from entities.model import Chatbot, ChatbotChannelMain
 from flask import jsonify
 
@@ -11,8 +15,10 @@ from constants.defualtChatbotSetting import model, prompt_message, temperature,i
 
 class ChatbotService:
 
-    def __init__(self, chatbot_repository):
+    def __init__(self, chatbot_repository, channel_repository):
         self.chatbot_repository = chatbot_repository
+        self.channel_repository = channel_repository
+
 
     def process_source(self, files):
         try:
@@ -73,24 +79,61 @@ class ChatbotService:
                 type='web'
             )
             # upload files
-            file_object_names ,err = upload_files_to_store(files,user_id,chatbot_id)
 
-            # commit to DB
-            self.chatbot_repository.create_chatbot(chatbot,chatbot_channel)
+            file_object_names, err = upload_files_to_store(files,user_id,chatbot_id)
+
+            if err is not None:
+                return jsonify({
+                    'error': {
+                        'type': internal_server_error_type,
+                        'title': internal_server_error_title,
+                        'message': chatbot_creation_error_msg
+                    }
+                }), 500
+
+            # commit to DB create_chatbot(chatbot, chatbot_channel)
+            try:
+                self.chatbot_repository.add_chatbot(chatbot)
+                self.channel_repository.add_channel_main(chatbot_channel)
+            except Exception as e:
+                print(e)
+                return jsonify({
+                    'error': {
+                        'type': internal_server_error_type,
+                        'title': internal_server_error_title,
+                        'message': chatbot_creation_error_msg
+                    }
+                }), 500
 
             # upload source to vector DB
             thread = threading.Thread(target=run_upload_to_pinecone,
                                       args=(
-                                          app, file_object_names, text_source, user_id + "_" + str(chatbot_id)))
+                                          app, file_object_names, text_source, user_id + "_" + str(chatbot_id),str(chatbot_id)))
             thread.start()
 
             # return success message - It will take sometime to upload vector source
             return jsonify({
-                'message' : 'Bot creation successful'
-            }),200
+                'title': chatbot_creation_success_title,
+                'message': chatbot_creation_success_msg
+            }), 200
         except Exception as e:
-            print(e)
             return jsonify({
-                'message' : 'Bot creation fail'
-            }),500
+                'error': {
+                    'type': internal_server_error_type,
+                    'title': internal_server_error_title,
+                    'message': chatbot_creation_error_msg
+                }
+            }), 500
 
+    def get_chatbots(self,user_id):
+        try:
+            chatbots = self.chatbot_repository.get_chatbots_by_user_id(user_id)
+            return jsonify([bot.json() for bot in chatbots]),200
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': internal_server_error_type,
+                    'title': internal_server_error_title,
+                    'message': get_chatbots_error_msg
+                }
+            }), 500

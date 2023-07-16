@@ -13,40 +13,33 @@ import { getChatbots, selectChatbots } from "../../store/chatbot/chatbotSlice";
 import { IChatbot } from "../../interfaces";
 import BotIcon from "../../assets/images/botIcon.jpg";
 import "./Chatbots.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Chatbots = () => {
   const navigate = useNavigate();
   const chatbots = useAppSelector(selectChatbots);
   const dispatch = useAppDispatch();
+  const [isPageRefresh, setIsPageRefresh] = useState<boolean>(true);
 
-  // const { data: chatbotsData, isLoading } = chatbots;
-
-  const { data: chatbotsData, isLoading } = {
-    data: [
-      {
-        id: "4545",
-        name: "Rajitha",
-        description: "test",
-        profilePictureUrl: "",
-        userId: "",
-        model: "",
-        temperature: 0,
-        promptMessage: "",
-        textSource: "",
-        numberOfCharacters: "",
-        status: 0,
-        createdDate: "",
-        updatedData: "",
-      },
-    ],
-    isLoading: false,
-  };
+  const { data: chatbotsData, isLoading } = chatbots;
 
   useEffect(() => {
-    dispatch(getChatbots({}));
+    getBots();
+    const getBotIntervalId = setInterval(getBots, 5000);
+    return () => {
+      clearInterval(getBotIntervalId);
+    };
   }, []);
 
+  const getBots = () => {
+    dispatch(getChatbots())
+      .then(() => {
+        setIsPageRefresh(false);
+      })
+      .catch(() => {
+        setIsPageRefresh(false);
+      });
+  };
   const handleOnClick = () => {
     const path = `/bot/create`;
     navigate(path);
@@ -54,8 +47,8 @@ const Chatbots = () => {
 
   return (
     <>
-      {isLoading && <Loader />}
-      {!isLoading && (
+      {isLoading && isPageRefresh && <Loader />}
+      {!(isLoading && isPageRefresh) && (
         <div>
           <CRow>
             <CCol flex={23}>
@@ -84,12 +77,20 @@ const Chatbots = () => {
                   name,
                   description,
                 }: Pick<IChatbot, "id" | "name" | "description">) => (
-                  <CCol className="gutter-row" xs={24} sm={12} md={6} lg={8}>
+                  <CCol
+                    className="gutter-row"
+                    xs={24}
+                    sm={12}
+                    md={6}
+                    lg={8}
+                    key={id}
+                  >
                     <BotItem
                       botId={id}
                       name={name}
                       description={description}
                       profilePictureUrl={BotIcon}
+                      status={1}
                     />
                   </CCol>
                 )
