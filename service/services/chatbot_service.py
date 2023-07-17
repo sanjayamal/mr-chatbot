@@ -1,13 +1,13 @@
-import os
 import threading
 import uuid
 
+from constants.chatbot import channel_web_type
 from constants.common_constants import internal_server_error_type, internal_server_error_title, \
-    chatbot_creation_error_msg, chatbot_creation_success_msg, get_chatbots_error_msg, chatbot_creation_success_title
+    chatbot_creation_error_msg, chatbot_creation_success_msg, get_chatbots_error_msg, chatbot_creation_success_title, \
+    get_chatbots_not_found_error_msg, get_chatbots_not_found_error_title, not_found_error_type
 from entities.model import Chatbot, ChatbotChannelMain
 from flask import jsonify
-
-from helper.pinecone_upload import run_upload_to_pinecone
+from helper.pinecone.pinecone_upload import run_upload_to_pinecone
 from helper.process_file import get_character_count_in_pdf
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature,initial_message,user_message_color,chat_bubble_color
@@ -76,7 +76,7 @@ class ChatbotService:
                 profile_picture_url='',
                 user_message_color=user_message_color,
                 chat_bubble_color=chat_bubble_color,
-                type='web'
+                type=channel_web_type
             )
             # upload files
 
@@ -129,6 +129,44 @@ class ChatbotService:
         try:
             chatbots = self.chatbot_repository.get_chatbots_by_user_id(user_id)
             return jsonify([bot.json() for bot in chatbots]),200
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': internal_server_error_type,
+                    'title': internal_server_error_title,
+                    'message': get_chatbots_error_msg
+                }
+            }), 500
+
+
+    def get_chatbot_by_id(self,user_id,chatbot_id):
+        try:
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+
+            if chatbot is None or chatbot.user_id != user_id:
+                return jsonify({
+                    'error': {
+                        'type': not_found_error_type,
+                        'title': get_chatbots_not_found_error_title,
+                        'message': get_chatbots_not_found_error_msg
+                    }
+                }), 404
+
+            chatbot_json = chatbot.json()
+            channels = chatbot.channels
+
+            web_channels = [channel for channel in channels if
+                            isinstance(channel, ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
+
+            web_channels_json = []
+
+            for web_channel in web_channels:
+                web_channel_json = web_channel.json()
+                web_channels_json.append(web_channel_json)
+
+            chatbot_json['webChannels'] = web_channels_json
+
+            return chatbot_json, 200
         except Exception as error:
             return jsonify({
                 'error': {

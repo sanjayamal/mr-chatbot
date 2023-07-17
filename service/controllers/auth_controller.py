@@ -4,7 +4,7 @@ from repositories.auth_repository import AuthRepository
 from flask_cors import cross_origin
 
 auth_bp = Blueprint('auth_bp',__name__)
-auth = AuthRepository()
+auth_repository = AuthRepository()
 auth_service = AuthService()
 
 

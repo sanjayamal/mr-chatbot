@@ -1,4 +1,9 @@
-from entities.model import db, Chatbot
+from sqlalchemy.orm import joinedload
+
+from entities.model import db, Chatbot,ChatbotChannel
+
+
+
 
 
 class ChatbotRepository:
@@ -14,6 +19,18 @@ class ChatbotRepository:
         try:
             chatbots =Chatbot.query.filter_by(user_id=user_id).all()
             return chatbots
+        except Exception as err:
+            print(err)
+            return err
+
+    def get_chatbot_by_chatbot_id(self, chatbot_id):
+        try:
+            chatbot =Chatbot.query.options(
+                joinedload(Chatbot.channels),
+                joinedload(Chatbot.channels).joinedload(ChatbotChannel.channel_main),
+            )\
+                .filter_by(id=chatbot_id).first()
+            return chatbot
         except Exception as err:
             print(err)
             return err

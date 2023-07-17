@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, Blueprint, current_app
-
 from repositories.channel_repository import ChannelRepository
 from services.chatbot_service import ChatbotService
 from repositories.chatbot_repository import ChatbotRepository
@@ -34,9 +33,11 @@ def get_bots():
 
 
 
-@chatbot_bp.route('/api/v1/<string:user_id>/bot/<string:bot_id>', methods=['get'])
-def get_bot(user_id, bot_id):
-    return 'Hello, World I am new bot!'
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>', methods=['get'])
+def get_bot(bot_id):
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.get_chatbot_by_id(user_id, bot_id)
+    return response
 
 
 @chatbot_bp.route('/api/v1/process-source', methods=['POST'])

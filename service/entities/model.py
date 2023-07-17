@@ -2,8 +2,13 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSON
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+from sqlalchemy_easy_softdelete.mixin import generate_soft_delete_mixin_class
 
 db = SQLAlchemy()
+
+class SoftDeleteMixin(generate_soft_delete_mixin_class()):
+    # type hint for autocomplete IDE support
+    deleted_at: datetime
 
 
 class User(db.Model):
@@ -42,7 +47,7 @@ class User(db.Model):
         }
 
 
-class Chatbot(db.Model):
+class Chatbot(db.Model, SoftDeleteMixin):
     __tablename__ = 'chatbots'
 
     id = db.Column(db.String(), primary_key=True)
@@ -59,7 +64,7 @@ class Chatbot(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
-    channels = db.relationship('ChatbotChannel', backref='chatbots', lazy=True,cascade='all, delete-orphan')
+    channels = db.relationship('ChatbotChannel', backref='chatbot', lazy=True, cascade='all, delete-orphan')
 
     def __init__(self, id, user_id, name, model, temperature, prompt_message,
                  text_source, number_of_characters, status,description):
@@ -94,7 +99,7 @@ class Chatbot(db.Model):
         }
 
 
-class ChatbotChannel(db.Model):
+class ChatbotChannel(db.Model, SoftDeleteMixin):
     __tablename__ = 'chatbot_channels'
 
     id = db.Column(db.String(), primary_key=True)
@@ -104,13 +109,13 @@ class ChatbotChannel(db.Model):
 
     chatbot_channel_histories = relationship('ChatbotChannelHistory', back_populates='chatbot_channel')
 
-    _mapper_args_ = {
+    __mapper_args__ = {
         'polymorphic_identity': 'chatbot_channels',
         'with_polymorphic': '*',
         "polymorphic_on": type
     }
 
-    def __init__(self, id, chatbot_id, type):
+    def __init__(self, id, chatbot_id, type='web'):
         self.id = id,
         self.chatbot_id = chatbot_id,
         self.type = type,
@@ -128,7 +133,7 @@ class ChatbotChannel(db.Model):
         }
 
 
-class ChatbotChannelMain(ChatbotChannel):
+class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
     __tablename__ = 'chatbot_channel_main'
 
     id = db.Column(db.String(), primary_key=True)
@@ -142,10 +147,10 @@ class ChatbotChannelMain(ChatbotChannel):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
-    chatbot_channels = db.relationship('ChatbotChannel', backref='chatbot_channel_main')
+    chatbot_channels = db.relationship('ChatbotChannel', backref='channel_main')
 
     __mapper_args__ = {
-        'polymorphic_identity': 'chatbot_channel_main',
+        'polymorphic_identity': 'web',
     }
     def __init__(self, id, chatbot_id, initial_message, display_name, profile_picture_url,
                  user_message_color, chat_bubble_color, type):

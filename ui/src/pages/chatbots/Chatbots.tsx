@@ -76,7 +76,8 @@ const Chatbots = () => {
                   id,
                   name,
                   description,
-                }: Pick<IChatbot, "id" | "name" | "description">) => (
+                  status
+                }: Pick<IChatbot, "id" | "name" | "description"|"status">) => (
                   <CCol
                     className="gutter-row"
                     xs={24}
@@ -90,7 +91,7 @@ const Chatbots = () => {
                       name={name}
                       description={description}
                       profilePictureUrl={BotIcon}
-                      status={1}
+                      status={status}
                     />
                   </CCol>
                 )
