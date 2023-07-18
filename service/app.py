@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate, upgrade
+
+from controllers.chatting_controller import chatting_bp
 from entities.model import db
 from dotenv import dotenv_values
 from controllers.chatbot_controller import chatbot_bp
@@ -20,6 +22,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 app.register_blueprint(chatbot_bp)
+app.register_blueprint(chatting_bp)
 
 if __name__ == '__main__':
     with app.app_context():

@@ -55,7 +55,7 @@ def get_chain_config(chatbot):
     config = {}
     config['temperature'] = chatbot['temperature']
     config['model'] = chatbot['model']
-    config['prompt_message'] = ['prompt_message']
+    config['prompt_message'] = chatbot['promptMessage']
     return config
 
 

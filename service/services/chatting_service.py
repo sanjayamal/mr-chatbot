@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from flask import jsonify
 
@@ -11,8 +11,7 @@ from helper.pinecone.generate import process_content
 
 
 class ChattingService:
-
-    def __int__(self, chatting_repository):
+    def __init__(self, chatting_repository):
         self.chatting_repository = chatting_repository
 
     def get_bot_answer(self, user_id, chatbot_id, referrer, data, client_ip, user_agent):
@@ -27,9 +26,9 @@ class ChattingService:
                 }
             }), 404
 
-        webChannelId = None
-        if len(chatbot['webChannels'])>0:
-            webChannelId = chatbot['webChannels'][0]['chatbotChannelId']
+        web_channel_id = None
+        if len(chatbot['webChannels']) > 0:
+            web_channel_id = chatbot['webChannels'][0]['chatbotChannelId']
 
         session_id = data['id']
 
@@ -39,14 +38,14 @@ class ChattingService:
             'browser': user_agent,
             'session_id': session_id
         }
-        history_id = self._persist_chat_history(webChannelId, data['question'], None, metadata)
+        history_id = self.persist_chat_history(web_channel_id, data['question'], None, metadata)
         chat_history = data['history']
 
         result = process_content(data['question'], [tuple(history) for history in chat_history], chatbot)
 
         chat_history.append((data['question'], result['answer']))
 
-        update_history_response = self._update_chat_history(history_id, None, None, result['answer'], None)
+        update_history_response = self.update_chat_history(history_id, None, None, result['answer'], None)
 
         if not update_history_response:
             return jsonify({
@@ -58,15 +57,13 @@ class ChattingService:
             }), 500
 
         return jsonify({
-               result: {
+               'result': {
                    'answer': result['answer'],
                    'history': chat_history
                }
             }), 200
 
-
-
-    def _persist_chat_history(self, channel_id, question, answer, metadata):
+    def persist_chat_history(self, channel_id, question, answer, metadata):
         try:
             bot_history_record = ChatbotChannelHistory(
                 chatbot_channel_id=channel_id,
@@ -91,7 +88,7 @@ class ChattingService:
                 }
             ), 500
 
-    def _update_chat_history(self, history_id, channel_id, question, answer, metadata):
+    def update_chat_history(self, history_id, channel_id, question, answer, metadata):
         try:
             bot_history_record = self.chatting_repository.get_chatbot_channel_history(history_id)
             if bot_history_record:

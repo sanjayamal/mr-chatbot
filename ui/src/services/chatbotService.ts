@@ -79,3 +79,12 @@ export const retrainChatbotAPI = async (formData: any, chatbotId: string) => {
   });
   return response.data;
 };
+
+export const getBotAnswerAPI = async (data: any, chatbotId: string) => {
+  const response = await API.post(`/bot/web-chat/${chatbotId}`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};

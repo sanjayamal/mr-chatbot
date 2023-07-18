@@ -169,7 +169,7 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
     def json(self):
         return {
             'id': self.id,
-            'chatBotChannelId': self.chatbot_channel_id,
+            'chatbotChannelId': self.chatbot_channel_id,
             'initialMessage': self.initial_message,
             'displayName': self.display_name,
             'type': self.type,

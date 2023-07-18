@@ -18,6 +18,7 @@ import {
   updatePublishChatbotDetailAPI,
   retrainChatbotAPI,
   getChatbotDataSourceAPI,
+  getBotAnswerAPI,
 } from "../../services";
 import { successNotification, errorNotification } from "../../components";
 import { NotificationType } from "../../constants";
@@ -135,7 +136,7 @@ export const createChatbot = createAsyncThunk(
       return response;
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
-      successNotification({
+      errorNotification({
         type: NotificationType.SUCCESS,
         title: title as string,
         description: message as string,
@@ -193,6 +194,24 @@ export const updatePublishBotDetails = createAsyncThunk(
       //TODO - notification handle
       return response;
     } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getBotAnswer = createAsyncThunk(
+  "chatbot/getBotAnswer",
+  async ({ data, chatbotId }: any, { rejectWithValue }) => {
+    try {
+      const response: any = await getBotAnswerAPI(data, chatbotId);
+      return response.result;
+    } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return rejectWithValue(e);
     }
   }

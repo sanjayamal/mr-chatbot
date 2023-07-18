@@ -16,11 +16,13 @@ import { SyncOutlined } from "@ant-design/icons";
 import { IMessageModel, MessageDirection } from "./interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector, useAppDispatch } from "../../hooks";
+import { v4 as uuidv4 } from "uuid";
 
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import he from "he";
 import { Loader } from "../loader";
+import { getBotAnswer } from "../../store/chatbot";
 
 const ChatBot = () => {
   const dispatch = useAppDispatch();
@@ -32,6 +34,7 @@ const ChatBot = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState("");
   const [sendDisabled, setSendDisabled] = useState<boolean>(true);
+  const [chatMessageId, setChatMessageId] = useState<string>("");
 
   const msgListRef = useRef<any>(null);
 
@@ -96,26 +99,41 @@ const ChatBot = () => {
     getChatBotResponse(question);
   };
 
+  const generateIDForChat = (): string => {
+    try {
+      const timestamp = Date.now();
+      const id = `${timestamp}_${uuidv4()}`;
+      return id;
+    } catch (error) {
+      return "";
+    }
+  };
   const getChatBotResponse = (question: string) => {
+    let id = chatMessageId;
+    if (!history.length) {
+      id = generateIDForChat();
+      setChatMessageId(id);
+    }
     const request = {
+      id,
       question,
       history,
     };
-    // dispatch(getBotResponse({ apiPrivate, businessId, botId, request }))
-    //   .unwrap()
-    //   .then((response) => {
-    //     const { answer, history } = response;
-    //     const newMessage = mapToMessageModel(answer, "chatGPT", "incoming");
-    //     setMessages((prevMessage) => [...prevMessage, newMessage]);
-    //     setHistory(history);
-    //     setIsTyping(false);
-    //     if (msgListRef.current) {
-    //       msgListRef.current.scrollToBottom("auto");
-    //     }
-    //   })
-    //   .catch(() => {
-    //     setIsTyping(false);
-    //   });
+    dispatch(getBotAnswer({ data: request, chatbotId: botId }))
+      .unwrap()
+      .then((response) => {
+        const { answer, history } = response;
+        const newMessage = mapToMessageModel(answer, "chatGPT", "incoming");
+        setMessages((prevMessage) => [...prevMessage, newMessage]);
+        setHistory(history);
+        setIsTyping(false);
+        if (msgListRef.current) {
+          msgListRef.current.scrollToBottom("auto");
+        }
+      })
+      .catch(() => {
+        setIsTyping(false);
+      });
   };
   const resetChat = () => {
     setMessages([]);
