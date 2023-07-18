@@ -22,7 +22,11 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 import he from "he";
 import { Loader } from "../loader";
-import { getBotAnswer } from "../../store/chatbot";
+import {
+  getBotAnswer,
+  getPublishBotDetails,
+  selectPublishChatbotDetails,
+} from "../../store/chatbot";
 
 const ChatBot = () => {
   const dispatch = useAppDispatch();
@@ -30,22 +34,23 @@ const ChatBot = () => {
 
   const [messages, setMessages] = useState<Array<Partial<IMessageModel>>>([]);
   const [history, setHistory] = useState<Array<Array<string>>>([]);
-  const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState("");
   const [sendDisabled, setSendDisabled] = useState<boolean>(true);
   const [chatMessageId, setChatMessageId] = useState<string>("");
 
   const msgListRef = useRef<any>(null);
+  const chatbotPublish = useAppSelector(selectPublishChatbotDetails);
+  const { data, isLoading } = chatbotPublish;
 
-  const { initialMessage, profilePictureUrl, displayName, userMessageColor } = {
-    initialMessage: "Hi",
-    profilePictureUrl: "",
-    displayName: "bot",
-    userMessageColor: "#7696ec",
-  };
+  const { initialMessage, profilePictureUrl, displayName, userMessageColor } =
+    data;
 
-  useEffect(() => {}, [botId]);
+  useEffect(() => {
+    if (botId) {
+      dispatch(getPublishBotDetails(botId));
+    }
+  }, [botId]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -142,7 +147,7 @@ const ChatBot = () => {
 
   return (
     <>
-      {pageLoading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <MainContainer responsive>

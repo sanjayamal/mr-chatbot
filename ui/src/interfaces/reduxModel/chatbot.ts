@@ -30,6 +30,10 @@ export interface IPublishChatbot {
   profilePictureUrl: string;
   userMessageColor: string;
   chatBubbleColor: string;
+  chatbotChannelId: string;
+  id: string;
+  createdDate: string;
+  type: string;
 }
 
 export interface IInitialChatbotState {

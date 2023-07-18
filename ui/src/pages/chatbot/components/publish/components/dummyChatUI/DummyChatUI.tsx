@@ -1,10 +1,13 @@
 import React from "react";
 import "./DummyChatUI.scss";
-import { SendOutlined, SyncOutlined } from "@ant-design/icons";
-import { Avatar, Button, Typography } from "antd";
 import MessagesIcon from "../../../../../../assets/images/message_icon.svg";
+import { CButton, CTypography, CAvatar } from "../../../../../../components";
+import {
+  CSendOutlined,
+  CSyncOutlined,
+} from "../../../../../../components/common/icons";
 
-const { Title } = Typography;
+const { Title } = CTypography;
 interface IDummyChatUI {
   initialMessage?: string;
   profilePictureUrl?: string;
@@ -14,7 +17,7 @@ interface IDummyChatUI {
 }
 
 const DummyChatUI: React.FC<IDummyChatUI> = ({
-  initialMessage = "Hi! What can I help you with?",
+  initialMessage = "Hi! ",
   userMessageColor = "#5688C7",
   chatBubbleColor = "#5688C7",
   displayName,
@@ -33,7 +36,7 @@ const DummyChatUI: React.FC<IDummyChatUI> = ({
             }}
           >
             {profilePictureUrl && (
-              <Avatar
+              <CAvatar
                 size="large"
                 icon={
                   <img
@@ -44,9 +47,13 @@ const DummyChatUI: React.FC<IDummyChatUI> = ({
                 }
               />
             )}
-            {displayName && <Title level={5} style={{paddingBottom:'20px'}}>{displayName}</Title>}
+            {displayName && (
+              <Title level={5} style={{ paddingBottom: "20px" }}>
+                {displayName}
+              </Title>
+            )}
           </div>
-          <SyncOutlined />
+          <CSyncOutlined />
         </div>
         <div className="chat-body">
           <div className="bot-message">
@@ -62,17 +69,17 @@ const DummyChatUI: React.FC<IDummyChatUI> = ({
           </div>
           <div className="wrapper-msg-input">
             <div className="message-input">
-              <SendOutlined />
+              <CSendOutlined />
             </div>
           </div>
         </div>
       </div>
       <div className="chat-bubble">
-        <Button
+        <CButton
           shape="circle"
           icon={<img src={MessagesIcon} alt="chat-bubble" />}
-          style={{ backgroundColor: chatBubbleColor }}
           size="large"
+          style={{ backgroundColor: chatBubbleColor }}
         />
       </div>
     </div>

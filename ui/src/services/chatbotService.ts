@@ -34,7 +34,7 @@ export const getChatbotSettingAPI = async (chatbotId: string) => {
 };
 
 export const getPublishChatbotDetailAPI = async (chatbotId: string) => {
-  const response = await API.get(`/chatbot/${chatbotId}/publish-details`);
+  const response = await API.get(`/bot/${chatbotId}/publish-details`);
   return response.data;
 };
 
@@ -52,10 +52,11 @@ export const updateChatbotSettingAPI = async (
 
 export const updatePublishChatbotDetailAPI = async (
   formData: any,
+  chatbotChannelId: string,
   chatbotId: string
 ) => {
   const response = await API.put(
-    `/chatbot/${chatbotId}/publish-details`,
+    `/bot/${chatbotId}/web-channel/${chatbotChannelId}/publish-details`,
     formData,
     {
       headers: {
@@ -88,3 +89,4 @@ export const getBotAnswerAPI = async (data: any, chatbotId: string) => {
   });
   return response.data;
 };
+

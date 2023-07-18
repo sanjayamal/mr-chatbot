@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  CButton,
   CCol,
-  CForm,
-  CInput,
   CRow,
   CSpace,
   TitleWithBackButton,
 } from "../../../../components";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DummyChatUI, PublishSettingForm } from "./components";
 import { IPublishSettingForm } from "./components/publishSettingForm/IPublishSettingForm";
 import { publicSettingFormInitials } from "./components/constants";
@@ -46,6 +42,7 @@ const Publish = () => {
       profilePictureUrl,
       chatBubbleColor,
       displayName,
+      chatbotChannelId
     } = settingDetail;
     setFormData({
       initialMessage,
@@ -53,6 +50,7 @@ const Publish = () => {
       profilePictureUrl,
       chatBubbleColor,
       displayName,
+      chatbotChannelId
     });
   }, [publishChatbotDetailsData]);
 

@@ -1,4 +1,5 @@
 export interface IPublishSettingForm {
+  chatbotChannelId: string;
   initialMessage: string;
   profilePictureUrl: string;
   displayName: string;

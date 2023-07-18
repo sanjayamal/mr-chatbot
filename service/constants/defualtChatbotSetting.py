@@ -8,4 +8,4 @@ Refuse to answer any question not about the info. Never break character.
 """
 initial_message = 'Hi! What can I help you with?'
 user_message_color = '#3B81F6'
-chat_bubble_color = "#FFFFF"
+chat_bubble_color = "#000000"

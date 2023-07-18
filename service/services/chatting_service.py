@@ -2,8 +2,8 @@ from datetime import datetime
 
 from flask import jsonify
 
-from constants.common_constants import not_found_error_type, get_chatbots_not_found_error_title, \
-    get_chatbots_not_found_error_msg, internal_server_error_type, internal_server_error_title, \
+from constants.common_constants import not_found_error_type, get_chatbot_not_found_error_title, \
+    get_chatbot_not_found_error_msg, internal_server_error_type, internal_server_error_title, \
     add_chat_history_error_msg
 from controllers.chatbot_controller import chatbot_service
 from entities.model import ChatbotChannelHistory
@@ -21,8 +21,8 @@ class ChattingService:
             return jsonify({
                 'error': {
                     'type': not_found_error_type,
-                    'title': get_chatbots_not_found_error_title,
-                    'message': get_chatbots_not_found_error_msg
+                    'title': get_chatbot_not_found_error_title,
+                    'message': get_chatbot_not_found_error_msg
                 }
             }), 404
 
@@ -52,7 +52,7 @@ class ChattingService:
                 'error': {
                     'type': internal_server_error_type,
                     'title': internal_server_error_title,
-                    'message': get_chatbots_not_found_error_msg
+                    'message': get_chatbot_not_found_error_msg
                 }
             }), 500
 

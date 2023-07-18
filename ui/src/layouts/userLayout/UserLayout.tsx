@@ -45,7 +45,9 @@ const App: React.FC = () => {
     }
   };
   return (
-    <CLayout style={{ background: "#ffff", minHeight: "100vh" }}>
+    <CLayout
+      style={{ background: "#ffff", minHeight: "100vh", height: "auto" }}
+    >
       <Affix offsetTop={0}>
         <CSider
           breakpoint="lg"

@@ -9,12 +9,14 @@ export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore these field paths in all actions
-        ignoredActionPaths: ["meta.arg", "payload.source"],
-        // Ignore these paths in the state
-        ignoredPaths: ["bot.botDataSource.files"],
-      },
+      // serializableCheck: {
+      //   ignoredActions: ["chatbot/updatePublishBotDetails"],
+      //   // Ignore these field paths in all actions
+      //   ignoredActionPaths: ["meta.arg", "payload.source"],
+      //   // Ignore these paths in the state
+      //   ignoredPaths: ["bot.botDataSource.files"],
+      // },
+      serializableCheck: false,
     }),
 });
 

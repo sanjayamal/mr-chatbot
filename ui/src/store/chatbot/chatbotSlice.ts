@@ -54,6 +54,10 @@ const publishChatbot: IPublishChatbot = {
   chatBubbleColor: "#5688C7",
   displayName: "",
   profilePictureUrl: "",
+  chatbotChannelId: "",
+  id: "",
+  type: "",
+  createdDate: "",
 };
 const initialChatbotState: IInitialChatbotState = {
   chatbot: { data: chatbot, isLoading: false },
@@ -163,7 +167,7 @@ export const getPublishBotDetails = createAsyncThunk(
   async (chatbotId: string, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await getPublishChatbotDetailAPI(chatbotId);
-      dispatch(setPublishChatbot(response.data));
+      dispatch(setPublishChatbot(response));
     } catch (e: any) {
       return rejectWithValue(e);
     }
@@ -175,9 +179,20 @@ export const updateBotSetting = createAsyncThunk(
   async ({ formData, chatbotId }: any, { rejectWithValue }) => {
     try {
       const response: any = await updateChatbotSettingAPI(formData, chatbotId);
-      //TODO - notification handle
+      const { title, message } = response;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return response;
     } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return rejectWithValue(e);
     }
   }
@@ -185,15 +200,31 @@ export const updateBotSetting = createAsyncThunk(
 
 export const updatePublishBotDetails = createAsyncThunk(
   "chatbot/updatePublishBotDetails",
-  async ({ formData, chatbotId }: any, { rejectWithValue }) => {
+  async (
+    { formData, chatbotChannelId, chatbotId }: any,
+    { rejectWithValue }
+  ) => {
     try {
       const response: any = await updatePublishChatbotDetailAPI(
         formData,
+        chatbotChannelId,
         chatbotId
       );
-      //TODO - notification handle
+      const { title, message } = response;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return response;
     } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
+
       return rejectWithValue(e);
     }
   }
@@ -218,7 +249,7 @@ export const getBotAnswer = createAsyncThunk(
 );
 
 export const getChatbotDataSource = createAsyncThunk(
-  "chatbot/getPublishBotDetails",
+  "chatbot/getChatbotDataSource",
   async (chatbotId: string, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await getChatbotDataSourceAPI(chatbotId);
@@ -281,7 +312,7 @@ const chatbotSlice = createSlice({
       state.chatbotSetting = action.payload;
     },
     setPublishChatbot: (state, action: PayloadAction<any>) => {
-      state.publishChatbot = action.payload;
+      state.publishChatbot.data = action.payload;
     },
     resetBotDataSourceDetail: (state) => {
       state.botDataSource = {

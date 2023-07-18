@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IPublishSettingForm } from "./IPublishSettingForm";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   CButton,
   CCol,
@@ -20,8 +20,12 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { CPlusOutlined } from "../../../../../../components/common/icons";
 import "./PublishSettingForm.scss";
-import { useAppDispatch } from "../../../../../../hooks";
-import { updatePublishBotDetails } from "../../../../../../store/chatbot";
+import { useAppDispatch, useAppSelector } from "../../../../../../hooks";
+import {
+  selectPublishChatbotDetails,
+  updatePublishBotDetails,
+} from "../../../../../../store/chatbot";
+import { publicSettingFormInitials } from "../constants";
 
 interface IFormInput {
   initialMessage: string;
@@ -39,12 +43,23 @@ const PublishSettingForm: React.FC<IPublishSettingForm> = ({
   userMessageColor,
   handleFormChange,
   handleReset,
+  chatbotChannelId,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [fileList, setFileList] = useState<File[]>([]);
+  const { botId } = useParams();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const publishChatbotDetails = useAppSelector(selectPublishChatbotDetails);
+  const { data: publishChatbotDetailsData, isLoading } = publishChatbotDetails;
+  const settingDetail = publishChatbotDetailsData ?? publicSettingFormInitials;
+
   const {
     handleSubmit,
     control,
     formState: { errors },
+    setValue,
   } = useForm<IFormInput>({
     defaultValues: {
       initialMessage,
@@ -55,22 +70,33 @@ const PublishSettingForm: React.FC<IPublishSettingForm> = ({
     },
   });
 
-  const [fileList, setFileList] = useState<File[]>([]);
-  const { botId } = useParams();
-  const dispatch = useAppDispatch();
+  useEffect(() => {
+    setValue("initialMessage", initialMessage);
+    setValue("displayName", displayName);
+    setValue("profilePictureUrl", profilePictureUrl);
+    setValue("userMessageColor", userMessageColor);
+    setValue("chatBubbleColor", chatBubbleColor);
+  }, [
+    displayName,
+    initialMessage,
+    profilePictureUrl,
+    userMessageColor,
+    chatBubbleColor,
+    setValue,
+  ]);
 
   useEffect(() => {
-    if (profilePictureUrl) {
+    if (settingDetail.profilePictureUrl) {
       setFileList([
         {
           uid: "-1",
           name: "image.png",
           status: "done",
-          url: profilePictureUrl,
+          url: settingDetail.profilePictureUrl,
         },
       ]);
     }
-  }, [profilePictureUrl]);
+  }, [settingDetail.profilePictureUrl]);
 
   const onReset = (field: string) => {
     handleReset && handleReset(field);
@@ -103,14 +129,6 @@ const PublishSettingForm: React.FC<IPublishSettingForm> = ({
     onRemove: handleFileRemove,
     fileList,
     listType: "picture-card",
-    defaultFileList: [
-      {
-        uid: "-1",
-        name: "image.png",
-        status: "done",
-        url: "",
-      },
-    ],
   };
 
   const onSubmit: SubmitHandler<IFormInput> = ({
@@ -131,10 +149,13 @@ const PublishSettingForm: React.FC<IPublishSettingForm> = ({
       });
     }
     setIsSubmitting(true);
-    dispatch(updatePublishBotDetails({ formData, chatbotId: botId }))
+    dispatch(
+      updatePublishBotDetails({ formData, chatbotChannelId, chatbotId: botId })
+    )
       .unwrap()
       .then(() => {
         setIsSubmitting(false);
+        navigate(-1);
       })
       .catch(() => {
         setIsSubmitting(false);

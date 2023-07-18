@@ -10,7 +10,9 @@ import {
   PlusOutlined as CPlusOutlined,
   UserOutlined as CUserOutlined,
   LogoutOutlined as CLogoutOutlined,
-  CheckCircleTwoTone as CCheckCircleTwoTone
+  CheckCircleTwoTone as CCheckCircleTwoTone,
+  SendOutlined as CSendOutlined,
+  SyncOutlined as CSyncOutlined
 } from "@ant-design/icons";
 
 import { FcGoogle as CFcGoogle } from "react-icons/fc";
@@ -30,5 +32,7 @@ export {
   CPlusOutlined,
   CUserOutlined,
   CLogoutOutlined,
-  CCheckCircleTwoTone
+  CCheckCircleTwoTone,
+  CSendOutlined,
+  CSyncOutlined
 };

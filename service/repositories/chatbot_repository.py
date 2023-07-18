@@ -1,9 +1,5 @@
 from sqlalchemy.orm import joinedload
-
-from entities.model import db, Chatbot,ChatbotChannel
-
-
-
+from entities.model import db, Chatbot, ChatbotChannel
 
 
 class ChatbotRepository:
