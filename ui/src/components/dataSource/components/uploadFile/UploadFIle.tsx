@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CMessage, CUploadProps, CUpload, File, RcFile } from "../../../common";
 import { CInboxOutlined } from "../../../common/icons";
 import { useAppDispatch } from "../../../../hooks";
@@ -7,14 +7,13 @@ import {
   setBotDataSource,
   setBotDataSourceProcessingStatus,
 } from "../../../../store/chatbot";
-import { useParams } from "react-router-dom";
+import { TypeOfDataSource } from "../../../../constants";
 
 const { Dragger } = CUpload;
 
 const UploadFile = () => {
-  const { botId } = useParams();
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState<Array<File>>([]);
 
   const handleFileUpload = (droppedFile: File) => {
@@ -30,7 +29,7 @@ const UploadFile = () => {
   };
 
   const updateFileDetail = (files: Array<any>) => {
-    dispatch(setBotDataSource({ source: files, typeOfData: "file" }));
+    dispatch(setBotDataSource({ source: files, typeOfData: TypeOfDataSource.FILE }));
     dispatch(setBotDataSourceProcessingStatus(true));
 
     const formData = new FormData();

@@ -11,6 +11,7 @@ from flask import jsonify, request
 from helper.pinecone.pinecone_upload import run_upload_to_pinecone
 from helper.process_file import get_character_count_in_pdf
 from helper.s3.s3_helper_functions import get_object_url
+from helper.s3.s3_store import get_s3_file_names
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature,initial_message,user_message_color,chat_bubble_color
 
@@ -336,6 +337,40 @@ class ChatbotService:
             }), 200
 
         except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.update_chatbot_detail_error_msg
+                }
+            }), 500
+
+    def get_chatbot_data_source(self,  chatbot_id, user_id,):
+        try:
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+
+            if chatbot is None or chatbot.user_id != user_id:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.not_found_error_type,
+                        'title': common_constants.get_chatbot_not_found_error_title,
+                        'message': common_constants.get_chatbot_not_found_error_msg
+                    }
+                }), 404
+
+            text = chatbot.text_source
+            files_character_count = chatbot.number_of_characters - len(text)
+
+            bucket_name = os.getenv("S3_BUCKET_NAME")
+            file_dir = user_id + '/chatbot/' + str(chatbot_id)
+            file_names = get_s3_file_names(bucket_name, file_dir)
+
+            return jsonify({
+                'text': text,
+                'files': file_names,
+                'filesCharacterCount': files_character_count
+            }), 200
+        except Exception as Error:
             return jsonify({
                 'error': {
                     'type': common_constants.internal_server_error_type,

@@ -9,6 +9,7 @@ import {
   CMessage,
   RcFile,
   CSpin,
+  Loader,
 } from "../../components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -26,6 +27,7 @@ function RetrainChatbot() {
   const { handleSubmit } = useForm();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const botDataSource = useAppSelector(selectBotDataSource);
   const {
     files,
@@ -40,7 +42,14 @@ function RetrainChatbot() {
 
   useEffect(() => {
     if (botId) {
-      dispatch(getChatbotDataSource(botId));
+      setIsLoading(true);
+      dispatch(getChatbotDataSource(botId))
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
     }
   }, [botId]);
 
@@ -74,48 +83,59 @@ function RetrainChatbot() {
 
   return (
     <>
-      <CRow>
-        <CCol>
-          <TitleWithBackButton title="Retrain Chatbot" />
-        </CCol>
-      </CRow>
-      <CRow style={{ marginLeft: "1.5rem" }}>
-        <CCol md={12}>
-          <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
-            <DataSource isEdit />
-            <CSpin spinning={isProcessingDataSource} style={{ width: "50%" }}>
-              <CRow className="margin-top-1rem">
-                <CCol span={6}>
-                  <CStatistic
-                    title={`${files.length + existingFiles.length} File(s)`}
-                    value={filesCharacterCount + existingFilesCharacterCount}
-                  />
-                </CCol>
-                <CCol span={6}>
-                  <CStatistic
-                    title="Text input characters"
-                    value={text.length}
-                  />
-                </CCol>
-              </CRow>
-            </CSpin>
-            <CRow>
-              <CCol span={12}>
-                <CButton
-                  type="primary"
-                  htmlType="submit"
-                  className="margin-top-1rem margin-bottom-1rem"
-                  style={{ width: "100%" }}
-                  disabled={isProcessingDataSource || isSubmitting}
-                  loading={isSubmitting}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <CRow>
+            <CCol>
+              <TitleWithBackButton title="Retrain Chatbot" />
+            </CCol>
+          </CRow>
+          <CRow style={{ marginLeft: "1.5rem" }}>
+            <CCol md={12}>
+              <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
+                <DataSource isEdit />
+                <CSpin
+                  spinning={isProcessingDataSource}
+                  style={{ width: "50%" }}
                 >
-                  Retrain Chatbot
-                </CButton>
-              </CCol>
-            </CRow>
-          </CForm>
-        </CCol>
-      </CRow>
+                  <CRow className="margin-top-1rem">
+                    <CCol span={6}>
+                      <CStatistic
+                        title={`${files.length + existingFiles.length} File(s)`}
+                        value={
+                          filesCharacterCount + existingFilesCharacterCount
+                        }
+                      />
+                    </CCol>
+                    <CCol span={6}>
+                      <CStatistic
+                        title="Text input characters"
+                        value={text.length}
+                      />
+                    </CCol>
+                  </CRow>
+                </CSpin>
+                <CRow>
+                  <CCol span={12}>
+                    <CButton
+                      type="primary"
+                      htmlType="submit"
+                      className="margin-top-1rem margin-bottom-1rem"
+                      style={{ width: "100%" }}
+                      disabled={isProcessingDataSource || isSubmitting}
+                      loading={isSubmitting}
+                    >
+                      Retrain Chatbot
+                    </CButton>
+                  </CCol>
+                </CRow>
+              </CForm>
+            </CCol>
+          </CRow>
+        </>
+      )}
     </>
   );
 }

@@ -21,7 +21,7 @@ import {
   getBotAnswerAPI,
 } from "../../services";
 import { successNotification, errorNotification } from "../../components";
-import { NotificationType } from "../../constants";
+import { NotificationType, TypeOfDataSource } from "../../constants";
 
 const chatbot: IChatbot = {
   id: "",
@@ -253,7 +253,12 @@ export const getChatbotDataSource = createAsyncThunk(
   async (chatbotId: string, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await getChatbotDataSourceAPI(chatbotId);
-      // dispatch(setPublishChatbot(response.data));
+      dispatch(
+        setBotDataSource({
+          source: response,
+          typeOfData: TypeOfDataSource.EXISTING_DATA_SOURCE,
+        })
+      );
     } catch (e: any) {
       return rejectWithValue(e);
     }
@@ -283,16 +288,34 @@ const chatbotSlice = createSlice({
       state.chatbot.data = action.payload;
     },
     setBotDataSource: (state, action: PayloadAction<any>) => {
-      if (action.payload?.typeOfData === "file") {
+      if (action.payload?.typeOfData === TypeOfDataSource.FILE) {
         state.botDataSource = {
           ...state.botDataSource,
           files: action.payload.source,
         };
-      } else if (action.payload?.typeOfData === "text") {
+      } else if (action.payload?.typeOfData === TypeOfDataSource.TEXT) {
         state.botDataSource = {
           ...state.botDataSource,
           text: action.payload.source,
           textCharacterCount: action.payload.source?.length,
+        };
+      } else if (
+        action.payload?.typeOfData === TypeOfDataSource.EXISTING_DATA_SOURCE
+      ) {
+        state.botDataSource = {
+          ...state.botDataSource,
+          existingFiles: action.payload.source.files,
+          text: action.payload.source.text,
+          textCharacterCount: action.payload.source.text?.length,
+          existingFilesCharacterCount:
+            action.payload.source.filesCharacterCount,
+        };
+      } else if (
+        action.payload?.typeOfData === TypeOfDataSource.REMOVING_EXISTING_FILE
+      ) {
+        state.botDataSource = {
+          ...state.botDataSource,
+          existingFiles: action.payload.source.files,
         };
       }
     },

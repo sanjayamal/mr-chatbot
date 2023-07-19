@@ -68,12 +68,12 @@ export const updatePublishChatbotDetailAPI = async (
 };
 
 export const getChatbotDataSourceAPI = async (chatbotId: string) => {
-  const response = await API.get(`/chatbot/${chatbotId}/data-source`);
+  const response = await API.get(`/bot/${chatbotId}/data-source`);
   return response.data;
 };
 
 export const retrainChatbotAPI = async (formData: any, chatbotId: string) => {
-  const response = await API.put(`/chatbot/${chatbotId}/retrain`, formData, {
+  const response = await API.put(`/bot/${chatbotId}/retrain`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -89,4 +89,3 @@ export const getBotAnswerAPI = async (data: any, chatbotId: string) => {
   });
   return response.data;
 };
-

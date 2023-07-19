@@ -8,6 +8,7 @@ interface IDataSource {
 }
 const DataSource: React.FC<IDataSource> = ({ isEdit }) => {
   const [activeTab, setActiveTab] = useState<string>("1");
+
   const tabs = [
     {
       key: "1",
@@ -30,7 +31,7 @@ const DataSource: React.FC<IDataSource> = ({ isEdit }) => {
         Data Sources
       </CTypography.Title>
       <CRow className="margin-bottom-1rem">
-        <CCol span={24}>
+        <CCol span={24} className="margin-bottom-1rem">
           <CTabs
             centered
             items={tabs as any}

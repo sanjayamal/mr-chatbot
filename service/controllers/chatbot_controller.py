@@ -80,3 +80,8 @@ def update_bot_setting_detail(bot_id):
     return response
 
 
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/data-source', methods=['get'])
+def get_bot_data_source(bot_id):
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.get_chatbot_data_source(bot_id, user_id)
+    return response

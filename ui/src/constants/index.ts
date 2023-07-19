@@ -17,3 +17,10 @@ export enum NotificationType {
   WARNING = "warning",
   ERROR = "error",
 }
+
+export enum TypeOfDataSource {
+  TEXT = "TEXT",
+  FILE = "FILE",
+  EXISTING_DATA_SOURCE = "EXISTING_DATA_SOURCE",
+  REMOVING_EXISTING_FILE = "REMOVING_EXISTING_FILE",
+}

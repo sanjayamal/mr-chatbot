@@ -1,3 +1,4 @@
+import { TypeOfDataSource } from "../../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import {
   selectBotDataSource,
@@ -8,7 +9,7 @@ import { CTextArea, CTypography } from "../../../common";
 const UploadText = () => {
   const dispatch = useAppDispatch();
   const handleOnChange = (text: string) => {
-    dispatch(setBotDataSource({ source: text, typeOfData: "text" }));
+    dispatch(setBotDataSource({ source: text, typeOfData: TypeOfDataSource.TEXT }));
   };
 
   const botDataSource = useAppSelector(selectBotDataSource);
