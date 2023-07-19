@@ -143,18 +143,19 @@ class ChatbotService:
                 }
             }), 500
 
-    def get_chatbot_by_id(self, user_id, chatbot_id):
+    def get_chatbot_by_id(self, chatbot_id: object, user_id: object) -> object:
         try:
             chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
-
-            if chatbot is None or chatbot.user_id != user_id:
-                return jsonify({
-                    'error': {
-                        'type': common_constants.not_found_error_type,
-                        'title': common_constants.get_chatbot_not_found_error_title,
-                        'message': common_constants.get_chatbot_not_found_error_msg
-                    }
-                }), 404
+            
+            if user_id is not None:
+                if chatbot is None or chatbot.user_id != user_id:
+                    return jsonify({
+                        'error': {
+                            'type': common_constants.not_found_error_type,
+                            'title': common_constants.get_chatbot_not_found_error_title,
+                            'message': common_constants.get_chatbot_not_found_error_msg
+                        }
+                    }), 404
 
             chatbot_json = chatbot.json()
             channels = chatbot.channels
@@ -180,21 +181,10 @@ class ChatbotService:
                 }
             }), 500
 
-    def get_chatbot_publish_detail_by_id(self, user_id, chatbot_id):
+    def get_chatbot_publish_detail_by_id(self, chatbot_id):
         try:
             chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
-
-            if chatbot is None or chatbot.user_id != user_id:
-                return jsonify({
-                    'error': {
-                        'type': common_constants.not_found_error_type,
-                        'title': common_constants.get_chatbot_not_found_error_title,
-                        'message': common_constants.get_chatbot_not_found_error_msg
-                    }
-                }), 404
-
             channels = chatbot.channels
-
             web_channels = [channel for channel in channels if
                             isinstance(channel,
                                        ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
@@ -271,6 +261,75 @@ class ChatbotService:
             web_channel.chat_bubble_color = request.form.get('chatBubbleColor', web_channel.chat_bubble_color)
 
             self.channel_repository.update_web_channel(web_channel)
+            return jsonify({
+                'title': common_constants.chatbot_updated_success_title,
+                'message': common_constants.chatbot_updated_success_msg
+            }), 200
+
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.update_chatbot_detail_error_msg
+                }
+            }), 500
+
+    def get_chatbot_setting_detail_by_id(self, user_id, chatbot_id):
+        try:
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+
+            if chatbot is None or chatbot.user_id != user_id:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.not_found_error_type,
+                        'title': common_constants.get_chatbot_not_found_error_title,
+                        'message': common_constants.get_chatbot_not_found_error_msg
+                    }
+                }), 404
+
+            chatbot_json = chatbot.json()
+            return chatbot_json, 200
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.get_chatbots_error_msg
+                }
+            }), 500
+
+    def update_chatbot_setting_detail(self, user_id, chatbot_id):
+        try:
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+
+            if chatbot is None:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.not_found_error_type,
+                        'title': common_constants.get_chatbot_not_found_error_title,
+                        'message': common_constants.get_chatbot_not_found_error_msg
+                    }
+                }), 404
+
+            if chatbot.user_id != user_id:
+                return jsonify(
+                    {
+                        'error': {
+                            'type': common_constants.forbidden_error_type,
+                            'title': common_constants.forbidden_error_title,
+                            'message': common_constants.forbidden_error_msg,
+                        }
+                    }
+                ), 403
+
+            chatbot.name = request.form.get('name', chatbot.name)
+            chatbot.prompt_message = request.form.get('promptMessage', chatbot.prompt_message)
+            chatbot.model = request.form.get('model', chatbot.model)
+            chatbot.temperature = request.form.get('temperature', chatbot.temperature)
+            chatbot.description = request.form.get('description', chatbot.description)
+
+            self.chatbot_repository.update_chatbot_setting(chatbot)
             return jsonify({
                 'title': common_constants.chatbot_updated_success_title,
                 'message': common_constants.chatbot_updated_success_msg

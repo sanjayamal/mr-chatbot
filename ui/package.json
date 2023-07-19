@@ -15,6 +15,7 @@
     "antd": "^5.6.1",
     "axios": "^1.4.0",
     "he": "^1.2.0",
+    "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@types/he": "^1.2.0",
+    "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2"
   }
 }

@@ -3,6 +3,7 @@ import {
   CCol,
   CRow,
   CSpace,
+  Loader,
   TitleWithBackButton,
 } from "../../../../components";
 import { DummyChatUI, PublishSettingForm } from "./components";
@@ -42,7 +43,7 @@ const Publish = () => {
       profilePictureUrl,
       chatBubbleColor,
       displayName,
-      chatbotChannelId
+      chatbotChannelId,
     } = settingDetail;
     setFormData({
       initialMessage,
@@ -50,7 +51,7 @@ const Publish = () => {
       profilePictureUrl,
       chatBubbleColor,
       displayName,
-      chatbotChannelId
+      chatbotChannelId,
     });
   }, [publishChatbotDetailsData]);
 
@@ -79,39 +80,45 @@ const Publish = () => {
 
   return (
     <>
-      <CRow>
-        <CCol>
-          <TitleWithBackButton title="Chat Interface" />
-        </CCol>
-      </CRow>
-      <CRow style={{ marginLeft: "1.5rem" }}>
-        <CCol>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
           <CRow>
-            <CCol
-              xs={{ span: 24 }}
-              sm={{ span: 24 }}
-              md={{ span: 12 }}
-              lg={{ span: 12 }}
-            >
-              <PublishSettingForm
-                {...formData}
-                handleFormChange={handleFormChange}
-                handleReset={handleReset}
-              />
-            </CCol>
-            <CCol
-              xs={{ span: 16 }}
-              sm={{ span: 16 }}
-              md={{ span: 10, offset: 1 }}
-              lg={{ span: 10, offset: 1 }}
-            >
-              <CSpace direction="vertical" className="space-container">
-                <DummyChatUI {...formData} />
-              </CSpace>
+            <CCol>
+              <TitleWithBackButton title="Chat Interface" />
             </CCol>
           </CRow>
-        </CCol>
-      </CRow>
+          <CRow style={{ marginLeft: "1.5rem" }}>
+            <CCol>
+              <CRow>
+                <CCol
+                  xs={{ span: 24 }}
+                  sm={{ span: 24 }}
+                  md={{ span: 12 }}
+                  lg={{ span: 12 }}
+                >
+                  <PublishSettingForm
+                    {...formData}
+                    handleFormChange={handleFormChange}
+                    handleReset={handleReset}
+                  />
+                </CCol>
+                <CCol
+                  xs={{ span: 16 }}
+                  sm={{ span: 16 }}
+                  md={{ span: 10, offset: 1 }}
+                  lg={{ span: 10, offset: 1 }}
+                >
+                  <CSpace direction="vertical" className="space-container">
+                    <DummyChatUI {...formData} />
+                  </CSpace>
+                </CCol>
+              </CRow>
+            </CCol>
+          </CRow>
+        </>
+      )}
     </>
   );
 };

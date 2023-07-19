@@ -14,6 +14,8 @@ import { IChatbot } from "../../interfaces";
 import BotIcon from "../../assets/images/botIcon.jpg";
 import "./Chatbots.scss";
 import { useEffect, useState } from "react";
+import _ from "lodash";
+import moment from "moment";
 
 const Chatbots = () => {
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ const Chatbots = () => {
 
   useEffect(() => {
     getBots();
-    const getBotIntervalId = setInterval(getBots, 5000);
+    const getBotIntervalId = setInterval(getBots, 30000);
     return () => {
       clearInterval(getBotIntervalId);
     };
@@ -45,6 +47,15 @@ const Chatbots = () => {
     navigate(path);
   };
 
+  const sortChatbot = (bots: Array<IChatbot>): Array<IChatbot> => {
+    try {
+      return _.sortBy(bots, (bot: IChatbot) =>
+        moment(bot.createdDate).toDate()
+      ).reverse();
+    } catch (error) {
+      return [];
+    }
+  };
   return (
     <>
       {isLoading && isPageRefresh && <Loader />}
@@ -71,13 +82,16 @@ const Chatbots = () => {
                 <CEmpty />
               </div>
             ) : (
-              chatbotsData.map(
+              sortChatbot(chatbotsData).map(
                 ({
                   id,
                   name,
                   description,
-                  status
-                }: Pick<IChatbot, "id" | "name" | "description"|"status">) => (
+                  status,
+                }: Pick<
+                  IChatbot,
+                  "id" | "name" | "description" | "status"
+                >) => (
                   <CCol
                     className="gutter-row"
                     xs={24}

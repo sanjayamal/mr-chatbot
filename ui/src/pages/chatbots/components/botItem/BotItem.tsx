@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { EmbedSection } from "../../../chatbot/components";
 import { PuffLoader } from "react-spinners";
 import { ChatbotStatus } from "../../../../constants";
+import "./BotItem.scss";
 
 interface IBotItem {
   botId: string;
@@ -45,8 +46,11 @@ const BotItem: React.FC<IBotItem> = ({
   const embedModal = () => {
     CModal.info({
       title: "Embed on website",
-      content: <EmbedSection />,
-      onOk() {},
+      content: <EmbedSection botId={botId} />,
+      width: "60%",
+      style: {
+        top: 10,
+      },
     });
   };
   return (

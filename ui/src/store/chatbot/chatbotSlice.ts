@@ -155,7 +155,7 @@ export const getBotSettings = createAsyncThunk(
   async (chatbotId: string, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await getChatbotSettingAPI(chatbotId);
-      dispatch(setChatbotSettings(response.data));
+      dispatch(setChatbotSettings(response));
     } catch (e: any) {
       return rejectWithValue(e);
     }
@@ -309,7 +309,7 @@ const chatbotSlice = createSlice({
       };
     },
     setChatbotSettings: (state, action: PayloadAction<any>) => {
-      state.chatbotSetting = action.payload;
+      state.chatbotSetting.data = action.payload;
     },
     setPublishChatbot: (state, action: PayloadAction<any>) => {
       state.publishChatbot.data = action.payload;

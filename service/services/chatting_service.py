@@ -15,7 +15,7 @@ class ChattingService:
         self.chatting_repository = chatting_repository
 
     def get_bot_answer(self, user_id, chatbot_id, referrer, data, client_ip, user_agent):
-        chatbot, status = chatbot_service.get_chatbot_by_id(user_id, chatbot_id)
+        chatbot, status = chatbot_service.get_chatbot_by_id(chatbot_id, None)
 
         if status != 200:
             return jsonify({

@@ -29,7 +29,7 @@ export const createChatbotAPI = async (formData: any) => {
 };
 
 export const getChatbotSettingAPI = async (chatbotId: string) => {
-  const response = await API.get(`/chatbot/${chatbotId}/setting`);
+  const response = await API.get(`/bot/${chatbotId}/setting-details`);
   return response.data;
 };
 
@@ -42,7 +42,7 @@ export const updateChatbotSettingAPI = async (
   formData: any,
   chatbotId: string
 ) => {
-  const response = await API.put(`/chatbot/${chatbotId}/setting`, formData, {
+  const response = await API.put(`/bot/${chatbotId}/setting-details`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

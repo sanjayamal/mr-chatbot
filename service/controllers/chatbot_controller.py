@@ -35,7 +35,7 @@ def get_bots():
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>', methods=['get'])
 def get_bot(bot_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
-    response = chatbot_service.get_chatbot_by_id(user_id, bot_id)
+    response = chatbot_service.get_chatbot_by_id(bot_id, user_id)
     return response
 
 
@@ -52,8 +52,7 @@ def process_source():
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/publish-details', methods=['get'])
 @cross_origin(supports_credentials=True)
 def get_bot_publish_detail(bot_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
-    response = chatbot_service.get_chatbot_publish_detail_by_id(user_id, bot_id)
+    response = chatbot_service.get_chatbot_publish_detail_by_id(bot_id)
     return response
 
 
@@ -62,6 +61,22 @@ def get_bot_publish_detail(bot_id):
 def update_bot_publish_detail(bot_id, chatbot_channel_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
     response = chatbot_service.update_chatbot_publish_detail(user_id, bot_id, chatbot_channel_id)
+    return response
+
+
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details', methods=['get'])
+@cross_origin(supports_credentials=True)
+def get_bot_setting_detail(bot_id):
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.get_chatbot_setting_detail_by_id(user_id, bot_id)
+    return response
+
+
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details', methods=['PUT'])
+@cross_origin(supports_credentials=True)
+def update_bot_setting_detail(bot_id):
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.update_chatbot_setting_detail(user_id, bot_id)
     return response
 
 

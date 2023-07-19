@@ -107,9 +107,9 @@ window.onload = function () {
   fetch(`${target}/api/v1/bot/${chatbotId}/publish-details`)
     .then((response) => response.json())
     .then((data) => {
-      const { userMessageColor } = data;
-      openButton.style.backgroundColor = userMessageColor;
-      closeButton.style.backgroundColor = userMessageColor;
+      const { chatBubbleColor } = data;
+      openButton.style.backgroundColor = chatBubbleColor;
+      closeButton.style.backgroundColor = chatBubbleColor;
     })
     .catch((error) => {});
 };

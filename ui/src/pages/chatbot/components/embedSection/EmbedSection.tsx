@@ -1,33 +1,42 @@
 import { CTypography, CodeBlockSection } from "../../../../components";
 
-const EmbedSection = () => {
+interface IEmbedSection {
+  botId: string;
+}
+
+const EmbedSection: React.FC<IEmbedSection> = ({ botId }) => {
   return (
     <div>
       <CTypography.Paragraph>
-        {"lerom hdajhdahidjajcjxajocjaojdjaodojadojao"}
+        To incorporate the chatbot into any where on your website, add this
+        iframe within your HTML code
       </CTypography.Paragraph>
       <CodeBlockSection
-        code={`const array1 = [1, 4, 9, 16];
-// Pass a function to map
-const map1 = array1.map(x => x * 2);
-
-console.log(map1);
-// Expected output: Array [2, 8, 18, 32]`}
-        language="javascript"
+        code={`<iframe
+        src="${window.location.origin}/bot-iframe/${botId}"
+        width="100%"
+        style="height: 100%; min-height: 700px"
+        frameborder="0"
+        ></iframe>`}
+        language="html"
         showLineNumbers={false}
       />
 
       <CTypography.Paragraph>
-        {"lerom hdajhdahidjajcjxajocjaojdjaodojadojao"}
+        To integrate a chat bubble at the lower right corner of your website,
+        add this script tag in your HTML code
       </CTypography.Paragraph>
       <CodeBlockSection
-        code={`const array1 = [1, 4, 9, 16];
-// Pass a function to map
-const map1 = array1.map(x => x * 2);
-
-console.log(map1);
-// Expected output: Array [2, 8, 18, 32]`}
-        language="javascript"
+        code={`<script>
+        window.ChatbotConfig = {
+          chatbotId: ${botId},
+        }
+      </script>
+      <script
+        src='${process.env.REACT_APP_CHAT_BUBBLE_SCRIPT_URL}'
+        defer>
+      </script>`}
+        language="html"
         showLineNumbers={false}
       />
     </div>
