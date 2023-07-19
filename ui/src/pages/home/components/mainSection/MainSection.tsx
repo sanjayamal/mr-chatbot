@@ -18,7 +18,11 @@ const MainSection = () => {
   };
   return (
     <CRow>
-      <CCol xs={24} sm={16} md={14}>
+      <CCol
+        xs={{ span: 24, offset: 0 }}
+        sm={{ span: 16, offset: 0 }}
+        md={{ span: 14, offset: 2 }}
+      >
         <CSpace
           direction="vertical"
           size="small"
