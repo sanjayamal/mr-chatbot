@@ -2,9 +2,6 @@ import io
 import os
 import threading
 import uuid
-
-import boto3
-
 from constants.chatbot import channel_web_type
 from constants import common_constants
 from entities.model import Chatbot, ChatbotChannelMain
@@ -12,7 +9,7 @@ from flask import jsonify, request
 from helper.pinecone.pinecone_upload import run_upload_to_pinecone
 from helper.process_file import get_character_count_in_pdf
 from helper.s3.s3_helper_functions import get_object_url
-from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files
+from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files, get_S3_client
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature,initial_message,user_message_color,chat_bubble_color
 
@@ -229,7 +226,7 @@ class ChatbotService:
             profile_pic = request.files.get('profilePictureUrl')
             profile_picture_url = ''
 
-            s3 = boto3.client('s3')
+            s3_client = get_S3_client()
 
             if profile_pic is not None:
                 try:
@@ -242,7 +239,7 @@ class ChatbotService:
                     profile_pic.seek(0)  # Reset the file pointer to the beginning
                     object_name = file_dir + "/" + profile_pic.filename
 
-                    response = s3.upload_fileobj(profile_pic, bucket_name, object_name,
+                    response = s3_client.upload_fileobj(profile_pic, bucket_name, object_name,
                                                  ExtraArgs={'ACL': 'public-read'})
                     if response is None:
                         profile_picture_url = get_object_url(bucket_name, object_name)
