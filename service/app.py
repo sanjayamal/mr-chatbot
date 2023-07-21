@@ -13,7 +13,6 @@ CORS(app, supports_credentials=True)
 
 app.config["SECRET_KEY"] = config.app_secret
 app.config["SQLALCHEMY_DATABASE_URI"] = config.postgresql_con_str
-print("setup complete")
 
 db.init_app(app)
 migrate = Migrate(app, db)
