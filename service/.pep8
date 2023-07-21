@@ -1,0 +1,4 @@
+[pycodestyle]
+max-line-length = 80
+indent-size = 4
+aggressive = 2
