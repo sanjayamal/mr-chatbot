@@ -14,7 +14,7 @@ from helper.process_file import get_character_count_in_pdf
 from helper.s3.s3_helper_functions import get_object_url
 from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files
 from helper.upload_files import upload_files_to_store
-from constants.defualtChatbotSetting import model, prompt_message, temperature,initial_message,user_message_color,chat_bubble_color
+from constants.defualtChatbotSetting import model, prompt_message, temperature, initial_message, user_message_color, chat_bubble_color
 
 
 class ChatbotService:
@@ -47,7 +47,14 @@ class ChatbotService:
                 }
             }), 500
 
-    def create_chatbot(self,app,user_id, files, chatbot_name,text_source,description):
+    def create_chatbot(
+            self,
+            app,
+            user_id,
+            files,
+            chatbot_name,
+            text_source,
+            description):
 
         # validate user privilege - How many bots can create
 
@@ -87,7 +94,8 @@ class ChatbotService:
             )
             # upload files
 
-            file_object_names, err = upload_files_to_store(files,user_id,chatbot_id)
+            file_object_names, err = upload_files_to_store(
+                files, user_id, chatbot_id)
 
             if err is not None:
                 return jsonify({
@@ -113,12 +121,20 @@ class ChatbotService:
                 }), 500
 
             # upload source to vector DB
-            thread = threading.Thread(target=run_upload_to_pinecone,
-                                      args=(
-                                          app, file_object_names, text_source, user_id + "_" + str(chatbot_id),str(chatbot_id)))
+            thread = threading.Thread(
+                target=run_upload_to_pinecone,
+                args=(
+                    app,
+                    file_object_names,
+                    text_source,
+                    user_id +
+                    "_" +
+                    str(chatbot_id),
+                    str(chatbot_id)))
             thread.start()
 
-            # return success message - It will take sometime to upload vector source
+            # return success message - It will take sometime to upload vector
+            # source
             return jsonify({
                 'title': common_constants.chatbot_creation_success_title,
                 'message': common_constants.chatbot_creation_success_msg
@@ -147,8 +163,9 @@ class ChatbotService:
 
     def get_chatbot_by_id(self, chatbot_id: object, user_id: object) -> object:
         try:
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
-            
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
+
             if user_id is not None:
                 if chatbot is None or chatbot.user_id != user_id:
                     return jsonify({
@@ -162,8 +179,10 @@ class ChatbotService:
             chatbot_json = chatbot.json()
             channels = chatbot.channels
 
-            web_channels = [channel for channel in channels if
-                            isinstance(channel, ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
+            web_channels = [
+                channel for channel in channels if isinstance(
+                    channel,
+                    ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
 
             web_channels_json = []
 
@@ -185,11 +204,13 @@ class ChatbotService:
 
     def get_chatbot_publish_detail_by_id(self, chatbot_id):
         try:
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
             channels = chatbot.channels
-            web_channels = [channel for channel in channels if
-                            isinstance(channel,
-                                       ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
+            web_channels = [
+                channel for channel in channels if isinstance(
+                    channel,
+                    ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
 
             web_channel_json = web_channels[0].json()
             return web_channel_json, 200
@@ -202,9 +223,11 @@ class ChatbotService:
                 }
             }), 500
 
-    def update_chatbot_publish_detail(self, user_id, chatbot_id, chatbot_channel_id):
+    def update_chatbot_publish_detail(
+            self, user_id, chatbot_id, chatbot_channel_id):
         try:
-            web_channel = self.channel_repository.get_web_channel(chatbot_channel_id)
+            web_channel = self.channel_repository.get_web_channel(
+                chatbot_channel_id)
 
             if web_channel is None:
                 return jsonify({
@@ -239,13 +262,16 @@ class ChatbotService:
 
                     file_data = profile_pic.read()
                     file_length = len(file_data)
-                    profile_pic.seek(0)  # Reset the file pointer to the beginning
+                    # Reset the file pointer to the beginning
+                    profile_pic.seek(0)
                     object_name = file_dir + "/" + profile_pic.filename
 
-                    response = s3.upload_fileobj(profile_pic, bucket_name, object_name,
-                                                 ExtraArgs={'ACL': 'public-read'})
+                    response = s3.upload_fileobj(
+                        profile_pic, bucket_name, object_name, ExtraArgs={
+                            'ACL': 'public-read'})
                     if response is None:
-                        profile_picture_url = get_object_url(bucket_name, object_name)
+                        profile_picture_url = get_object_url(
+                            bucket_name, object_name)
 
                     web_channel.profile_picture_url = profile_picture_url
                 except Exception as error:
@@ -257,10 +283,14 @@ class ChatbotService:
                         }
                     }), 500
 
-            web_channel.initial_message = request.form.get('initialMessage', web_channel.initial_message)
-            web_channel.display_name = request.form.get('displayName', web_channel.display_name)
-            web_channel.user_message_color = request.form.get('userMessageColor', web_channel.user_message_color)
-            web_channel.chat_bubble_color = request.form.get('chatBubbleColor', web_channel.chat_bubble_color)
+            web_channel.initial_message = request.form.get(
+                'initialMessage', web_channel.initial_message)
+            web_channel.display_name = request.form.get(
+                'displayName', web_channel.display_name)
+            web_channel.user_message_color = request.form.get(
+                'userMessageColor', web_channel.user_message_color)
+            web_channel.chat_bubble_color = request.form.get(
+                'chatBubbleColor', web_channel.chat_bubble_color)
 
             self.channel_repository.update_web_channel(web_channel)
             return jsonify({
@@ -279,7 +309,8 @@ class ChatbotService:
 
     def get_chatbot_setting_detail_by_id(self, user_id, chatbot_id):
         try:
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
 
             if chatbot is None or chatbot.user_id != user_id:
                 return jsonify({
@@ -303,7 +334,8 @@ class ChatbotService:
 
     def update_chatbot_setting_detail(self, user_id, chatbot_id):
         try:
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
 
             if chatbot is None:
                 return jsonify({
@@ -326,10 +358,13 @@ class ChatbotService:
                 ), 403
 
             chatbot.name = request.form.get('name', chatbot.name)
-            chatbot.prompt_message = request.form.get('promptMessage', chatbot.prompt_message)
+            chatbot.prompt_message = request.form.get(
+                'promptMessage', chatbot.prompt_message)
             chatbot.model = request.form.get('model', chatbot.model)
-            chatbot.temperature = request.form.get('temperature', chatbot.temperature)
-            chatbot.description = request.form.get('description', chatbot.description)
+            chatbot.temperature = request.form.get(
+                'temperature', chatbot.temperature)
+            chatbot.description = request.form.get(
+                'description', chatbot.description)
 
             self.chatbot_repository.update_chatbot_setting(chatbot)
             return jsonify({
@@ -346,9 +381,10 @@ class ChatbotService:
                 }
             }), 500
 
-    def get_chatbot_data_source(self,  chatbot_id, user_id,):
+    def get_chatbot_data_source(self, chatbot_id, user_id,):
         try:
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
 
             if chatbot is None or chatbot.user_id != user_id:
                 return jsonify({
@@ -385,7 +421,8 @@ class ChatbotService:
             pdf_character_count = None
             if len(files_to_remove) > 0:
                 file_dir = user_id + '/chatbot/' + str(chatbot_id) + '/'
-                s3_file_keys = [file_dir + file_name for file_name in files_to_remove]
+                s3_file_keys = [
+                    file_dir + file_name for file_name in files_to_remove]
 
                 # load the file
                 bucket_name = os.getenv("S3_BUCKET_NAME")
@@ -426,12 +463,14 @@ class ChatbotService:
                         }
                     }), 500
 
-            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(
+                chatbot_id)
 
             if pdf_character_count is not None:
                 chatbot.number_of_characters = chatbot.number_of_characters - pdf_character_count
 
-            files_character_count = chatbot.number_of_characters - len(chatbot.text_source)
+            files_character_count = chatbot.number_of_characters - \
+                len(chatbot.text_source)
 
             self.chatbot_repository.update_source_count(chatbot)
 

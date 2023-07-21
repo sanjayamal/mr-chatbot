@@ -13,23 +13,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # select which embeddings we want to use
-embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"), model="text-embedding-ada-002")
+embeddings = OpenAIEmbeddings(
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    model="text-embedding-ada-002")
 
 
 def get_text_source_chunks(text_source):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0,
-                                                   separators=[" ", ",", "\n"])
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000, chunk_overlap=0, separators=[" ", ",", "\n"])
     chunks = text_splitter.split_text(text_source)
     return chunks
 
 
 def get_document_text_chunks(document):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000, chunk_overlap=0)
     chunks = text_splitter.split_documents(document)
     return chunks
 
 
-def store_vector_db(text,namespace):
+def store_vector_db(text, namespace):
     Pinecone.from_texts(text,
                         embeddings,
                         index_name=os.getenv("PINECONE_INDEX"),
@@ -45,7 +48,7 @@ async def upload_to_pinecone(app, files, text, namespace, chatbot_id):
             # split the text_source into chunks
             if text != '':
                 text_source_chunks = get_text_source_chunks(text)
-                store_vector_db(text_source_chunks,namespace)
+                store_vector_db(text_source_chunks, namespace)
 
             for file in files:
                 url = create_presigned_url(os.getenv("S3_BUCKET_NAME"), file)
@@ -54,7 +57,7 @@ async def upload_to_pinecone(app, files, text, namespace, chatbot_id):
 
                 # split the documents into chunks
                 file_texts = get_document_text_chunks(document)
-                store_vector_db([t.page_content for t in file_texts],namespace)
+                store_vector_db([t.page_content for t in file_texts], namespace)
 
                 chatbot = Chatbot.query.get(str(chatbot_id))
                 if chatbot:
@@ -65,9 +68,9 @@ async def upload_to_pinecone(app, files, text, namespace, chatbot_id):
             return "Vector Update Failed"
 
 
-def run_upload_to_pinecone(app, files, text, namespace,chatbot_id):
+def run_upload_to_pinecone(app, files, text, namespace, chatbot_id):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(
-        upload_to_pinecone(app, files, text, namespace,chatbot_id))
+        upload_to_pinecone(app, files, text, namespace, chatbot_id))
     loop.close()
