@@ -154,7 +154,7 @@ export const createChatbot = createAsyncThunk(
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
       errorNotification({
-        type: NotificationType.SUCCESS,
+        type: NotificationType.ERROR,
         title: title as string,
         description: message as string,
       });
@@ -202,7 +202,7 @@ export const updateBotSetting = createAsyncThunk(
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
       errorNotification({
-        type: NotificationType.SUCCESS,
+        type: NotificationType.ERROR,
         title: title as string,
         description: message as string,
       });
@@ -233,7 +233,7 @@ export const updatePublishBotDetails = createAsyncThunk(
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
       errorNotification({
-        type: NotificationType.SUCCESS,
+        type: NotificationType.ERROR,
         title: title as string,
         description: message as string,
       });
@@ -252,7 +252,7 @@ export const getBotAnswer = createAsyncThunk(
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
       errorNotification({
-        type: NotificationType.SUCCESS,
+        type: NotificationType.ERROR,
         title: title as string,
         description: message as string,
       });
@@ -302,7 +302,7 @@ export const removeDataSource = createAsyncThunk(
     } catch (e: any) {
       const { title, message } = e.response.data?.error;
       errorNotification({
-        type: NotificationType.SUCCESS,
+        type: NotificationType.ERROR,
         title: title as string,
         description: message as string,
       });
@@ -316,9 +316,20 @@ export const retrainChatbot = createAsyncThunk(
   async ({ formData, chatbotId }: any, { rejectWithValue }) => {
     try {
       const response: any = await retrainChatbotAPI(formData, chatbotId);
-      //TODO - notification handle
+      const { title, message } = response;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return response;
     } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
       return rejectWithValue(e);
     }
   }

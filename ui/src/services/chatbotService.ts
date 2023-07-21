@@ -77,7 +77,7 @@ export const getChatbotDataSourceAPI = async (chatbotId: string) => {
 };
 
 export const retrainChatbotAPI = async (formData: any, chatbotId: string) => {
-  const response = await API.put(`/bot/${chatbotId}/retrain`, formData, {
+  const response = await API.post(`/bot/${chatbotId}/retrain`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
