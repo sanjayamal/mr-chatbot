@@ -43,7 +43,7 @@ class ChatbotRepository:
         except Exception as error:
             print(error)
 
-    def update_source_count(self, chatbot):
+    def update_chatbot_commit(self, chatbot):
         try:
             db.session.commit()
         except Exception as error:

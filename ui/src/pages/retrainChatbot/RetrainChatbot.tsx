@@ -10,21 +10,26 @@ import {
   RcFile,
   CSpin,
   Loader,
+  CModal,
 } from "../../components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   getChatbotDataSource,
+  resetBotDataSourceDetail,
   retrainChatbot,
   selectBotDataSource,
   selectIsProcessingDataSource,
 } from "../../store/chatbot";
 import { TextCharacterCountLimit } from "../../constants";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function RetrainChatbot() {
   const { handleSubmit } = useForm();
+  const dispatch = useAppDispatch();
+  const { botId } = useParams();
+  const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,8 +42,6 @@ function RetrainChatbot() {
     existingFilesCharacterCount,
   } = botDataSource;
   const isProcessingDataSource = useAppSelector(selectIsProcessingDataSource);
-  const dispatch = useAppDispatch();
-  const { botId } = useParams();
 
   useEffect(() => {
     if (botId) {
@@ -51,8 +54,23 @@ function RetrainChatbot() {
           setIsLoading(false);
         });
     }
+    return () => {
+      dispatch(resetBotDataSourceDetail());
+    };
   }, [botId]);
 
+  const handleNavigation = () => {
+    navigate(`/bots`);
+  };
+
+  const getSuccessModal = () => {
+    CModal.info({
+      title: "Chatbot is been retrained.",
+      content:
+        "retraining process will take several minutes. Pleas try after sometime",
+      onOk: handleNavigation,
+    });
+  };
   const onSubmit: SubmitHandler<any> = (data) => {
     if (
       filesCharacterCount + existingFilesCharacterCount + text.length <
@@ -74,6 +92,7 @@ function RetrainChatbot() {
         .unwrap()
         .then(() => {
           setIsSubmitting(false);
+          getSuccessModal();
         })
         .catch(() => {
           setIsSubmitting(false);
