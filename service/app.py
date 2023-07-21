@@ -3,20 +3,17 @@ from flask_migrate import Migrate, upgrade
 
 from controllers.chatting_controller import chatting_bp
 from entities.model import db
-from dotenv import dotenv_values
 from controllers.chatbot_controller import chatbot_bp
 from flask_cors import CORS
+from config.config_definitions import config
 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-config = dotenv_values(".env")
 
-app.config["SECRET_KEY"] = config.get("APP_SECRET")
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://"+config.get("POSTGRESQL_USER")+":"+config.get(
-    "POSTGRESQL_PASSWORD")+"@"+config.get("POSTGRESQL_HOST")+":"+config.get("POSTGRESQL_PORT")+'/'+config.get(
-    "POSTGRESQL_DB"
-)
+app.config["SECRET_KEY"] = config.app_secret
+app.config["SQLALCHEMY_DATABASE_URI"] = config.postgresql_con_str
+print("setup complete")
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -27,5 +24,4 @@ app.register_blueprint(chatting_bp)
 if __name__ == '__main__':
     with app.app_context():
         upgrade()
-    app.run()
-
+    app.run(port=config.port)
