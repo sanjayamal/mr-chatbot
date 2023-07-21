@@ -21,10 +21,13 @@ class ChatbotRepository:
     def get_chatbot_by_chatbot_id(self, chatbot_id):
         try:
             chatbot = Chatbot.query.options(
-                joinedload(Chatbot.channels),
-                joinedload(Chatbot.channels).joinedload(ChatbotChannel.channel_main),
-            )\
-                .filter_by(id=chatbot_id).first()
+                joinedload(
+                    Chatbot.channels),
+                joinedload(
+                    Chatbot.channels).joinedload(
+                    ChatbotChannel.channel_main),
+            ) .filter_by(
+                id=chatbot_id).first()
             return chatbot
         except Exception as err:
             return err

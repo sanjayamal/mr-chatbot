@@ -20,7 +20,13 @@ def create_bot():
     chatbot_name = request.form['name']
     text_source = request.form['text']
     description = request.form['description']
-    response = chatbot_service.create_chatbot(current_app._get_current_object(), user_id, files, chatbot_name, text_source, description)
+    response = chatbot_service.create_chatbot(
+        current_app._get_current_object(),
+        user_id,
+        files,
+        chatbot_name,
+        text_source,
+        description)
     return response
 
 
@@ -47,22 +53,27 @@ def process_source():
     return response
 
 
-@chatbot_bp.route('/api/v1/bot/<string:bot_id>/publish-details', methods=['get'])
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/publish-details',
+                  methods=['get'])
 @cross_origin(supports_credentials=True)
 def get_bot_publish_detail(bot_id):
     response = chatbot_service.get_chatbot_publish_detail_by_id(bot_id)
     return response
 
 
-@chatbot_bp.route('/api/v1/bot/<string:bot_id>/web-channel/<string:chatbot_channel_id>/publish-details', methods=['PUT'])
+@chatbot_bp.route(
+    '/api/v1/bot/<string:bot_id>/web-channel/<string:chatbot_channel_id>/publish-details',
+    methods=['PUT'])
 @cross_origin(supports_credentials=True)
 def update_bot_publish_detail(bot_id, chatbot_channel_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
-    response = chatbot_service.update_chatbot_publish_detail(user_id, bot_id, chatbot_channel_id)
+    response = chatbot_service.update_chatbot_publish_detail(
+        user_id, bot_id, chatbot_channel_id)
     return response
 
 
-@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details', methods=['get'])
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details',
+                  methods=['get'])
 @cross_origin(supports_credentials=True)
 def get_bot_setting_detail(bot_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
@@ -70,7 +81,8 @@ def get_bot_setting_detail(bot_id):
     return response
 
 
-@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details', methods=['PUT'])
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details',
+                  methods=['PUT'])
 @cross_origin(supports_credentials=True)
 def update_bot_setting_detail(bot_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
@@ -86,7 +98,8 @@ def get_bot_data_source(bot_id):
     return response
 
 
-@chatbot_bp.route('/api/v1/bot/<string:bot_id>/remove-data-source', methods=['POST'])
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/remove-data-source',
+                  methods=['POST'])
 @cross_origin(supports_credentials=True)
 def remove_source(bot_id):
     data = request.get_json()
@@ -104,5 +117,10 @@ def retrain_bot(bot_id):
     text_source = request.form.get('text', '')
 
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
-    response = chatbot_service.retrain_bot(current_app._get_current_object(), user_id, bot_id, files, text_source)
+    response = chatbot_service.retrain_bot(
+        current_app._get_current_object(),
+        user_id,
+        bot_id,
+        files,
+        text_source)
     return response

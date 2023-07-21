@@ -14,7 +14,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # select which embeddings we want to use
-embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"), model="text-embedding-ada-002")
+embeddings = OpenAIEmbeddings(
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    model="text-embedding-ada-002")
 pinecone.init(api_key=os.getenv("PINECONE_API_KEY"),
               environment=os.getenv("PINECONE_ENVIRONMENT"))
 
@@ -32,8 +34,8 @@ def get_chat_prompt(prompt_message):
 
 
 def get_condense_question_prompt():
-    _template = """Given the following conversation and a follow up question, rephrase the follow up question to be a 
-    standalone question, in its original language. Even though there is a conversation, if the question is a 
+    _template = """Given the following conversation and a follow up question, rephrase the follow up question to be a
+    standalone question, in its original language. Even though there is a conversation, if the question is a
     greeting, You also greet back in a nice way.
 
     Chat History:
@@ -60,13 +62,20 @@ def get_chain_config(chatbot):
 
 
 def process_content(query, chat_history, chatbot):
-    vector_store = Pinecone.from_existing_index(os.getenv("PINECONE_INDEX"), embeddings, text_key="text",
-                                                namespace=chatbot['userId'] + '_' + chatbot['id'])
+    vector_store = Pinecone.from_existing_index(
+        os.getenv("PINECONE_INDEX"),
+        embeddings,
+        text_key="text",
+        namespace=chatbot['userId'] +
+        '_' +
+        chatbot['id'])
 
     config = get_chain_config(chatbot)
 
-    llm = ChatOpenAI(temperature=config['temperature'], openai_api_key=os.getenv("OPENAI_API_KEY"),
-                     model_name=config['model'])
+    llm = ChatOpenAI(
+        temperature=config['temperature'],
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
+        model_name=config['model'])
 
     memory = ConversationSummaryBufferMemory(
         llm=llm,
@@ -78,8 +87,11 @@ def process_content(query, chat_history, chatbot):
         search_type="similarity",
         search_kwargs={"k": 20})
 
-    question_generator = LLMChain(llm=llm, prompt=get_condense_question_prompt())
-    doc_chain = load_qa_chain(llm, verbose=True, prompt=get_chat_prompt(config['prompt_message']))
+    question_generator = LLMChain(
+        llm=llm, prompt=get_condense_question_prompt())
+    doc_chain = load_qa_chain(
+        llm, verbose=True, prompt=get_chat_prompt(
+            config['prompt_message']))
 
     chain = ConversationalRetrievalChain(
         # memory=memory,

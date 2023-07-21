@@ -32,6 +32,6 @@ def get_bot_answer(chatbot_id):
     client_ip = request.remote_addr
     user_agent = request.headers.get('User-Agent')
 
-    response = chatting_service.get_bot_answer(user_id, chatbot_id, referrer, data, client_ip, user_agent)
+    response = chatting_service.get_bot_answer(
+        user_id, chatbot_id, referrer, data, client_ip, user_agent)
     return response
-
