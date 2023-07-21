@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-start = "flask --app app.py --debug run"
+start = "flask --debug run"
 infra_up = "docker compose -f mr_chatbot_infra/docker-compose.yaml up -d"
 infra_down = "docker compose -f mr_chatbot_infra/docker-compose.yaml down"
 db_upgrade = "flask db upgrade"
