@@ -108,3 +108,19 @@ def remove_source(bot_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
     response = chatbot_service.remove_source(bot_id, user_id, files_to_remove)
     return response
+
+
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/retrain', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def retrain_bot(bot_id):
+    files = request.files.getlist('files')
+    text_source = request.form.get('text', '')
+
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.retrain_bot(
+        current_app._get_current_object(),
+        user_id,
+        bot_id,
+        files,
+        text_source)
+    return response

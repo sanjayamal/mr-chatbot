@@ -2,17 +2,16 @@ import io
 import os
 import threading
 import uuid
-
-import boto3
-
 from constants.chatbot import channel_web_type
 from constants import common_constants
 from entities.model import Chatbot, ChatbotChannelMain
 from flask import jsonify, request
+
+from helper.pinecone.pinecone_api import delete_pinecone_index
 from helper.pinecone.pinecone_upload import run_upload_to_pinecone
 from helper.process_file import get_character_count_in_pdf
 from helper.s3.s3_helper_functions import get_object_url
-from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files
+from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files, get_S3_client
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature, initial_message, user_message_color, chat_bubble_color
 
@@ -252,7 +251,7 @@ class ChatbotService:
             profile_pic = request.files.get('profilePictureUrl')
             profile_picture_url = ''
 
-            s3 = boto3.client('s3')
+            s3_client = get_S3_client()
 
             if profile_pic is not None:
                 try:
@@ -266,7 +265,7 @@ class ChatbotService:
                     profile_pic.seek(0)
                     object_name = file_dir + "/" + profile_pic.filename
 
-                    response = s3.upload_fileobj(
+                    response = s3_client.upload_fileobj(
                         profile_pic, bucket_name, object_name, ExtraArgs={
                             'ACL': 'public-read'})
                     if response is None:
@@ -472,7 +471,7 @@ class ChatbotService:
             files_character_count = chatbot.number_of_characters - \
                 len(chatbot.text_source)
 
-            self.chatbot_repository.update_source_count(chatbot)
+            self.chatbot_repository.update_chatbot_commit(chatbot)
 
             return jsonify({
                 'filesCharacterCount': files_character_count
@@ -483,5 +482,88 @@ class ChatbotService:
                     'type': common_constants.internal_server_error_type,
                     'title': common_constants.internal_server_error_title,
                     'message': common_constants.delete_chatbot_data_source_error_msg
+                }
+            }), 500
+
+    def retrain_bot(self, app, user_id, chatbot_id, files, text_source):
+        try:
+            # count new data source character
+            new_source_character_count = len(text_source)
+            for file in files:
+                character_count = get_character_count_in_pdf(file)
+                new_source_character_count += character_count
+
+            # update files to s3 bucket
+            _, err = upload_files_to_store(files, user_id, chatbot_id)
+            if err is not None:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.internal_server_error_type,
+                        'title': common_constants.internal_server_error_title,
+                        'message': common_constants.retrain_chatbot_error_msg
+                    }
+                }), 500
+
+            # update data source count
+            chatbot = Chatbot.query.get(chatbot_id)
+            if chatbot:
+                chatbot.number_of_characters = chatbot.number_of_characters - \
+                    len(chatbot.text_source) + new_source_character_count
+                chatbot.text_source = text_source
+                self.chatbot_repository.update_chatbot_commit(chatbot)
+            else:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.internal_server_error_type,
+                        'title': common_constants.internal_server_error_title,
+                        'message': common_constants.retrain_chatbot_error_msg
+                    }
+                }), 500
+
+            # get existing files
+            bucket_name = os.getenv("S3_BUCKET_NAME")
+            file_dir = user_id + '/chatbot/' + str(chatbot_id)
+            existing_files = get_s3_file_names(bucket_name, file_dir)
+            file_object_names = []  # to send to pinecone
+            if len(existing_files) > 0:
+                file_object_names = [
+                    file_dir + "/" + file_name for file_name in existing_files]
+
+            namespace = user_id + '_' + str(chatbot_id)
+
+            try:
+                delete_pinecone_index(namespace)
+            except Exception as error:
+                return jsonify({
+                    'error': {
+                        'type': common_constants.internal_server_error_type,
+                        'title': common_constants.internal_server_error_title,
+                        'message': common_constants.retrain_chatbot_error_msg
+                    }
+                }), 500
+
+                # upload source to vector DB
+            thread = threading.Thread(
+                target=run_upload_to_pinecone,
+                args=(
+                    app,
+                    file_object_names,
+                    text_source,
+                    user_id +
+                    "_" +
+                    str(chatbot_id),
+                    str(chatbot_id)))
+            thread.start()
+
+            return jsonify({
+                'title': common_constants.chatbot_retrain_success_title,
+                'message': common_constants.chatbot_retrain_success_msg
+            }), 200
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.retrain_chatbot_error_msg
                 }
             }), 500

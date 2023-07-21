@@ -1,3 +1,5 @@
+import os
+
 import boto3
 from botocore.exceptions import ClientError, BotoCoreError
 
@@ -5,7 +7,8 @@ from botocore.exceptions import ClientError, BotoCoreError
 def create_presigned_url(bucket_name, object_name, expiration=7200):
     response = None
     try:
-        s3_client = boto3.client(
+        s3_client = boto3.Session(
+            profile_name=os.getenv('AWS_PROFILE_NAME')).client(
             's3',
             region_name='eu-north-1',
             config=boto3.session.Config(
@@ -26,7 +29,7 @@ def create_presigned_url(bucket_name, object_name, expiration=7200):
 def get_s3_file_names(bucket_name, directory):
 
     try:
-        s3_client = boto3.client('s3')
+        s3_client = get_S3_client()
         response = s3_client.list_objects_v2(
             Bucket=bucket_name, Prefix=directory)
 
@@ -46,7 +49,7 @@ def get_s3_file_names(bucket_name, directory):
 
 def delete_s3_files(bucket_name, file_names):
     try:
-        s3_client = boto3.client('s3')
+        s3_client = get_S3_client()
         objects = [{'Key': file_name} for file_name in file_names]
         response = s3_client.delete_objects(
             Bucket=bucket_name, Delete={
@@ -71,9 +74,15 @@ def delete_s3_files(bucket_name, file_names):
 
 def get_s3_object(bucket_name, object_key):
     try:
-        s3_client = boto3.client('s3')
+        s3_client = get_S3_client()
         response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
         return response
     except Exception as error:
         print("Error occurred: {}".format(error))
         return error
+
+
+def get_S3_client():
+    session = boto3.Session(profile_name=os.getenv('AWS_PROFILE_NAME'))
+    s3_client = session.client('s3')
+    return s3_client

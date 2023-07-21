@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from flask import jsonify
-
 from constants.common_constants import not_found_error_type, get_chatbot_not_found_error_title, \
     get_chatbot_not_found_error_msg, internal_server_error_type, internal_server_error_title, \
     add_chat_history_error_msg
