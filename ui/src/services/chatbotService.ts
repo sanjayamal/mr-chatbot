@@ -42,11 +42,15 @@ export const updateChatbotSettingAPI = async (
   formData: any,
   chatbotId: string
 ) => {
-  const response = await API.put(`/bot/${chatbotId}/setting-details`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await API.put(
+    `/bot/${chatbotId}/setting-details`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
   return response.data;
 };
 
@@ -87,5 +91,16 @@ export const getBotAnswerAPI = async (data: any, chatbotId: string) => {
       "Content-Type": "application/json",
     },
   });
+  return response.data;
+};
+
+export const removeDataSourceAPI = async (
+  requestBody: any,
+  chatbotId: string
+) => {
+  const response = await API.post(
+    `/bot/${chatbotId}/remove-data-source`,
+    requestBody
+  );
   return response.data;
 };

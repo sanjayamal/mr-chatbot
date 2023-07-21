@@ -27,6 +27,7 @@ import {
   Segmented as CSegmented,
   Badge as CBadge,
   notification as CNotification,
+  Popconfirm as CPopconfirm 
 } from "antd";
 
 const { TextArea: CTextArea } = CInput;
@@ -63,6 +64,7 @@ export {
   CSegmented,
   CBadge,
   CNotification,
+  CPopconfirm
 };
 
 export type { CMenuProps };

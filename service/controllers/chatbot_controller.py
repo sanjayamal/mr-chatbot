@@ -43,9 +43,7 @@ def get_bot(bot_id):
 @cross_origin(supports_credentials=True)
 def process_source():
     files = request.files.getlist('files')
-    current_app.logger.info('processing files')
     response = chatbot_service.process_source(files)
-
     return response
 
 
@@ -81,7 +79,19 @@ def update_bot_setting_detail(bot_id):
 
 
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/data-source', methods=['get'])
+@cross_origin(supports_credentials=True)
 def get_bot_data_source(bot_id):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
     response = chatbot_service.get_chatbot_data_source(bot_id, user_id)
+    return response
+
+
+@chatbot_bp.route('/api/v1/bot/<string:bot_id>/remove-data-source', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def remove_source(bot_id):
+    data = request.get_json()
+    files_to_remove = data.get("filesToRemove")
+
+    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    response = chatbot_service.remove_source(bot_id, user_id, files_to_remove)
     return response

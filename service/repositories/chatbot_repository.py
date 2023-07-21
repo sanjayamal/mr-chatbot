@@ -42,3 +42,9 @@ class ChatbotRepository:
             db.session.commit()
         except Exception as error:
             print(error)
+
+    def update_source_count(self, chatbot):
+        try:
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()

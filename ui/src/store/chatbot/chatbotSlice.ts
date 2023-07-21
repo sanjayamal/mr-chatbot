@@ -19,9 +19,11 @@ import {
   retrainChatbotAPI,
   getChatbotDataSourceAPI,
   getBotAnswerAPI,
+  removeDataSourceAPI,
 } from "../../services";
 import { successNotification, errorNotification } from "../../components";
 import { NotificationType, TypeOfDataSource } from "../../constants";
+import _ from "lodash";
 
 const chatbot: IChatbot = {
   id: "",
@@ -94,6 +96,17 @@ const getFilesCharacterCount = (
   }
 };
 
+const removeFileName = (
+  files: Array<string>,
+  fileName: string
+): Array<string | undefined> => {
+  try {
+    const result = _.without(files, fileName);
+    return result;
+  } catch (error) {
+    return [];
+  }
+};
 export const getChatbots = createAsyncThunk(
   "chatbot/getChatbots",
   async (_: void, { dispatch }) => {
@@ -265,6 +278,39 @@ export const getChatbotDataSource = createAsyncThunk(
   }
 );
 
+export const removeDataSource = createAsyncThunk(
+  "chatbot/removeDataSource",
+  async (
+    { requestBody, chatbotId, existingFiles }: any,
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const response: any = await removeDataSourceAPI(requestBody, chatbotId);
+      const { filesCharacterCount } = response;
+      const { filesToRemove } = requestBody;
+      const data = {
+        files: removeFileName(existingFiles, filesToRemove[0]),
+        filesCharacterCount,
+      };
+      dispatch(
+        setBotDataSource({
+          source: data,
+          typeOfData: TypeOfDataSource.REMOVING_EXISTING_FILE,
+        })
+      );
+      return;
+    } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
+
+      return rejectWithValue(e);
+    }
+  }
+);
 export const retrainChatbot = createAsyncThunk(
   "chatbot/retrainChatbot",
   async ({ formData, chatbotId }: any, { rejectWithValue }) => {
@@ -316,6 +362,8 @@ const chatbotSlice = createSlice({
         state.botDataSource = {
           ...state.botDataSource,
           existingFiles: action.payload.source.files,
+          existingFilesCharacterCount:
+            action.payload.source.filesCharacterCount,
         };
       }
     },

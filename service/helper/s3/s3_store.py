@@ -35,3 +35,35 @@ def get_s3_file_names(bucket_name, directory):
     except (BotoCoreError, ClientError) as e:
         print("Error occurred: {}".format(e))
         return []
+
+
+def delete_s3_files(bucket_name, file_names):
+    try:
+        s3_client = boto3.client('s3')
+        objects = [{'Key': file_name} for file_name in file_names]
+        response = s3_client.delete_objects(Bucket=bucket_name, Delete={'Objects': objects})
+
+        deleted_files = [obj['Key'] for obj in response.get('Deleted', [])]
+        for file in deleted_files:
+            print(file)
+
+        errors = response.get('Errors', [])
+        if errors:
+            print("Failed to delete files:")
+            for error in errors:
+                print(f"File: {error['Key']}, Code: {error['Code']}, Message: {error['Message']}")
+
+    except (BotoCoreError, ClientError) as error:
+        # Handle specific exceptions as needed
+        print("Error occurred: {}".format(error))
+        return error
+
+
+def get_s3_object(bucket_name, object_key):
+    try:
+        s3_client = boto3.client('s3')
+        response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
+        return response
+    except Exception as error:
+        print("Error occurred: {}".format(error))
+        return error

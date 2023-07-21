@@ -1,3 +1,4 @@
+import io
 import os
 import threading
 import uuid
@@ -11,7 +12,7 @@ from flask import jsonify, request
 from helper.pinecone.pinecone_upload import run_upload_to_pinecone
 from helper.process_file import get_character_count_in_pdf
 from helper.s3.s3_helper_functions import get_object_url
-from helper.s3.s3_store import get_s3_file_names
+from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature,initial_message,user_message_color,chat_bubble_color
 
@@ -376,5 +377,72 @@ class ChatbotService:
                     'type': common_constants.internal_server_error_type,
                     'title': common_constants.internal_server_error_title,
                     'message': common_constants.update_chatbot_detail_error_msg
+                }
+            }), 500
+
+    def remove_source(self, chatbot_id, user_id, files_to_remove):
+        try:
+            pdf_character_count = None
+            if len(files_to_remove) > 0:
+                file_dir = user_id + '/chatbot/' + str(chatbot_id) + '/'
+                s3_file_keys = [file_dir + file_name for file_name in files_to_remove]
+
+                # load the file
+                bucket_name = os.getenv("S3_BUCKET_NAME")
+
+                try:
+                    file = get_s3_object(bucket_name, s3_file_keys[0])
+                except Exception as error:
+                    return jsonify({
+                        'error': {
+                            'type': common_constants.internal_server_error_type,
+                            'title': common_constants.internal_server_error_title,
+                            'message': common_constants.update_chatbot_detail_error_msg
+                        }
+                    }), 500
+
+                try:
+                    pdf_content = file['Body'].read()
+                    pdf_file = io.BytesIO(pdf_content)
+                    pdf_character_count = get_character_count_in_pdf(pdf_file)
+
+                except Exception as error:
+                    return jsonify({
+                        'error': {
+                            'type': common_constants.internal_server_error_type,
+                            'title': common_constants.internal_server_error_title,
+                            'message': common_constants.update_chatbot_detail_error_msg
+                        }
+                    }), 500
+
+                try:
+                    delete_s3_files(bucket_name, s3_file_keys)
+                except Exception as error:
+                    return jsonify({
+                        'error': {
+                            'type': common_constants.internal_server_error_type,
+                            'title': common_constants.internal_server_error_title,
+                            'message': common_constants.delete_chatbot_data_source_error_msg
+                        }
+                    }), 500
+
+            chatbot = self.chatbot_repository.get_chatbot_by_chatbot_id(chatbot_id)
+
+            if pdf_character_count is not None:
+                chatbot.number_of_characters = chatbot.number_of_characters - pdf_character_count
+
+            files_character_count = chatbot.number_of_characters - len(chatbot.text_source)
+
+            self.chatbot_repository.update_source_count(chatbot)
+
+            return jsonify({
+                'filesCharacterCount': files_character_count
+            }), 200
+        except Exception as error:
+            return jsonify({
+                'error': {
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.delete_chatbot_data_source_error_msg
                 }
             }), 500
