@@ -14,8 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { CFaFacebook, CFcGoogle } from "../../components/common/icons";
 
 interface IFormInput {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -31,6 +30,7 @@ const Registration = () => {
     watch,
   } = useForm<IFormInput>({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -47,7 +47,7 @@ const Registration = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {};
   return (
-    <CRow style={{ marginTop: "2rem" }}>
+    <CRow style={{ marginTop: "1rem" }}>
       <CCol
         xs={{ span: 20, offset: 2 }}
         sm={{ span: 16, offset: 4 }}
@@ -56,13 +56,53 @@ const Registration = () => {
       >
         <CCard
           title={
-            <div onClick={() => onClick("/")} style={{ cursor:"context-menu"}}>
+            <div
+              onClick={() => onClick("/")}
+              style={{ cursor: "context-menu" }}
+            >
               <CAvatar style={{ marginRight: "15px" }} /> Mr.Chatbot
             </div>
           }
           bordered={false}
         >
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
+            <CRow>
+              <CCol span={24}>
+                <CButton
+                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
+                  icon={<CFcGoogle />}
+                >
+                  Sign in with Google
+                </CButton>
+              </CCol>
+              <CCol span={24}>
+                <CButton
+                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
+                  icon={<CFaFacebook />}
+                  className="margin-top-1rem "
+                >
+                  Sign in with Facebook
+                </CButton>
+              </CCol>
+            </CRow>
+            <CDivider plain>Or</CDivider>
+            <Controller
+              name="name"
+              control={control}
+              rules={{
+                required: "Please Enter a Valid Email",
+              }}
+              render={({ field }) => (
+                <CForm.Item
+                  label="Name"
+                  validateStatus={errors.name ? "error" : ""}
+                  help={errors.name && errors.name.message}
+                  required
+                >
+                  <CInput {...field} />
+                </CForm.Item>
+              )}
+            />
             <Controller
               name="email"
               control={control}
@@ -135,26 +175,6 @@ const Registration = () => {
                 </CButton>
                 <CButton type="link" onClick={() => onClick("/login")}>
                   Already have an account? Log in
-                </CButton>
-              </CCol>
-            </CRow>
-            <CDivider plain>Or</CDivider>
-            <CRow>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  icon={<CFcGoogle />}
-                >
-                  Sign in with Google
-                </CButton>
-              </CCol>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  icon={<CFaFacebook />}
-                  className="margin-top-1rem "
-                >
-                  Sign in with Facebook
                 </CButton>
               </CCol>
             </CRow>
