@@ -63,6 +63,26 @@ const Login = () => {
           bordered={false}
         >
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
+            <CRow>
+              <CCol span={24}>
+                <CButton
+                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
+                  icon={<CFcGoogle />}
+                >
+                  Sign in with Google
+                </CButton>
+              </CCol>
+              <CCol span={24}>
+                <CButton
+                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
+                  className="margin-top-1rem "
+                  icon={<CFaFacebook />}
+                >
+                  Sign in with Facebook
+                </CButton>
+              </CCol>
+            </CRow>
+            <CDivider plain>Or</CDivider>
             <Controller
               name="email"
               control={control}
@@ -101,7 +121,6 @@ const Login = () => {
                 </CForm.Item>
               )}
             />
-
             <CRow>
               <CCol span={24}>
                 <CButton
@@ -117,26 +136,6 @@ const Login = () => {
               <CCol span={24}>
                 <CButton type="link" onClick={() => onClick("/sign-up")}>
                   Create an account
-                </CButton>
-              </CCol>
-            </CRow>
-            <CDivider plain>Or</CDivider>
-            <CRow>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  icon={<CFcGoogle />}
-                >
-                  Sign in with Google
-                </CButton>
-              </CCol>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  className="margin-top-1rem "
-                  icon={<CFaFacebook />}
-                >
-                  Sign in with Facebook
                 </CButton>
               </CCol>
             </CRow>

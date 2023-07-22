@@ -45,48 +45,48 @@ const App: React.FC = () => {
     }
   };
   return (
-    <CLayout
-      style={{ background: "#ffff", minHeight: "100vh", height: "auto" }}
-    >
-      <Affix offsetTop={0}>
-        <CSider
-          breakpoint="lg"
-          collapsedWidth="0"
-          style={{
-            background: "#ffff",
-          }}
-        >
-          <div
+    <CLayout style={{ background: "#ffff" }}>
+      <div style={{ minHeight: "100vh", height: "auto" }}>
+        <Affix offsetTop={0}>
+          <CSider
+            breakpoint="lg"
+            collapsedWidth="0"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              minHeight: "100vh",
-              height: "auto",
+              background: "#ffff",
             }}
           >
-            <div>
-              <CImage
-                width={50}
-                src={logo}
-                preview={false}
-                style={{ marginLeft: "10px" }}
-                onClick={() => navigate("/")}
-              />
-              <CMenu
-                mode="inline"
-                defaultSelectedKeys={["chatbots"]}
-                items={items}
-                onClick={onClick}
-              />
-            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                minHeight: "100vh",
+                height: "auto",
+              }}
+            >
+              <div>
+                <CImage
+                  width={50}
+                  src={logo}
+                  preview={false}
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => navigate("/")}
+                />
+                <CMenu
+                  mode="inline"
+                  defaultSelectedKeys={["chatbots"]}
+                  items={items}
+                  onClick={onClick}
+                />
+              </div>
 
-            <div className="margin-bottom-1rem">
-              <CurrentUser isNameHide={false} />
+              <div className="margin-bottom-1rem">
+                <CurrentUser isNameHide={false} />
+              </div>
             </div>
-          </div>
-        </CSider>
-      </Affix>
+          </CSider>
+        </Affix>
+      </div>
       <CLayout style={{ background: "#ffff" }}>
         <CContent
           style={{
