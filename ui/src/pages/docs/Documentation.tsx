@@ -1,6 +1,7 @@
-import React from "react";
 import { CCol, CRow, CTypography } from "../../components";
 import "./Documentation.scss";
+import { IDocItem } from "./components/IDocItem";
+import { DocItem } from "./components";
 
 const docs_1: Array<IDocItem> = [
   {
@@ -65,25 +66,7 @@ const docs_2: Array<IDocItem> = [
     ],
   },
 ];
-interface IDocItem {
-  title: string;
-  instructions: Array<string | React.ReactNode>;
-}
 
-const DocItem: React.FC<IDocItem> = ({ title, instructions }) => {
-  return (
-    <>
-      <CCol xs={{ span: 20, offset: 2 }} sm={{ span: 16, offset: 4 }}>
-        <CTypography.Title level={4}>{title}</CTypography.Title>
-        {instructions.map((instruction: string | React.ReactNode, index) => (
-          <CTypography.Paragraph key={index}>
-            {instruction}
-          </CTypography.Paragraph>
-        ))}
-      </CCol>
-    </>
-  );
-};
 
 const Documentation = () => {
   return (
@@ -103,7 +86,7 @@ const Documentation = () => {
         <CTypography.Title level={4}>Chatbot Settings</CTypography.Title>
         <CTypography.Paragraph >
           In the settings section, you can configure various aspects of your
-          chatbot
+          chatbot.
         </CTypography.Paragraph>
         <CRow className="doc-setting">
           <CCol offset={1}>
