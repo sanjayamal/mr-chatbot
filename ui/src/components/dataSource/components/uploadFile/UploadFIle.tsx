@@ -12,7 +12,6 @@ import { TypeOfDataSource } from "../../../../constants";
 const { Dragger } = CUpload;
 
 const UploadFile = () => {
-
   const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState<Array<File>>([]);
 
@@ -29,7 +28,9 @@ const UploadFile = () => {
   };
 
   const updateFileDetail = (files: Array<any>) => {
-    dispatch(setBotDataSource({ source: files, typeOfData: TypeOfDataSource.FILE }));
+    dispatch(
+      setBotDataSource({ source: files, typeOfData: TypeOfDataSource.FILE })
+    );
     dispatch(setBotDataSourceProcessingStatus(true));
 
     const formData = new FormData();
@@ -77,8 +78,10 @@ const UploadFile = () => {
       </p>
       <p className="ant-upload-text">Drag and drop your PDF here</p>
       <p className="ant-upload-hint">
-        Attach a PDF file to see how many characters are in it. Make sure the
-        file contains text that can be copied
+        Attach a PDF file to see how many characters are in it.{" "}
+        <span style={{ fontWeight: "bold" }}>
+          Make sure the file contains text that can be copied
+        </span>
       </p>
     </Dragger>
   );
