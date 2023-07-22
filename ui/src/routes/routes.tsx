@@ -32,6 +32,7 @@ const ChangePassword = React.lazy(
 );
 
 const Pricing = React.lazy(() => import("../pages/pricing/Pricing"));
+const Documentation = React.lazy(() => import("../pages/docs/Documentation"));
 
 export const routers = createBrowserRouter([
   {
@@ -120,6 +121,7 @@ export const routers = createBrowserRouter([
     path: "/pricing",
     element: <Pricing />,
   },
+
   {
     path: "/pricing",
     element: <MainLayout />,
@@ -128,6 +130,17 @@ export const routers = createBrowserRouter([
       {
         path: "",
         element: <Pricing />,
+      },
+    ],
+  },
+  {
+    path: "/docs",
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <Documentation />,
       },
     ],
   },
