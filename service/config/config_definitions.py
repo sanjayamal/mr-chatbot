@@ -1,7 +1,7 @@
 from environs import Env
 
 
-class Config:
+class __Config:
     env = Env()
 
     def __init__(self) -> None:
@@ -20,5 +20,9 @@ class Config:
             postgresql_port=self.postgresql_port,
             postgresql_db=self.postgresql_db)
 
+        self.aws_cognito_region = self.env.str('AWS_COGNITO_REGION')
+        self.aws_cognito_pool_id = self.env.str('AWS_COGNITO_POOL_ID')
+        self.aws_cognito_client_id = self.env.str('AWS_COGNITO_CLIENT_ID')
 
-config = Config()
+
+config = __Config()

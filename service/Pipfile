@@ -113,6 +113,7 @@ xlrd = "~=2.0.1"
 xlsxwriter = "~=3.1.2"
 yarl = "~=1.9.2"
 environs = "==9.5.*"
+python-jose = {version = "==3.3.*", extras = ["cryptography"]}
 
 [dev-packages]
 autopep8 = "*"
