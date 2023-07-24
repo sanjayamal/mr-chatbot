@@ -1,4 +1,5 @@
 from flask import request, Blueprint, current_app
+from middleware.jwt_verify_middleware import jwt_verify_middleware
 from repositories.channel_repository import ChannelRepository
 from services.chatbot_service import ChatbotService
 from repositories.chatbot_repository import ChatbotRepository
@@ -32,7 +33,8 @@ def create_bot():
 
 @chatbot_bp.route('/api/v1/bots', methods=['get'])
 @cross_origin(supports_credentials=True)
-def get_bots():
+# @jwt_verify_middleware
+def get_bots(current_user):
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
     response = chatbot_service.get_chatbots(user_id)
     return response
