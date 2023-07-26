@@ -5,8 +5,8 @@ name = "pypi"
 
 [scripts]
 start = "flask --debug run"
-infra_up = "docker compose -f mr_chatbot_infra/docker-compose.yaml up -d"
-infra_down = "docker compose -f mr_chatbot_infra/docker-compose.yaml down"
+infra_up = "docker compose -f infra/docker-compose.yaml up -d"
+infra_down = "docker compose -f infra/docker-compose.yaml down"
 db_upgrade = "flask db upgrade"
 
 [packages]
