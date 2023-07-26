@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ${AWS::StackName}
+
+  Sample SAM Template for ${AWS::StackName}
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+    Default: dev
+    Description: The environment you want to deploy
+  CognitoWebClientCallbackUrl:
+    Type: String
+    Description: Callback url for web client
+  CognitoWebClientSignOutUrl:
+    Type: String
+    Description: SignOut url for web client
+
+Resources:
+  # Layers
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/common
+      Description: lambda layer for common libs
+      CompatibleRuntimes:
+        - python3.11
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: makefile
+
+  # Functions
+  CognitoUserPoolPostConfirmation:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/
+      Handler: cognito_post_confirm.handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref CommonLayer
+      Events:
+        CognitoUserPoolPostConfirmation:
+          Type: Cognito
+          Properties:
+            UserPool:
+              Ref: CognitoUserPool
+            Trigger: PostConfirmation
+
+  # Other resources
+  # Cognito
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref "${AWS::StackName}-${Environment}"
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+          Mutable: true
+        - AttributeDataType: String
+          Name: name
+          Required: true
+          Mutable: true
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: !Ref web
+      GenerateSecret: false
+      AuthSessionValidity: 3
+      TokenValidityUnits:
+        RefreshToken: days
+        AccessToken: minutes
+        IdToken: minutes
+      RefreshTokenValidity: 30
+      AccessTokenValidity: 60
+      IdTokenValidity: 60
+      EnableTokenRevocation: true
+      PreventUserExistenceErrors: ENABLED
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - openid
+        - profile
+        - email
+      CallbackURLs:
+        - !Ref CognitoWebClientCallbackUrl
+      LogoutURLs:
+        - !Ref CognitoWebClientSignOutUrl
+      WriteAttributes:
+        - email
+        - email_verified
+        - name
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  CognitoUserPoolPostConfirmation:
+    Description: Hello World Lambda Function ARN
+    Value: !GetAtt CognitoUserPoolPostConfirmation.Arn
+  CognitoUserPoolPostConfirmationIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !GetAtt CognitoUserPoolPostConfirmationRole.Arn

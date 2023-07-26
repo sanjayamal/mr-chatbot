@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "triggerSource": "PostConfirmation",
+  "region": "us-east-1",
+  "userPoolId": "us-east-1_pt5g2jdgu",
+  "userName": "user@python.com",
+  "callerContext": {
+    "awsSdkVersion": "string",
+    "clientId": "string"
+  },
+  "request": {
+    "userAttributes": {
+      "email": "user@python.com",
+      "email_verified": true,
+      "name": "User Python"
+    },
+    "clientMetadata": {
+      "string": "string"
+    }
+  },
+  "response": {}
+}

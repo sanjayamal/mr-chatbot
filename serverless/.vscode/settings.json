@@ -1,0 +1,10 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/aws/serverless-application-model/main/samtranslator/schema/schema.json": "file:///d%3A/achintha-developments/rajja-projects/mr-chatbot/serverless/template.yaml"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.formatting.provider": "none",
+  "editor.formatOnSave": true
+}
