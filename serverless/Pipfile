@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-local_invoke = "sam local invoke --event "
+local_invoke = "sam local invoke --event events/cognito_post_confirm.json"
 
 [packages]
 
