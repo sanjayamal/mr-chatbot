@@ -20,6 +20,8 @@ import {
   getChatbotDataSourceAPI,
   getBotAnswerAPI,
   removeDataSourceAPI,
+  addReviewAPI,
+  getReviewsAPI,
 } from "../../services";
 import { successNotification, errorNotification } from "../../components";
 import { NotificationType, TypeOfDataSource } from "../../constants";
@@ -332,6 +334,38 @@ export const retrainChatbot = createAsyncThunk(
       });
       return rejectWithValue(e);
     }
+  }
+);
+
+export const addReview = createAsyncThunk(
+  "chatbot/addReview",
+  async (request: any, { rejectWithValue }) => {
+    try {
+      const response: any = await addReviewAPI(request);
+      const { title, message } = response;
+      successNotification({
+        type: NotificationType.SUCCESS,
+        title: title as string,
+        description: message as string,
+      });
+      return response;
+    } catch (e: any) {
+      const { title, message } = e.response.data?.error;
+      errorNotification({
+        type: NotificationType.ERROR,
+        title: title as string,
+        description: message as string,
+      });
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getReviews = createAsyncThunk(
+  "chatbot/getReviews",
+  async (_: void, { dispatch }) => {
+    const response: any = await getReviewsAPI();
+    return response;
   }
 );
 const chatbotSlice = createSlice({
