@@ -17,11 +17,7 @@ import { getReviews } from "../../../../store/chatbot";
 const Reviews = () => {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [reviews, setReviews] = useState<Array<IReview>>([
-    { name: "rajitha", content: "ahuidhiashudhiahsud", rate: 5 },
-    { name: "sanjayamal", content: "ahuidadadahiashudhiahsud", rate: 2.5 },
-    { name: "sanjayamal", content: "ahuidadadahiashudhiahsud", rate: 2.5 },
-  ]);
+  const [reviews, setReviews] = useState<Array<IReview>>([]);
 
   useEffect(() => {
     dispatch(getReviews())
@@ -31,7 +27,7 @@ const Reviews = () => {
       .catch(() => {
         setReviews([]);
       });
-  }, []);
+  }, [isModalOpen]);
 
   const showModal = () => {
     // TODO  check user has logged if not redirect to login

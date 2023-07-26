@@ -18,7 +18,6 @@ def basic_authentication():
 @cross_origin(supports_credentials=True)
 @user_bp.route('/api/v1/review-create', methods=['POST'])
 def create_review():
-    print('call controller')
     # get user detail
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
 
@@ -26,9 +25,8 @@ def create_review():
 
     name = data.get("name")
     content = data.get("content")
-    rate = 2.5
+    rate = data.get("rate")
 
-    print(rate)
     if not (name and name.strip()):
         name = 'John cena'
 

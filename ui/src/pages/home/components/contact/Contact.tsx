@@ -1,9 +1,6 @@
 import React, { useRef, useState } from "react";
-
 import { useForm, Controller } from "react-hook-form";
-// import emailjs from "@emailjs/browser";
-
-import "./Contact.scss";
+import emailjs from "@emailjs/browser";
 import { socialMedia } from "./SocialMedia";
 import {
   CButton,
@@ -15,52 +12,76 @@ import {
   CRow,
   CSpace,
   CTypography,
+  errorNotification,
+  successNotification,
 } from "../../../../components";
-import Lottie from "lottie-react";
 import { CMailOutlined } from "../../../../components/common/icons";
+import { NotificationType } from "../../../../constants";
 
 interface IFormInput {
   name: string;
-  subject: string;
   email: string;
   message: string;
 }
 
 const Contact: React.FC = () => {
   const ref = useRef(null);
-
-  const onSubmit = (data: any) => {
-    // ref.current &&
-    // emailjs
-    //   .sendForm(
-    //     "service_kfv8r4f",
-    //     "template_jpia5wk",
-    //     ref.current,
-    //     "1ztIM4zFvVTqgBwW0"
-    //   )
-    //   .then(
-    //     (result: any) => {
-    //       reset();
-    //     },
-    //     (error: any) => {}
-    //   );
-  };
-
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
-    watch,
+    reset,
   } = useForm<IFormInput>({
     defaultValues: {
       email: "",
       name: "",
       message: "",
-      subject: "",
     },
   });
 
-  const handleClose = () => {};
+  const onSubmit = ({ email, name, message }: IFormInput) => {
+    try {
+      setIsSubmitting(true);
+      emailjs
+        .send(
+          "service_kfv8r4f",
+          "template_foyik25",
+          {
+            to_reply: email,
+            message: message,
+            from_name: name,
+          },
+          "1ztIM4zFvVTqgBwW0"
+        )
+        .then(
+          (result: any) => {
+            successNotification({
+              type: NotificationType.SUCCESS,
+              title: "Email Sent Successfully",
+              description: "Email has been successfully sent",
+            });
+            reset();
+            setIsSubmitting(false);
+          },
+          (error: any) => {
+            errorNotification({
+              type: NotificationType.ERROR,
+              title: "Email Sending Failed",
+              description:
+                "Encountered an issue while trying to send the email.",
+            });
+            setIsSubmitting(false);
+          }
+        );
+    } catch (error) {
+      errorNotification({
+        type: NotificationType.ERROR,
+        title: "Email Sending Failed",
+        description: "Encountered an issue while trying to send the email.",
+      });
+    }
+  };
 
   const FormCard = (
     <CCard bordered={false}>
@@ -109,24 +130,6 @@ const Contact: React.FC = () => {
             />
           </CCol>
         </CRow>
-
-        <Controller
-          name="subject"
-          control={control}
-          rules={{
-            required: "Please Enter a Subject",
-          }}
-          render={({ field }) => (
-            <CForm.Item
-              label="subject"
-              validateStatus={errors.subject ? "error" : ""}
-              help={errors.subject && errors.subject.message}
-              required
-            >
-              <CInput {...field} />
-            </CForm.Item>
-          )}
-        />
         <Controller
           name="message"
           control={control}
@@ -151,6 +154,8 @@ const Contact: React.FC = () => {
               htmlType="submit"
               className="margin-top-1rem"
               style={{ width: "100%" }}
+              loading={isSubmitting}
+              disabled={isSubmitting}
             >
               Send
             </CButton>

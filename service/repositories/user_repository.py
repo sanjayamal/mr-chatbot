@@ -9,10 +9,7 @@ class UserRepository:
         self.db = db
 
     def add_review(self, review):
-        print('call repo')
         if review is not None:
-            print('call repo-inside')
-            print(review)
             db.session.add(review)
         db.session.commit()
 

@@ -23,7 +23,6 @@ class UserService:
                 user_id=user_id
             )
             try:
-                print('call service')
                 self.user_repository.add_review(review_record)
                 return jsonify({
                     'title': common_constants.review_creation_success_title,
@@ -53,11 +52,9 @@ class UserService:
             return jsonify([review.json() for review in reviews]), 200
         except Exception as e:
             return jsonify({
-
                 'error': {
                     'type': common_constants.internal_server_error_type,
                     'title': common_constants.internal_server_error_title,
-                    'message': common_constants.add_review_error_msg
+                    'message': common_constants.get_reviews_error_msg
                 }
-
             }), 500

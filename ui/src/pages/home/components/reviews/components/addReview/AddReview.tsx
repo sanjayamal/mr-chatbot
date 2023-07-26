@@ -49,7 +49,6 @@ const AddReview: React.FC<IAddReview> = ({ isOpen, handleModal }) => {
     dispatch(addReview(request))
       .then((response) => {
         setIsSubmitting(false);
-        console.log("@@@  then");
         handleCancel();
       })
       .catch(() => {

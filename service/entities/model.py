@@ -237,15 +237,15 @@ class Review(db.Model):
     user = relationship("User", back_populates="reviews")
 
     def __init__(self, id, name, content, rate, is_approved,user_id):
-        self.id = id,
-        self.name = name,
-        self.content = content,
+        self.id = id
+        self.name = name
+        self.content = content
         self.rate = rate
-        self.is_approved = is_approved,
-        self.user_id = user_id,
+        self.is_approved = is_approved
+        self.user_id = user_id
 
     def __repr__(self):
-        return f"<Review {self.id}>"
+        return f"<Review {self.name}>"
 
     def json(self):
         return {
