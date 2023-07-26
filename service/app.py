@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_migrate import Migrate, upgrade
 
 from controllers.chatting_controller import chatting_bp
+from controllers.user_controller import user_bp
 from entities.model import db
 from controllers.chatbot_controller import chatbot_bp
 from flask_cors import CORS
@@ -19,6 +20,7 @@ migrate = Migrate(app, db)
 
 app.register_blueprint(chatbot_bp)
 app.register_blueprint(chatting_bp)
+app.register_blueprint(user_bp)
 
 if __name__ == '__main__':
     with app.app_context():

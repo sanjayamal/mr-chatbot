@@ -104,3 +104,13 @@ export const removeDataSourceAPI = async (
   );
   return response.data;
 };
+
+export const addReviewAPI = async (formData: any) => {
+  const response = await API.post(`/review-create`, formData);
+  return response.data;
+};
+
+export const getReviewsAPI = async () => {
+  const response = await API.get("/reviews");
+  return response.data;
+};

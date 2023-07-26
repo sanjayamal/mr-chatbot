@@ -16,11 +16,6 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.String(), primary_key=True)
-    first_name = db.Column(db.String())
-    last_name = db.Column(db.String())
-    email = db.Column(db.String(), unique=True, nullable=False)
-    profile_picture_url = db.Column(db.String())
-
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
@@ -30,23 +25,17 @@ class User(db.Model):
         lazy=True,
         cascade='all, delete-orphan')
 
-    def __init__(self, id, first_name, last_name, email, profile_picture_url):
+    reviews = relationship("Review", back_populates="user")
+
+    def __init__(self, id):
         self.id = id,
-        self.first_name = first_name,
-        self.last_name = last_name,
-        self.email = email,
-        self.profile_picture_url = profile_picture_url
 
     def __repr__(self):
-        return f"<User {self.first_name}>"
+        return f"<User {self.id}>"
 
     def json(self):
         return {
             'id': self.id,
-            'firstName': self.first_name,
-            'lastName': self.last_name,
-            'email': self.email,
-            'profilePictureUrl': self.profile_picture_url,
             'createdDate': str(self.created_at),
             'updatedData': str(self.updated_at)
         }
@@ -228,4 +217,43 @@ class ChatbotChannelHistory(db.Model):
         return {
             'id': self.id,
             'chatbotChannelId': self.chatbot_channel_id,
+        }
+
+
+class Review(db.Model):
+    __tablename__ = 'reviews'
+
+    id = db.Column(db.String(), primary_key=True)
+    name = db.Column(db.String())
+    content = db.Column(db.String())
+    rate = db.Column(db.Float())
+    is_approved = db.Column(db.Boolean())
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
+
+    user_id = db.Column(db.String(), db.ForeignKey('users.id'), nullable=False)
+
+    # Define the back reference to the User table
+    user = relationship("User", back_populates="reviews")
+
+    def __init__(self, id, name, content, rate, is_approved,user_id):
+        self.id = id
+        self.name = name
+        self.content = content
+        self.rate = rate
+        self.is_approved = is_approved
+        self.user_id = user_id
+
+    def __repr__(self):
+        return f"<Review {self.name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'content': self.content,
+            'rate': self.rate,
+            'isApproved': self.is_approved,
+            'createdDate': str(self.created_at),
+            'updatedData': str(self.updated_at)
         }
