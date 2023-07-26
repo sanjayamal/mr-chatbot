@@ -1,8 +1,15 @@
-import requests
+import os
+import psycopg
 
 
 def handler(event, context):
-    r = requests.get('https://www.google.com')
-    print(r.status_code)
+    with psycopg.connect(os.environ['POSTGRESQL_CONN_STR']) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM users")
+
+            for record in cur:
+                print(record)
+
+            conn.commit()
 
     return event

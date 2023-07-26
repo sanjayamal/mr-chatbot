@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-local_invoke = "sam local invoke --event events/cognito_post_confirm.json"
+build = "sam build --use-container"
+cognito_post_confirm = "sam local invoke --event events/cognito_post_confirm.json CognitoUserPoolPostConfirmation"
 
 [packages]
+psycopg = {version = "==3.1.*", extras = ["binary", "pool"]}
 
 [dev-packages]
 aws-sam-cli = "==1.93.*"

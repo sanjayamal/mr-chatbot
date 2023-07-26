@@ -10,21 +10,6 @@ Globals:
   Function:
     Timeout: 3
 
-Parameters:
-  Environment:
-    Type: String
-    AllowedValues:
-      - dev
-      - prod
-    Default: dev
-    Description: The environment you want to deploy
-  CognitoWebClientCallbackUrl:
-    Type: String
-    Description: Callback url for web client
-  CognitoWebClientSignOutUrl:
-    Type: String
-    Description: SignOut url for web client
-
 Resources:
   # Layers
   CommonLayer:
@@ -56,6 +41,9 @@ Resources:
             UserPool:
               Ref: CognitoUserPool
             Trigger: PostConfirmation
+      Environment:
+        Variables:
+          POSTGRESQL_CONN_STR: !Ref PostgresConnectionString
 
   # Other resources
   # Cognito
@@ -112,6 +100,27 @@ Resources:
         - email
         - email_verified
         - name
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+    Default: dev
+    Description: The environment you want to deploy
+  # Cognito
+  CognitoWebClientCallbackUrl:
+    Type: String
+    Description: Callback url for web client
+  CognitoWebClientSignOutUrl:
+    Type: String
+    Description: SignOut url for web client
+  # Postgres
+  PostgresConnectionString:
+    Type: String
+    Description: Connection string is required
+    Default: postgresql://mr_chatbot_admin:pg0918#@host.docker.internal:5432/mrChatbotDB
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
