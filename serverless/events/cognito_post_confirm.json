@@ -1,21 +1,21 @@
 {
-  "version": "1.0.0",
-  "triggerSource": "PostConfirmation",
+  "version": "1",
   "region": "us-east-1",
-  "userPoolId": "us-east-1_pt5g2jdgu",
-  "userName": "user@python.com",
+  "userPoolId": "us-east-1_VV284rFVH",
+  "userName": "34287428-7081-7019-60ad-d661c34ee1a1",
   "callerContext": {
-    "awsSdkVersion": "string",
-    "clientId": "string"
+    "awsSdkVersion": "aws-sdk-unknown-unknown",
+    "clientId": "723iufcscomugth1a4pc54gs0c"
   },
+  "triggerSource": "PostConfirmation_ConfirmSignUp",
   "request": {
     "userAttributes": {
-      "email": "user@python.com",
-      "email_verified": true,
-      "name": "User Python"
-    },
-    "clientMetadata": {
-      "string": "string"
+      "sub": "34287428-7081-7019-60ad-d661c34ee1a1",
+      "email_verified": "true",
+      "cognito:user_status": "CONFIRMED",
+      "cognito:email_alias": "madumal7@hotmail.com",
+      "name": "Achintha",
+      "email": "madumal7@hotmail.com"
     }
   },
   "response": {}

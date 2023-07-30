@@ -61,6 +61,13 @@ Resources:
           RequireSymbols: true
       UsernameAttributes:
         - email
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - email
+      VerificationMessageTemplate:
+        DefaultEmailOption: "CONFIRM_WITH_CODE"
+      AutoVerifiedAttributes:
+        - email
       Schema:
         - AttributeDataType: String
           Name: email
