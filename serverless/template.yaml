@@ -43,14 +43,15 @@ Resources:
             Trigger: PostConfirmation
       Environment:
         Variables:
-          POSTGRESQL_CONN_STR: !Ref PostgresConnectionString
+          POSTGRESQL_CONN_STR: "{{resolve:secretsmanager:MRCHATBOT/DEV/DB:SecretString:conn_str}}"
+          # POSTGRESQL_CONN_STR: postgresql://mr_chatbot_admin:pg0918#@host.docker.internal:5432/mrChatbotDB
 
   # Other resources
   # Cognito
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: !Ref "${AWS::StackName}-${Environment}"
+      UserPoolName: !Sub "${AWS::StackName}-${Environment}"
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -74,7 +75,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref CognitoUserPool
-      ClientName: !Ref web
+      ClientName: web
       GenerateSecret: false
       AuthSessionValidity: 3
       TokenValidityUnits:
@@ -86,6 +87,10 @@ Resources:
       IdTokenValidity: 60
       EnableTokenRevocation: true
       PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - "ALLOW_REFRESH_TOKEN_AUTH"
+        - "ALLOW_USER_SRP_AUTH"
+        - "ALLOW_USER_PASSWORD_AUTH"
       AllowedOAuthFlows:
         - code
       AllowedOAuthScopes:
@@ -98,7 +103,6 @@ Resources:
         - !Ref CognitoWebClientSignOutUrl
       WriteAttributes:
         - email
-        - email_verified
         - name
 
 Parameters:
@@ -113,14 +117,11 @@ Parameters:
   CognitoWebClientCallbackUrl:
     Type: String
     Description: Callback url for web client
+    Default: http://localhost:3000
   CognitoWebClientSignOutUrl:
     Type: String
     Description: SignOut url for web client
-  # Postgres
-  PostgresConnectionString:
-    Type: String
-    Description: Connection string is required
-    Default: postgresql://mr_chatbot_admin:pg0918#@host.docker.internal:5432/mrChatbotDB
+    Default: http://localhost:3000
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

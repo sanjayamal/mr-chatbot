@@ -14,9 +14,14 @@ parallel = true
 lint = true
 
 [default.deploy.parameters]
+profile = "mrchatbot-sam"
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
+s3_prefix = "mr-chatbot"
+region = "us-east-1"
+parameter_overrides = "Environment=\"dev\" CognitoWebClientCallbackUrl=\"http://localhost:3000\" CognitoWebClientSignOutUrl=\"http://localhost:3000\""
+image_repositories = []
 
 [default.package.parameters]
 resolve_s3 = true

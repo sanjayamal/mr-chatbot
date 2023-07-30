@@ -12,4 +12,6 @@ def handler(event, context):
 
             conn.commit()
 
+    print(event)
+
     return event
