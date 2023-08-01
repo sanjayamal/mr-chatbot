@@ -1,0 +1,22 @@
+{
+  "version": "1",
+  "region": "us-east-1",
+  "userPoolId": "us-east-1_VV284rFVH",
+  "userName": "34287428-7081-7019-60ad-d661c34ee1a1",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-unknown-unknown",
+    "clientId": "723iufcscomugth1a4pc54gs0c"
+  },
+  "triggerSource": "PostConfirmation_ConfirmSignUp",
+  "request": {
+    "userAttributes": {
+      "sub": "34287428-7081-7019-60ad-d661c34ee1a1",
+      "email_verified": "true",
+      "cognito:user_status": "CONFIRMED",
+      "cognito:email_alias": "achintha@prisma.io",
+      "name": "Achintha",
+      "email": "achintha@prisma.io"
+    }
+  },
+  "response": {}
+}
