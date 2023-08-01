@@ -21,3 +21,17 @@ Cognito related shell commands
   ```sh
   aws cognito-idp initiate-auth --client-id <client-id> --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=<email>,PASSWORD=<password>
   ```
+
+### Pipenv info
+
+- To use a different environment (change .env file), You can set the `PIPENV_DOTENV_LOCATION` variable to the .env filename or path you want to use. Following is an example how you set an environment variable on Windows Powershell.
+
+```sh
+$env:PIPENV_DOTENV_LOCATION=".env.development"
+```
+
+You can then check if you have set it correctly by running.
+
+```sh
+$env:PIPENV_DOTENV_LOCATION
+```

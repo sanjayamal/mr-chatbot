@@ -4,5 +4,5 @@
   },
   "python.formatting.provider": "none",
   "editor.formatOnSave": true,
-  "cSpell.words": ["jsonify", "SQLALCHEMY", "userpool"]
+  "cSpell.words": ["jsonify", "PIPENV", "SQLALCHEMY", "userpool"]
 }
