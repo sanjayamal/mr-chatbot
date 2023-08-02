@@ -30,6 +30,9 @@ Resources:
       CodeUri: lambdas/
       Handler: cognito_post_confirm.handler
       Runtime: python3.11
+      # For some reason locally lambda takes around 17s or more to run. Could be machine performance issue.
+      # TODO: Remove this or set it dynamically when deploying
+      Timeout: 20
       Architectures:
         - x86_64
       Layers:
@@ -44,6 +47,8 @@ Resources:
       Environment:
         Variables:
           POSTGRESQL_CONN_STR: "{{resolve:secretsmanager:MRCHATBOT/DEV/DB:SecretString:conn_str}}"
+          # Locally needs this local connection string
+          # TODO: Find a way to dynamically change this based on env
           # POSTGRESQL_CONN_STR: postgresql://mr_chatbot_admin:pg0918#@host.docker.internal:5432/mrChatbotDB
 
   # Other resources
