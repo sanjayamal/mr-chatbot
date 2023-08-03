@@ -5,8 +5,14 @@ import { Loader } from "./components";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { AuthProvider } from "./contexts";
+import { Amplify } from "aws-amplify";
+import awsConfig from "./aws-exports";
 import "./App.scss";
+import { listenToAutoSignInEvent } from "./helpers/cognitoServices";
 
+Amplify.configure(awsConfig);
+
+listenToAutoSignInEvent();
 const App = () => {
   return (
     <Suspense fallback={<Loader />}>

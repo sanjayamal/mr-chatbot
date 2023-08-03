@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import AuthContext from "./AuthContext";
 import { useReducer } from "react";
 import { AuthAction } from "../../constants";
+import { signIn, signOut } from "../../helpers/cognitoServices";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -16,7 +17,13 @@ interface IAuthAction {
 // An interface for our state
 export interface IAuthState {
   accessToken: string | null;
-  user: any;
+  refreshToken: string | null;
+  idToken: string | null;
+  user: {
+    email: string;
+    name: string;
+    email_verified: boolean;
+  };
 }
 
 function authReducer(
@@ -27,40 +34,73 @@ function authReducer(
     case "LOG_IN": {
       return {
         accessToken: payload?.accessToken,
+        refreshToken: payload?.refreshToken,
+        idToken: payload?.accessToken,
         user: payload?.user,
       };
     }
     case "LOG_OUT": {
       return {
         accessToken: null,
-        user: null,
+        refreshToken: null,
+        idToken: null,
+        user: {
+          email: "",
+          name: "",
+          email_verified: false,
+        },
       };
     }
     default:
       return {
         accessToken: null,
-        user: null,
+        refreshToken: null,
+        idToken: null,
+        user: {
+          email: "",
+          name: "",
+          email_verified: false,
+        },
       };
   }
 }
 
 const initialState: IAuthState = {
   accessToken: null,
-  user: { name: "Rajitha" },
+  refreshToken: null,
+  idToken: null,
+  user: {
+    email: "",
+    name: "",
+    email_verified: false,
+  },
 };
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = useCallback(() => {
+  const login = useCallback(async (username: string, password: string) => {
+    const result = await signIn({ username, password });
+
+    const { attributes, signInUserSession } = result;
+    const { email, name, email_verified } = attributes;
+    const { accessToken, refreshToken, idToken } = signInUserSession;
     dispatch({
       type: AuthAction.LOG_IN,
-      payload: { accessToken: "", user: "" },
+      payload: {
+        accessToken,
+        refreshToken,
+        idToken,
+        user: { email, name, email_verified },
+      },
     });
+    return result;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    const result = signOut();
     dispatch({ type: AuthAction.LOG_OUT });
+    return result;
   }, []);
 
   const contextValue = useMemo(

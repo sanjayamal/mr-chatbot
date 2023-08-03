@@ -11,13 +11,17 @@ import { useEffect, useState } from "react";
 import "./Reviews.scss";
 import { AddReview } from "./components";
 import { IReview } from "../../../../interfaces";
-import { useAppDispatch } from "../../../../hooks";
+import { useAppDispatch, useAuth } from "../../../../hooks";
 import { getReviews } from "../../../../store/chatbot";
+import { useNavigate } from "react-router-dom";
 
 const Reviews = () => {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviews, setReviews] = useState<Array<IReview>>([]);
+
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getReviews())
@@ -30,8 +34,11 @@ const Reviews = () => {
   }, [isModalOpen]);
 
   const showModal = () => {
-    // TODO  check user has logged if not redirect to login
-    setIsModalOpen(true);
+    if (auth.accessToken) {
+      setIsModalOpen(true);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleModal = (isOpen: boolean) => {

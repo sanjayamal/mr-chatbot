@@ -91,7 +91,7 @@ const MainLayout: React.FC = () => {
             }}
             onClick={onClick}
           />
-          {auth.user ? (
+          {auth.user.name && auth.accessToken ? (
             <CurrentUser isNameHide />
           ) : (
             <CButton

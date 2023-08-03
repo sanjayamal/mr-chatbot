@@ -4,26 +4,35 @@ import { CAvatar, CButton, CDropdown, CImage, CMenuProps } from "../common";
 import { CLogoutOutlined, CUserOutlined } from "../common/icons";
 import { useNavigate } from "react-router-dom";
 import "./CurrentUser.scss";
+import { signOut } from "../../helpers/cognitoServices";
 
 interface ICurrentName {
   isNameHide: boolean;
 }
-///
 
 const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
   const auth = useAuth();
-  const { profilePictureUrl, name, email } = {
+  const { user } = auth;
+  const { profilePictureUrl, name } = {
     profilePictureUrl: "",
-    name: "",
-    email: "",
+    ...user,
   };
 
+  const { logout } = auth;
   const navigate = useNavigate();
 
   const onClick = (path: string) => {
     navigate(path);
   };
 
+  const handleSignOut = async () => {
+    try {
+      const result = await logout();
+      if (result) {
+        navigate("/");
+      }
+    } catch (error) {}
+  };
   const items: CMenuProps["items"] = [
     {
       key: "1",
@@ -40,7 +49,11 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
     {
       key: "2",
       label: (
-        <a target="_blank" rel="noopener noreferrer" onClick={() => {}}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => handleSignOut()}
+        >
           Log out
         </a>
       ),
@@ -76,7 +89,7 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
               paddingLeft: "5px",
             }}
           >
-            Rajitha
+            {name}
           </div>
         )}
       </div>

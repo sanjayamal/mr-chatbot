@@ -7,7 +7,7 @@ interface IProtected {
 }
 const Protected: React.FC<IProtected> = ({ children }) => {
   const auth = useAuth();
-  if (!auth.user) {
+  if (!auth.accessToken) {
     return <Navigate to="/login" replace />;
   }
   return <>{children}</>;

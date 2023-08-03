@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-chatbotamplify-dev-64736-authRole",
+      "UnauthRoleArn": "arn:aws:iam::784260933642:role/amplify-chatbotamplify-dev-64736-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::784260933642:role/amplify-chatbotamplify-dev-64736-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-chatbotamplify-dev-64736-deployment",
+      "UnauthRoleName": "amplify-chatbotamplify-dev-64736-unauthRole",
+      "StackName": "amplify-chatbotamplify-dev-64736",
+      "StackId": "arn:aws:cloudformation:us-east-1:784260933642:stack/amplify-chatbotamplify-dev-64736/8b9edc00-319b-11ee-8571-0e91a378eda1",
+      "AmplifyAppId": "d3mx57ovbq2q6k"
+    },
+    "categories": {
+      "auth": {
+        "chatbotamplify36c01a3e": {
+          "userPoolId": "us-east-1_VV284rFVH",
+          "userPoolName": "mr-chatbot-dev",
+          "webClientId": "723iufcscomugth1a4pc54gs0c",
+          "nativeClientId": "723iufcscomugth1a4pc54gs0c"
+        }
+      }
+    }
+  }
+}
