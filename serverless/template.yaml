@@ -117,6 +117,39 @@ Resources:
         - email
         - name
 
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      Domain: !Sub "${AWS::StackName}-${Environment}"
+
+  FacebookIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Facebook"
+      ProviderDetails:
+        client_id: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO/FB:SecretString:app_id}}"
+        client_secret: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO/FB:SecretString:app_secret}}"
+        authorize_scopes: "public_profile,email"
+      ProviderType: "Facebook"
+      AttributeMapping:
+        email: "email"
+        name: "name"
+
+  # GoogleIdentityProvider:
+  #   Type: AWS::Cognito::UserPoolIdentityProvider
+  #   Properties:
+  #     UserPoolId: !Ref CognitoUserPool
+  #     ProviderName: "Google"
+  #     ProviderDetails:
+  #       client_id: "YourGoogleAppId"
+  #       client_secret: "YourGoogleAppSecret"
+  #       authorize_scopes: "profile email openid"
+  #     ProviderType: "Google"
+  #     AttributeMapping:
+  #       email: "email"
+
 Parameters:
   Environment:
     Type: String
