@@ -1,72 +1,37 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import AuthContext from "./AuthContext";
-import { useReducer } from "react";
-import { AuthAction } from "../../constants";
+import { signIn, signOut } from "../../helpers/cognitoServices";
+import {
+  removeTokenFormLocalStorage,
+  setAccessTokenToLocalStorage,
+  setRefreshTokenToLocalStorage,
+} from "../../helpers";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-// An interface for our actions
-interface IAuthAction {
-  type: AuthAction;
-  payload?: any;
-}
-
-// An interface for our state
-export interface IAuthState {
-  accessToken: string | null;
-  user: any;
-}
-
-function authReducer(
-  state: IAuthState,
-  { type, payload }: IAuthAction
-): IAuthState {
-  switch (type) {
-    case "LOG_IN": {
-      return {
-        accessToken: payload?.accessToken,
-        user: payload?.user,
-      };
-    }
-    case "LOG_OUT": {
-      return {
-        accessToken: null,
-        user: null,
-      };
-    }
-    default:
-      return {
-        accessToken: null,
-        user: null,
-      };
-  }
-}
-
-const initialState: IAuthState = {
-  accessToken: null,
-  user: { name: "Rajitha" },
-};
-
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
-
-  const login = useCallback(() => {
-    dispatch({
-      type: AuthAction.LOG_IN,
-      payload: { accessToken: "", user: "" },
-    });
+  const login = useCallback(async (username: string, password: string) => {
+    try {
+      const result = await signIn({ username, password });
+      const { signInUserSession } = result;
+      const { accessToken, refreshToken } = signInUserSession;
+      setAccessTokenToLocalStorage(accessToken.jwtToken);
+      setRefreshTokenToLocalStorage(refreshToken.token);
+      return result;
+    } catch (error) {
+      return error;
+    }
   }, []);
 
-  const logout = useCallback(() => {
-    dispatch({ type: AuthAction.LOG_OUT });
+  const logout = useCallback(async () => {
+    const result = signOut();
+    removeTokenFormLocalStorage();
+    return result;
   }, []);
 
-  const contextValue = useMemo(
-    () => ({ login, logout, ...state }),
-    [login, logout, state]
-  );
+  const contextValue = useMemo(() => ({ login, logout }), [login, logout]);
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );

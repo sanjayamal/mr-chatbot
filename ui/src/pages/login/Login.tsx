@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useState } from "react";
 import {
   CAvatar,
   CButton,
@@ -8,31 +8,30 @@ import {
   CForm,
   CInput,
   CRow,
+  SocialLogin,
+  errorNotification,
 } from "../../components";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { CFaFacebook, CFcGoogle } from "../../components/common/icons";
+import AuthContext from "../../contexts/auth/AuthContext";
+import { NotificationType } from "../../constants";
 
 interface IFormInput {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 const Login = () => {
+  const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const {
     handleSubmit,
     control,
     formState: { errors },
-    watch,
   } = useForm<IFormInput>({
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
@@ -42,7 +41,29 @@ const Login = () => {
     navigate(path);
   };
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {};
+  const onSubmit: SubmitHandler<IFormInput> = async ({ email, password }) => {
+    try {
+      setIsSubmitting(true);
+      const result = await auth.login(email, password);
+      if (result?.username) {
+        navigate("/");
+      } else {
+        errorNotification({
+          type: NotificationType.ERROR,
+          title: "Sign-in Failed",
+          description: (result as Error).message,
+        });
+      }
+      setIsSubmitting(false);
+    } catch (error) {
+      setIsSubmitting(false);
+      errorNotification({
+        type: NotificationType.ERROR,
+        title: "Sign-in Failed",
+        description: (error as Error).message,
+      });
+    }
+  };
   return (
     <CRow style={{ marginTop: "2rem" }}>
       <CCol
@@ -63,25 +84,7 @@ const Login = () => {
           bordered={false}
         >
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
-            <CRow>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  icon={<CFcGoogle />}
-                >
-                  Sign in with Google
-                </CButton>
-              </CCol>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  className="margin-top-1rem "
-                  icon={<CFaFacebook />}
-                >
-                  Sign in with Facebook
-                </CButton>
-              </CCol>
-            </CRow>
+            <SocialLogin />
             <CDivider plain>Or</CDivider>
             <Controller
               name="email"
@@ -133,9 +136,17 @@ const Login = () => {
                   Sign in
                 </CButton>
               </CCol>
-              <CCol span={24}>
+              <CCol span={12}>
                 <CButton type="link" onClick={() => onClick("/sign-up")}>
                   Create an account
+                </CButton>
+              </CCol>
+              <CCol span={12}>
+                <CButton
+                  type="link"
+                  onClick={() => onClick("/forget-password")}
+                >
+                  Forget password
                 </CButton>
               </CCol>
             </CRow>

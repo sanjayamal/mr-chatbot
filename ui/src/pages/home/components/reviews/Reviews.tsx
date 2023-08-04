@@ -13,11 +13,15 @@ import { AddReview } from "./components";
 import { IReview } from "../../../../interfaces";
 import { useAppDispatch } from "../../../../hooks";
 import { getReviews } from "../../../../store/chatbot";
+import { useNavigate } from "react-router-dom";
+import { getAccessTokenFormLocalStorage } from "../../../../helpers";
 
 const Reviews = () => {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviews, setReviews] = useState<Array<IReview>>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getReviews())
@@ -30,8 +34,12 @@ const Reviews = () => {
   }, [isModalOpen]);
 
   const showModal = () => {
-    // TODO  check user has logged if not redirect to login
-    setIsModalOpen(true);
+    const accessToken = getAccessTokenFormLocalStorage();
+    if (accessToken) {
+      setIsModalOpen(true);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleModal = (isOpen: boolean) => {

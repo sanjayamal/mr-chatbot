@@ -31,6 +31,7 @@ import {
   Rate as CRate,
   Carousel as CCarousel,
   Collapse as CCollapse,
+  Skeleton as CSkeleton,
 } from "antd";
 
 const { TextArea: CTextArea } = CInput;
@@ -71,6 +72,7 @@ export {
   CRate,
   CCarousel,
   CCollapse,
+  CSkeleton,
 };
 
 export type { CMenuProps };

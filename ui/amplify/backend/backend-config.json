@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "chatbotamplify36c01a3e": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_chatbotamplify36c01a3e_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "chatbotamplify36c01a3e"
+        }
+      ]
+    },
+    "AMPLIFY_auth_chatbotamplify36c01a3e_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "chatbotamplify36c01a3e"
+        }
+      ]
+    },
+    "AMPLIFY_auth_chatbotamplify36c01a3e_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "chatbotamplify36c01a3e"
+        }
+      ]
+    },
+    "AMPLIFY_auth_chatbotamplify36c01a3e_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "chatbotamplify36c01a3e"
+        }
+      ]
+    }
+  }
+}

@@ -1,18 +1,13 @@
 import { createContext } from "react";
-import { IAuthState } from "./AuthProvider";
 
-type AuthState = Pick<IAuthState, "accessToken" | "user">;
-
-interface AuthContextProps extends AuthState {
-  login: () => void;
-  logout: () => void;
+interface AuthContextProps {
+  login: (username: string, password: string) => Promise<any>;
+  logout: () => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
-  accessToken: null,
-  user: { name: "Rajitha" },
-  login: () => {},
-  logout: () => {},
+  login: async (): Promise<any> => {},
+  logout: async (): Promise<any> => {},
 });
 
 export default AuthContext;
