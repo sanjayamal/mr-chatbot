@@ -1,10 +1,9 @@
 import React from "react";
-import { useAuth } from "../../hooks";
-import { CAvatar, CButton, CDropdown, CImage, CMenuProps } from "../common";
+import { useAuth, useCurrentUser } from "../../hooks";
+import { CAvatar, CDropdown, CImage, CMenuProps, CSkeleton } from "../common";
 import { CLogoutOutlined, CUserOutlined } from "../common/icons";
 import { useNavigate } from "react-router-dom";
 import "./CurrentUser.scss";
-import { signOut } from "../../helpers/cognitoServices";
 
 interface ICurrentName {
   isNameHide: boolean;
@@ -12,10 +11,11 @@ interface ICurrentName {
 
 const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
   const auth = useAuth();
-  const { user } = auth;
+
+  const { currentUser, isFetching } = useCurrentUser();
   const { profilePictureUrl, name } = {
     profilePictureUrl: "",
-    ...user,
+    ...currentUser,
   };
 
   const { logout } = auth;
@@ -89,7 +89,7 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
               paddingLeft: "5px",
             }}
           >
-            {name}
+            {isFetching ? <CSkeleton.Button active /> :  name }
           </div>
         )}
       </div>

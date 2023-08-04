@@ -8,11 +8,11 @@ import {
   CForm,
   CInput,
   CRow,
+  SocialLogin,
   errorNotification,
 } from "../../components";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { CFaFacebook, CFcGoogle } from "../../components/common/icons";
 import { signUp } from "../../helpers/cognitoServices";
 import { ConfirmCode } from "./components";
 import { NotificationType } from "../../constants";
@@ -106,25 +106,7 @@ const Registration = () => {
             bordered={false}
           >
             <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
-              <CRow>
-                <CCol span={24}>
-                  <CButton
-                    style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                    icon={<CFcGoogle />}
-                  >
-                    Sign in with Google
-                  </CButton>
-                </CCol>
-                <CCol span={24}>
-                  <CButton
-                    style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                    icon={<CFaFacebook />}
-                    className="margin-top-1rem "
-                  >
-                    Sign in with Facebook
-                  </CButton>
-                </CCol>
-              </CRow>
+              <SocialLogin />
               <CDivider plain>Or</CDivider>
               <Controller
                 name="name"

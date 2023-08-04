@@ -14,11 +14,12 @@ import logo from "../../assets/images/logo.jpg";
 import { CLoginOutlined } from "../../components/common/icons";
 import { useNavigate } from "react-router-dom";
 import "./MainLayout.scss";
-import { useAuth } from "../../hooks";
+import { getAccessTokenFormLocalStorage } from "../../helpers";
 
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
-  const auth = useAuth();
+  const accessToken = getAccessTokenFormLocalStorage();
+
   const items = [
     {
       label: "Home",
@@ -91,7 +92,7 @@ const MainLayout: React.FC = () => {
             }}
             onClick={onClick}
           />
-          {auth.user.name && auth.accessToken ? (
+          {accessToken ? (
             <CurrentUser isNameHide />
           ) : (
             <CButton

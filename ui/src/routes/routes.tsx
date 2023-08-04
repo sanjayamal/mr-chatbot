@@ -30,6 +30,9 @@ const RetrainChatbot = React.lazy(
 const ChangePassword = React.lazy(
   () => import("../pages/changePassword/ChangePassword")
 );
+const ForgetPassword = React.lazy(
+  () => import("../pages/forgetPassword/ForgetPassword")
+);
 
 const Pricing = React.lazy(() => import("../pages/pricing/Pricing"));
 const Documentation = React.lazy(() => import("../pages/docs/Documentation"));
@@ -108,6 +111,10 @@ export const routers = createBrowserRouter([
   {
     path: "/sign-up",
     element: <Registration />,
+  },
+  {
+    path: "/forget-password",
+    element: <ForgetPassword />,
   },
   {
     path: "/login",

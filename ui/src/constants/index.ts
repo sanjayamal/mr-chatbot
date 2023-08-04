@@ -24,3 +24,8 @@ export enum TypeOfDataSource {
   EXISTING_DATA_SOURCE = "EXISTING_DATA_SOURCE",
   REMOVING_EXISTING_FILE = "REMOVING_EXISTING_FILE",
 }
+
+export enum SocialLoginProvider{
+  FACEBOOK = "FACEBOOK",
+  GOOGLE ="GOOGLE"
+}

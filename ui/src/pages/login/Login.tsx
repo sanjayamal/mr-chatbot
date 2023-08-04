@@ -8,11 +8,11 @@ import {
   CForm,
   CInput,
   CRow,
+  SocialLogin,
   errorNotification,
 } from "../../components";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { CFaFacebook, CFcGoogle } from "../../components/common/icons";
 import AuthContext from "../../contexts/auth/AuthContext";
 import { NotificationType } from "../../constants";
 
@@ -45,9 +45,14 @@ const Login = () => {
     try {
       setIsSubmitting(true);
       const result = await auth.login(email, password);
-
       if (result?.username) {
         navigate("/");
+      } else {
+        errorNotification({
+          type: NotificationType.ERROR,
+          title: "Sign-in Failed",
+          description: (result as Error).message,
+        });
       }
       setIsSubmitting(false);
     } catch (error) {
@@ -79,25 +84,7 @@ const Login = () => {
           bordered={false}
         >
           <CForm onFinish={handleSubmit(onSubmit)} layout="vertical">
-            <CRow>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  icon={<CFcGoogle />}
-                >
-                  Sign in with Google
-                </CButton>
-              </CCol>
-              <CCol span={24}>
-                <CButton
-                  style={{ width: "100%", backgroundColor: "#f5f7f7" }}
-                  className="margin-top-1rem "
-                  icon={<CFaFacebook />}
-                >
-                  Sign in with Facebook
-                </CButton>
-              </CCol>
-            </CRow>
+            <SocialLogin />
             <CDivider plain>Or</CDivider>
             <Controller
               name="email"
@@ -155,7 +142,12 @@ const Login = () => {
                 </CButton>
               </CCol>
               <CCol span={12}>
-                <CButton type="link">Forget password</CButton>
+                <CButton
+                  type="link"
+                  onClick={() => onClick("/forget-password")}
+                >
+                  Forget password
+                </CButton>
               </CCol>
             </CRow>
           </CForm>
