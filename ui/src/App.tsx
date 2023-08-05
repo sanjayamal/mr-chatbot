@@ -5,12 +5,12 @@ import { Loader } from "./components";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { AuthProvider } from "./contexts";
-import { Amplify } from "aws-amplify";
-import awsConfig from "./aws-exports";
 import "./App.scss";
 import { listenToAutoSignInEvent } from "./helpers/cognitoServices";
+import { Amplify } from "aws-amplify";
+import awsConfigs from "./aws-exports";
 
-Amplify.configure(awsConfig);
+Amplify.configure(awsConfigs);
 
 listenToAutoSignInEvent();
 const App = () => {
