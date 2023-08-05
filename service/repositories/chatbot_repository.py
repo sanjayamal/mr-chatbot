@@ -1,5 +1,9 @@
 from sqlalchemy.orm import joinedload
 from entities.model import db, Chatbot, ChatbotChannel
+from config.logger import createLogger
+
+
+logger = createLogger(__name__)
 
 
 class ChatbotRepository:
@@ -30,6 +34,13 @@ class ChatbotRepository:
                 id=chatbot_id).first()
             return chatbot
         except Exception as err:
+            # First argument takes the msg
+            # As the second arg you can pass an object with additional details
+            # exc_info=True will add the stack trace to the logs (only needed
+            # for logging errors inside a except block)
+            logger.error(
+                "Error occurred!", {
+                    "Extra": "Additional key value pairs"}, exc_info=True)
             return err
 
     def get_chatbot_setting_detail_by_chatbot_id(self, chatbot_id):
