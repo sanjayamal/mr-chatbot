@@ -4,3 +4,7 @@ __pycache__
 .env
 .env.*
 !.env.template
+
+# logs
+logs
+*.log
