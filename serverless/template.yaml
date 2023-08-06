@@ -32,7 +32,7 @@ Resources:
       Runtime: python3.11
       # For some reason locally lambda takes around 17s or more to run. Could be machine performance issue.
       # TODO: Remove this or set it dynamically when deploying
-      Timeout: 20
+      Timeout: 3
       Architectures:
         - x86_64
       Layers:
@@ -117,10 +117,45 @@ Resources:
         - email
         - name
 
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      Domain: !Sub "${AWS::StackName}-${Environment}"
+
+  FacebookIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Facebook"
+      ProviderDetails:
+        client_id: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO:SecretString:fb_app_id}}"
+        client_secret: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO:SecretString:fb_app_secret}}"
+        authorize_scopes: "public_profile,email"
+      ProviderType: "Facebook"
+      AttributeMapping:
+        email: "email"
+        name: "name"
+
+  GoogleIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Google"
+      ProviderDetails:
+        client_id: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO:SecretString:google_client_id}}"
+        client_secret: "{{resolve:secretsmanager:MRCHATBOT/DEV/COGNITO:SecretString:google_client_secret}}"
+        authorize_scopes: "profile email openid"
+      ProviderType: "Google"
+      AttributeMapping:
+        email: "email"
+        name: "name"
+
 Parameters:
   Environment:
     Type: String
     AllowedValues:
+      - local
       - dev
       - prod
     Default: dev
