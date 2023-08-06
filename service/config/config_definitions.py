@@ -27,5 +27,12 @@ class __Config:
         self.aws_cognito_pool_id = self.env.str('AWS_COGNITO_POOL_ID')
         self.aws_cognito_client_id = self.env.str('AWS_COGNITO_CLIENT_ID')
 
+        self.logger_file_path = self.env.str('LOGGER_FILE_PATH')
+        self.logger_file_rotate_when = self.env.str('LOGGER_FILE_ROTATE_WHEN')
+        self.logger_file_rotate_interval = self.env.int(
+            'LOGGER_FILE_ROTATE_INTERVAL')
+        self.logger_file_rotate_backup_count = self.env.int(
+            'LOGGER_FILE_ROTATE_BACKUP_COUNT')
+
 
 config = __Config()
