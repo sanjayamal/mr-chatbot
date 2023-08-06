@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "mr-chatbot"
+stack_name = "mr-chatbot-dev"
 
 [default.build.parameters]
 cached = true
@@ -18,7 +18,7 @@ profile = "mrchatbot-sam"
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-s3_prefix = "mr-chatbot"
+s3_prefix = "mr-chatbot-dev"
 region = "us-east-1"
 image_repositories = []
 
@@ -32,6 +32,13 @@ watch = true
 warm_containers = "EAGER"
 
 [prod]
+[prod.global.parameters]
+stack_name = "mr-chatbot-prod"
+
+[prod.deploy.parameters]
+profile = "mrchatbot-sam"
+s3_prefix = "mr-chatbot-prod"
+
 [prod.sync]
 [prod.sync.parameters]
 watch = false
