@@ -5,23 +5,15 @@ import { currentAuthenticatedUser } from "../helpers/cognitoServices";
 export const useCurrentUser = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  const [currentUser, setCurrentUser] = useState<CurrentUserDetail>({
-    email: "",
-    name: "",
-    email_verified: false,
-  });
-
+  const [currentUser, setCurrentUser] = useState<CurrentUserDetail | null>(
+    null
+  );
   useEffect(() => {
     setIsFetching(true);
-    currentAuthenticatedUser()
-      .then((result) => {
-        setCurrentUser(result);
-        setIsFetching(false);
-      })
-      .catch(() => {
-        setCurrentUser({ email: "", name: "", email_verified: false });
-        setIsFetching(false);
-      });
+    currentAuthenticatedUser().then((result) => {
+      setCurrentUser(result);
+      setIsFetching(false);
+    });
   }, []);
 
   return { currentUser, isFetching };

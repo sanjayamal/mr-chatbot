@@ -1,4 +1,4 @@
-import { FaFacebook, FaGithub, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 
 export const socialMedia: Array<{ icon: any; link: string }> = [
   {

@@ -7,10 +7,7 @@ export async function changePassword(
   try {
     const user = await Auth.currentAuthenticatedUser();
     const data = await Auth.changePassword(user, oldPassword, newPassword);
-    if (data === "SUCCESS") {
-      return true;
-    }
-    return false;
+    return data === "SUCCESS";
   } catch (err) {
     return false;
   }

@@ -25,6 +25,7 @@ export async function confirmSignUp({
     const result = await Auth.confirmSignUp(username, code, {
       forceAliasCreation: false,
     });
+    return result === "SUCCESS";
   } catch (error) {
     throw error;
   }

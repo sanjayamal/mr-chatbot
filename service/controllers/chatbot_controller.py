@@ -12,7 +12,8 @@ chatbot_service = ChatbotService(chatbot_repository, channel_repository)
 
 
 @chatbot_bp.route('/api/v1/bot-create', methods=['POST'])
-def create_bot():
+@jwt_verify_middleware
+def create_bot(current_user):
     # get user detail
     user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
 
@@ -33,9 +34,9 @@ def create_bot():
 
 @chatbot_bp.route('/api/v1/bots', methods=['get'])
 @cross_origin(supports_credentials=True)
-# @jwt_verify_middleware
-def get_bots():
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def get_bots(current_user):
+    user_id = current_user
     response = chatbot_service.get_chatbots(user_id)
     return response
 

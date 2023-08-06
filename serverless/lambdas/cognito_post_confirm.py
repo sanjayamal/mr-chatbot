@@ -3,7 +3,7 @@ import psycopg
 
 
 def handler(event, context):
-    if event['triggerSource'] is not "PostConfirmation_ConfirmSignUp":
+    if event['triggerSource'] != "PostConfirmation_ConfirmSignUp":
         return event
         
     with psycopg.connect(os.environ['POSTGRESQL_CONN_STR']) as conn:
