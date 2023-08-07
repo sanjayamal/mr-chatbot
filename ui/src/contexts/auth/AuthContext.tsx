@@ -5,6 +5,7 @@ interface AuthContextProps {
   logout: () => Promise<any>;
   checkAuthState: () => void;
   isAuthenticated: boolean;
+  isCheckingAuthState:boolean;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -12,6 +13,7 @@ const AuthContext = createContext<AuthContextProps>({
   logout: async (): Promise<any> => {},
   checkAuthState: () => {},
   isAuthenticated: false,
+  isCheckingAuthState:false
 });
 
 export default AuthContext;

@@ -12,11 +12,15 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuthState, setIsCheckingAuthState] =
+    useState<boolean>(true);
 
   const login = useCallback(async (username: string, password: string) => {
     try {
       const result = await signIn({ username, password });
-      checkAuthState();
+      if (result?.username) {
+        setIsAuthenticated(true);
+      }
       return result;
     } catch (error) {
       return error;
@@ -31,15 +35,24 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthState = async () => {
     try {
+      setIsCheckingAuthState(true);
       const user = await currentAuthenticatedUser();
       setIsAuthenticated(user !== null);
+      setIsCheckingAuthState(false);
     } catch (err) {
       setIsAuthenticated(false);
+      setIsCheckingAuthState(false);
     }
   };
   const contextValue = useMemo(
-    () => ({ login, logout, checkAuthState, isAuthenticated }),
-    [login, logout, checkAuthState, isAuthenticated]
+    () => ({
+      login,
+      logout,
+      checkAuthState,
+      isAuthenticated,
+      isCheckingAuthState,
+    }),
+    [login, logout, checkAuthState, isAuthenticated, isCheckingAuthState]
   );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

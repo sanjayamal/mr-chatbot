@@ -8,8 +8,8 @@ interface IProtected {
 const Protected: React.FC<IProtected> = ({ children }) => {
   const auth = useAuth();
 
-  const { isAuthenticated } = auth;
-  if (!isAuthenticated) {
+  const { isAuthenticated, isCheckingAuthState } = auth;
+  if (!isAuthenticated && !isCheckingAuthState) {
     return <Navigate to="/login" replace />;
   }
   return <>{children}</>;
