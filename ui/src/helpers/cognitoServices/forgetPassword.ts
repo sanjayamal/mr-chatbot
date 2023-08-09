@@ -18,10 +18,7 @@ export async function forgotPasswordSubmit(
 ): Promise<boolean> {
   try {
     const data = await Auth.forgotPasswordSubmit(username, code, newPassword);
-    if (data === "SUCCESS") {
-      return true;
-    }
-    return false;
+    return data === "SUCCESS";
   } catch (err) {
     return false;
   }

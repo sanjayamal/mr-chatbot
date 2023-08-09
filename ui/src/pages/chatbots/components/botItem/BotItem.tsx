@@ -62,7 +62,7 @@ const BotItem: React.FC<IBotItem> = ({
           cssOverride={{ marginTop: "-50px", marginLeft: "-38px" }}
         />
       }
-      spinning={status == ChatbotStatus.PENDING}
+      spinning={status === ChatbotStatus.PENDING}
     >
       <CCard
         style={{ width: "auto", marginTop: 16, backgroundColor: "#f5f7f5" }}
