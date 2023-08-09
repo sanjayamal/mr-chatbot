@@ -7,7 +7,7 @@ const profile = process.env.MR_CHATBOT_FRONT_DEPLOY_PROFILE ?? "mrchatbot-sam";
 
 const getCloudFormationOuputValue = (key) => {
   const command = `aws cloudformation describe-stacks --stack-name ${stackName} --no-paginate --no-cli-pager --output text --query "Stacks[0].Outputs[?OutputKey=='${key}'].OutputValue" --profile ${profile}`;
-  return child_process.execSync(command).toString("utf-8");
+  return child_process.execSync(command);
 };
 
 const uploadFiles = () => {
