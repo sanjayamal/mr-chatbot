@@ -109,6 +109,11 @@ Resources:
         - openid
         - profile
         - email
+        - aws.cognito.signin.user.admin
+      SupportedIdentityProviders:
+        - COGNITO
+        - Google
+        - Facebook
       CallbackURLs:
         - !Ref CognitoWebClientCallbackUrl
       LogoutURLs:
