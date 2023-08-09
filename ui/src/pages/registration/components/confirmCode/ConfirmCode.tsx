@@ -13,6 +13,7 @@ import {
   resendConfirmationCode,
 } from "../../../../helpers/cognitoServices";
 import { NotificationType } from "../../../../constants";
+import { useNavigate } from "react-router-dom";
 
 interface IConfirmCode {
   isOpen: boolean;
@@ -26,6 +27,8 @@ const ConfirmCode: React.FC<IConfirmCode> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [code, setCode] = useState<string>("");
+
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     handleModal(false);
@@ -42,6 +45,7 @@ const ConfirmCode: React.FC<IConfirmCode> = ({
           description: "You are now registered as a new user",
         });
         handleCancel();
+        navigate("/login");
       } else {
         errorNotification({
           type: NotificationType.ERROR,

@@ -1,24 +1,26 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import AuthContext from "./AuthContext";
-import { signIn, signOut } from "../../helpers/cognitoServices";
 import {
-  removeTokenFormLocalStorage,
-  setAccessTokenToLocalStorage,
-  setRefreshTokenToLocalStorage,
-} from "../../helpers";
+  currentAuthenticatedUser,
+  signIn,
+  signOut,
+} from "../../helpers/cognitoServices";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuthState, setIsCheckingAuthState] =
+    useState<boolean>(true);
+
   const login = useCallback(async (username: string, password: string) => {
     try {
       const result = await signIn({ username, password });
-      const { signInUserSession } = result;
-      const { accessToken, refreshToken } = signInUserSession;
-      setAccessTokenToLocalStorage(accessToken.jwtToken);
-      setRefreshTokenToLocalStorage(refreshToken.token);
+      if (result?.username) {
+        setIsAuthenticated(true);
+      }
       return result;
     } catch (error) {
       return error;
@@ -27,11 +29,31 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = useCallback(async () => {
     const result = signOut();
-    removeTokenFormLocalStorage();
+    setIsAuthenticated(false);
     return result;
   }, []);
 
-  const contextValue = useMemo(() => ({ login, logout }), [login, logout]);
+  const checkAuthState = async () => {
+    try {
+      setIsCheckingAuthState(true);
+      const user = await currentAuthenticatedUser();
+      setIsAuthenticated(user !== null);
+      setIsCheckingAuthState(false);
+    } catch (err) {
+      setIsAuthenticated(false);
+      setIsCheckingAuthState(false);
+    }
+  };
+  const contextValue = useMemo(
+    () => ({
+      login,
+      logout,
+      checkAuthState,
+      isAuthenticated,
+      isCheckingAuthState,
+    }),
+    [login, logout, checkAuthState, isAuthenticated, isCheckingAuthState]
+  );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
