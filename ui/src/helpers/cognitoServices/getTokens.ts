@@ -8,3 +8,14 @@ export async function getAccessToken() {
     return null;
   }
 }
+
+
+
+export async function getIdToken() {
+  try {
+    const session = await Auth.currentSession();
+    return session.getIdToken().getJwtToken();
+  } catch (error) {
+    return null;
+  }
+}

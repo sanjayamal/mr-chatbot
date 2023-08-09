@@ -15,7 +15,7 @@ chatbot_service = ChatbotService(chatbot_repository, channel_repository)
 @jwt_verify_middleware
 def create_bot(current_user):
     # get user detail
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    user_id = current_user['sub']
 
     # extract request body
     files = request.files.getlist('files')
@@ -36,21 +36,23 @@ def create_bot(current_user):
 @cross_origin(supports_credentials=True)
 @jwt_verify_middleware
 def get_bots(current_user):
-    user_id = current_user
+    user_id = current_user['sub']
     response = chatbot_service.get_chatbots(user_id)
     return response
 
 
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>', methods=['get'])
-def get_bot(bot_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def get_bot(current_user, bot_id):
+    user_id = current_user['sub']
     response = chatbot_service.get_chatbot_by_id(bot_id, user_id)
     return response
 
 
 @chatbot_bp.route('/api/v1/process-source', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def process_source():
+@jwt_verify_middleware
+def process_source(current_user):
     files = request.files.getlist('files')
     response = chatbot_service.process_source(files)
     return response
@@ -59,7 +61,8 @@ def process_source():
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/publish-details',
                   methods=['get'])
 @cross_origin(supports_credentials=True)
-def get_bot_publish_detail(bot_id):
+@jwt_verify_middleware
+def get_bot_publish_detail(current_user,bot_id):
     response = chatbot_service.get_chatbot_publish_detail_by_id(bot_id)
     return response
 
@@ -68,8 +71,9 @@ def get_bot_publish_detail(bot_id):
     '/api/v1/bot/<string:bot_id>/web-channel/<string:chatbot_channel_id>/publish-details',
     methods=['PUT'])
 @cross_origin(supports_credentials=True)
-def update_bot_publish_detail(bot_id, chatbot_channel_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def update_bot_publish_detail(current_user, bot_id, chatbot_channel_id):
+    user_id = current_user['sub']
     response = chatbot_service.update_chatbot_publish_detail(
         user_id, bot_id, chatbot_channel_id)
     return response
@@ -78,8 +82,9 @@ def update_bot_publish_detail(bot_id, chatbot_channel_id):
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details',
                   methods=['get'])
 @cross_origin(supports_credentials=True)
-def get_bot_setting_detail(bot_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def get_bot_setting_detail(current_user, bot_id):
+    user_id = current_user['sub']
     response = chatbot_service.get_chatbot_setting_detail_by_id(user_id, bot_id)
     return response
 
@@ -87,16 +92,18 @@ def get_bot_setting_detail(bot_id):
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/setting-details',
                   methods=['PUT'])
 @cross_origin(supports_credentials=True)
-def update_bot_setting_detail(bot_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def update_bot_setting_detail(current_user, bot_id):
+    user_id = current_user['sub']
     response = chatbot_service.update_chatbot_setting_detail(user_id, bot_id)
     return response
 
 
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/data-source', methods=['get'])
 @cross_origin(supports_credentials=True)
-def get_bot_data_source(bot_id):
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+@jwt_verify_middleware
+def get_bot_data_source(current_user, bot_id):
+    user_id = current_user['sub']
     response = chatbot_service.get_chatbot_data_source(bot_id, user_id)
     return response
 
@@ -104,22 +111,24 @@ def get_bot_data_source(bot_id):
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/remove-data-source',
                   methods=['POST'])
 @cross_origin(supports_credentials=True)
-def remove_source(bot_id):
+@jwt_verify_middleware
+def remove_source(current_user, bot_id):
     data = request.get_json()
     files_to_remove = data.get("filesToRemove")
 
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    user_id = current_user['sub']
     response = chatbot_service.remove_source(bot_id, user_id, files_to_remove)
     return response
 
 
 @chatbot_bp.route('/api/v1/bot/<string:bot_id>/retrain', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def retrain_bot(bot_id):
+@jwt_verify_middleware
+def retrain_bot(current_user, bot_id):
     files = request.files.getlist('files')
     text_source = request.form.get('text', '')
 
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    user_id = current_user['sub']
     response = chatbot_service.retrain_bot(
         current_app._get_current_object(),
         user_id,

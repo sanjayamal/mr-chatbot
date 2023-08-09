@@ -3,6 +3,7 @@ from flask_cors import cross_origin
 
 from repositories.user_repository import UserRepository
 from services.user_service import UserService
+from middleware.jwt_verify_middleware import jwt_verify_middleware
 
 user_bp = Blueprint('user_bp', __name__)
 user_repository = UserRepository()
@@ -17,9 +18,10 @@ def basic_authentication():
 
 @cross_origin(supports_credentials=True)
 @user_bp.route('/api/v1/review-create', methods=['POST'])
-def create_review():
+@jwt_verify_middleware
+def create_review(current_user):
     # get user detail
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
+    user_id = current_user['sub']
 
     data = request.get_json()
 
@@ -28,7 +30,7 @@ def create_review():
     rate = data.get("rate")
 
     if not (name and name.strip()):
-        name = 'John cena'
+        name = current_user['name']
 
     response = user_service.create_review(user_id, name, content, rate)
     return response

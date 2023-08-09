@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "../cognitoServices";
+import { getIdToken } from "../cognitoServices";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL, // Replace with your API base URL
@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await getAccessToken();
+    const token = await getIdToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

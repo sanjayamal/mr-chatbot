@@ -1,8 +1,15 @@
 import React from "react";
 import { useAuth, useCurrentUser } from "../../hooks";
-import { CAvatar, CDropdown, CImage, CMenuProps, CSkeleton } from "../common";
+import {
+  CAvatar,
+  CButton,
+  CDropdown,
+  CImage,
+  CMenuProps,
+  CSkeleton,
+} from "../common";
 import { CLogoutOutlined, CUserOutlined } from "../common/icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./CurrentUser.scss";
 
 interface ICurrentName {
@@ -21,10 +28,6 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
   const { logout } = auth;
   const navigate = useNavigate();
 
-  const onClick = (path: string) => {
-    navigate(path);
-  };
-
   const handleSignOut = async () => {
     try {
       const result = await logout();
@@ -36,28 +39,19 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
   const items: CMenuProps["items"] = [
     {
       key: "1",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => onClick("/change-password")}
-        >
-          Change Password
-        </a>
-      ),
+      label: <Link to="/change-password"> Change Password</Link>,
     },
     {
       key: "2",
       label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
+        <CButton
+          icon={<CLogoutOutlined />}
           onClick={() => handleSignOut()}
+          type="link"
         >
           Log out
-        </a>
+        </CButton>
       ),
-      icon: <CLogoutOutlined />,
     },
   ];
   return (
@@ -89,7 +83,7 @@ const CurrentUser: React.FC<ICurrentName> = ({ isNameHide }) => {
               paddingLeft: "5px",
             }}
           >
-            {isFetching ? <CSkeleton.Button active /> :  name }
+            {isFetching ? <CSkeleton.Button active /> : name}
           </div>
         )}
       </div>
