@@ -1,0 +1,10 @@
+.space-container {
+  display: flex;
+  min-width: 350px;
+}
+
+@media only screen and (max-width: 768px) {
+  .space-container {
+    min-width: 250px;
+  }
+}

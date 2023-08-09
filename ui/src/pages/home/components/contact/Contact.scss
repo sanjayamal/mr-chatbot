@@ -1,0 +1,40 @@
+.contact-container {
+  height: calc(100vh - 150px);
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.flex-item-left {
+  padding: 3%;
+  flex: 53%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.flex-item-right {
+  padding: 3%;
+  flex: 32%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Responsive layout - makes a one column-layout instead of a two-column layout */
+@media (max-width: 800px) {
+  .flex-item-right,
+  .flex-item-left {
+    flex: 95%;
+  }
+}
+
+.contact-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  margin-left: 32px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.54);
+}
