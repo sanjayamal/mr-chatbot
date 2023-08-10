@@ -6,6 +6,7 @@ name = "pypi"
 [scripts]
 build = "sam build --use-container"
 deploy = "sam deploy --guided"
+deploy_front = "sam deploy --template-file template.frontend.yaml --config-file samconfig.frontend.toml --guided"
 cognito_post_confirm = "sam local invoke --event events/cognito_post_confirm.json CognitoUserPoolPostConfirmation"
 
 [packages]
