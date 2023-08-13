@@ -14,7 +14,6 @@ class ChattingService:
 
     def get_bot_answer(
             self,
-            user_id,
             chatbot_id,
             referrer,
             data,

@@ -1,10 +1,11 @@
 import io
+import json
 import os
 import threading
 import uuid
 from constants.chatbot import channel_web_type
 from constants import common_constants
-from entities.model import Chatbot, ChatbotChannelMain
+from entities.model import Chatbot, ChatbotChannelMain, ChatBotChannelWebDomain
 from flask import jsonify, request
 
 from helper.pinecone.pinecone_api import delete_pinecone_index
@@ -14,6 +15,8 @@ from helper.s3.s3_helper_functions import get_object_url
 from helper.s3.s3_store import get_s3_file_names, get_s3_object, delete_s3_files, get_S3_client
 from helper.upload_files import upload_files_to_store
 from constants.defualtChatbotSetting import model, prompt_message, temperature, initial_message, user_message_color, chat_bubble_color
+from repositories.web_domain_repository import WebDomainRepository
+from services.web_domain_service import WebDomainService
 
 
 class ChatbotService:
@@ -21,6 +24,9 @@ class ChatbotService:
     def __init__(self, chatbot_repository, channel_repository):
         self.chatbot_repository = chatbot_repository
         self.channel_repository = channel_repository
+
+        web_domain_repository = WebDomainRepository()
+        self.web_domain_service = WebDomainService(web_domain_repository)
 
     def process_source(self, files):
         try:
@@ -89,7 +95,6 @@ class ChatbotService:
                 profile_picture_url='',
                 user_message_color=user_message_color,
                 chat_bubble_color=chat_bubble_color,
-                type=channel_web_type
             )
             # upload files
 
@@ -365,6 +370,21 @@ class ChatbotService:
             chatbot.description = request.form.get(
                 'description', chatbot.description)
 
+            domains_to_delete = self.web_domain_service.get_web_domains_by_channel_id(chatbot.channels.id)
+            if domains_to_delete:
+                for domain in domains_to_delete:
+                    self.web_domain_service.delete_web_domain(domain)
+
+            domain_request = request.form.get('domains')
+            domains = json.loads(domain_request)
+            channel_web_domains = []
+            if domains != '':
+                domain_names = [domain['domain'] for domain in domains]
+                for domain_name in domain_names:
+                    channel_web_domains.append(ChatBotChannelWebDomain(domain_name=domain_name))
+
+            # web_channel.chatbot_channel_web_domain = channel_web_domains
+            chatbot.channels.chatbot_channel_web_domain = channel_web_domains
             self.chatbot_repository.update_chatbot_setting(chatbot)
             return jsonify({
                 'title': common_constants.chatbot_updated_success_title,

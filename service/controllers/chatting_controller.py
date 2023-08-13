@@ -19,8 +19,6 @@ def basic_authentication():
 @cross_origin(supports_credentials=True)
 @chatting_bp.route('/api/v1/bot/web-chat/<string:chatbot_id>', methods=['POST'])
 def get_bot_answer(chatbot_id):
-    # get user detail
-    user_id = '550aa922-e98c-477c-9766-0cbea52de9de'
 
     referrer = request.referrer
     if referrer is not None:
@@ -33,5 +31,5 @@ def get_bot_answer(chatbot_id):
     user_agent = request.headers.get('User-Agent')
 
     response = chatting_service.get_bot_answer(
-        user_id, chatbot_id, referrer, data, client_ip, user_agent)
+         chatbot_id, referrer, data, client_ip, user_agent)
     return response
