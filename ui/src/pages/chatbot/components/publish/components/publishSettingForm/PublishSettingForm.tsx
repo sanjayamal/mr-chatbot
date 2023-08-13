@@ -52,7 +52,7 @@ const PublishSettingForm: React.FC<IPublishSettingForm> = ({
   const navigate = useNavigate();
 
   const publishChatbotDetails = useAppSelector(selectPublishChatbotDetails);
-  const { data: publishChatbotDetailsData, isLoading } = publishChatbotDetails;
+  const { data: publishChatbotDetailsData } = publishChatbotDetails;
   const settingDetail = publishChatbotDetailsData ?? publicSettingFormInitials;
 
   const {

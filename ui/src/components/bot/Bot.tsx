@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
   MainContainer,
@@ -14,7 +14,6 @@ import {
 import "./Bot.scss";
 import { SyncOutlined } from "@ant-design/icons";
 import { IMessageModel, MessageDirection } from "./interfaces";
-import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { v4 as uuidv4 } from "uuid";
 
@@ -50,6 +49,7 @@ const ChatBot = () => {
     if (botId) {
       dispatch(getPublishBotDetails(botId));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [botId]);
 
   useEffect(() => {

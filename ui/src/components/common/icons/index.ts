@@ -14,7 +14,8 @@ import {
   SendOutlined as CSendOutlined,
   SyncOutlined as CSyncOutlined,
   PhoneOutlined as CPhoneOutlined,
-  MailOutlined as CMailOutlined
+  MailOutlined as CMailOutlined,
+  MinusCircleOutlined as CMinusCircleOutlined
 } from "@ant-design/icons";
 
 import { FcGoogle as CFcGoogle } from "react-icons/fc";
@@ -38,5 +39,6 @@ export {
   CSendOutlined,
   CSyncOutlined,
   CPhoneOutlined,
-  CMailOutlined
+  CMailOutlined,
+  CMinusCircleOutlined
 };

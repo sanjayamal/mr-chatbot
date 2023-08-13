@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-import {
-  CButton,
-  CCard,
-  CCol,
-  CRow,
-  CSegmented,
-  CTypography,
-} from "../../components";
+import { useState } from "react";
+import { CCol, CRow, CSegmented, CTypography } from "../../components";
 import "./Pricing.scss";
-import { Badge } from "antd";
-import { CCheckCircleTwoTone } from "../../components/common/icons";
+
 import { ISubscriptionPlan } from "../../interfaces";
 import { SubscriptionPlan } from "./components";
 

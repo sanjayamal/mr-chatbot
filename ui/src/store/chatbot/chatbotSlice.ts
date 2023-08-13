@@ -40,6 +40,7 @@ const chatbot: IChatbot = {
   description: "",
   createdDate: "",
   updatedData: "",
+  domains: [],
 };
 
 const chatbotSetting: IChatbotSetting = {
@@ -50,6 +51,7 @@ const chatbotSetting: IChatbotSetting = {
   textSource: "",
   description: "",
   numberOfCharacters: 0,
+  domains: [],
 };
 
 const publishChatbot: IPublishChatbot = {
