@@ -4,10 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-start = "flask --debug run"
+start = "python app.py"
 infra_up = "docker compose -f infra/docker-compose.yaml up -d"
 infra_down = "docker compose -f infra/docker-compose.yaml down"
 db_upgrade = "flask db upgrade"
+build_prod = "docker compose -f deployments/docker-compose.yaml build"
 
 [packages]
 aiohttp = "~=3.8.4"

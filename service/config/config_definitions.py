@@ -1,13 +1,15 @@
 from environs import Env
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 
 class __Config:
     env = Env()
 
     def __init__(self) -> None:
+        self.host = self.env.str('HOST')
+        self.debug = self.env.bool('DEBUG')
         self.port = self.env.int('PORT')
         self.app_secret = self.env.str('APP_SECRET')
 

@@ -1,0 +1,27 @@
+version: "3.1"
+name: mr-chatbot-deployments
+
+services:
+  app:
+    container_name: app
+    image: ${MRCHATBOT_REGISTRY}/mr-chatbot:latest
+    build:
+      context: ../
+      dockerfile: deployments/app.Dockerfile
+      args:
+        - env_file=.env.production
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+
+  nginx:
+    container_name: nginx
+    image: ${MRCHATBOT_REGISTRY}/mr-chatbot-nginx:latest
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - 80:80
