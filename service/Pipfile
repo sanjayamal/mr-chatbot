@@ -24,8 +24,9 @@ pypdf = "~=3.10.0"
 sqlalchemy = "~=2.0.16"
 sqlalchemy-easy-softdelete = "~=0.8.2"
 environs = "==9.5.*"
-
-
+python-jose = {version = "==3.3.*", extras = ["cryptography"]}
+pinecone-client = "~=2.2.2"
+psycopg2-binary = "~=2.9.6"
 
 [dev-packages]
 autopep8 = "*"
