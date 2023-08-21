@@ -23,8 +23,7 @@ pypdf = "~=3.10.0"
 sqlalchemy = "~=2.0.16"
 sqlalchemy-easy-softdelete = "~=0.8.2"
 environs = "==9.5.*"
-
-
+jose = "*"
 
 [dev-packages]
 autopep8 = "*"
