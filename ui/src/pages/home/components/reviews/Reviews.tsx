@@ -32,6 +32,7 @@ const Reviews = () => {
       .catch(() => {
         setReviews([]);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen]);
 
   const showModal = () => {

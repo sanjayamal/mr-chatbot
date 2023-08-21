@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CButton,
   CCol,
@@ -11,8 +11,13 @@ import {
   CSlider,
   Loader,
 } from "../../../../components";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
-import { IChatbotSetting } from "../../../../interfaces";
+import {
+  SubmitHandler,
+  useForm,
+  Controller,
+  useFieldArray,
+} from "react-hook-form";
+import { IChatbotSetting, IDomain } from "../../../../interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import {
@@ -20,15 +25,20 @@ import {
   selectChatbotSettings,
   updateBotSetting,
 } from "../../../../store/chatbot";
+import {
+  CMinusCircleOutlined,
+  CPlusOutlined,
+} from "../../../../components/common/icons";
 
+/* eslint-disable no-useless-escape */
 const Setting = () => {
   const { botId } = useParams();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const chatbotSetting = useAppSelector(selectChatbotSettings);
   const { data: chatbotSettingData, isLoading } = chatbotSetting;
-  const { name, model, temperature, promptMessage, description } =
+  const { name, model, temperature, promptMessage, description, domains } =
     chatbotSettingData;
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -44,13 +54,20 @@ const Setting = () => {
       model: "",
       promptMessage: "",
       description: "",
+      domains: [{ domain: "" }],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "domains",
   });
 
   useEffect(() => {
     if (botId) {
       dispatch(getBotSettings(botId));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [botId]);
 
   useEffect(() => {
@@ -59,7 +76,8 @@ const Setting = () => {
     setValue("temperature", temperature);
     setValue("description", description);
     setValue("promptMessage", promptMessage);
-  }, [model, name, temperature, description, description, setValue]);
+    setValue("domains", domains);
+  }, [model, name, temperature, description, promptMessage, domains, setValue]);
 
   const onSubmit: SubmitHandler<IChatbotSetting> = ({
     name,
@@ -67,6 +85,7 @@ const Setting = () => {
     promptMessage,
     temperature,
     description,
+    domains,
   }) => {
     const formData = new FormData();
     formData.append("name", name);
@@ -74,6 +93,7 @@ const Setting = () => {
     formData.append("promptMessage", promptMessage);
     formData.append("temperature", temperature.toString());
     formData.append("description", description);
+    formData.append("domains", JSON.stringify(domains.map(({domain}:IDomain)=>domain)));
 
     setIsSubmitting(true);
 
@@ -81,7 +101,7 @@ const Setting = () => {
       .unwrap()
       .then(() => {
         setIsSubmitting(false);
-        navigate(-1)
+        navigate(-1);
       })
       .catch(() => {
         setIsSubmitting(false);
@@ -166,6 +186,59 @@ const Setting = () => {
                     </CForm.Item>
                   )}
                 />
+                {fields.map((item, index) => (
+                  <Controller
+                    key={item.id}
+                    name={`domains.${index}.domain`}
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value: /^(http(s)?:\/\/)?[\w\-]+(\.[\w\-]+)+[/#?]?.*$/,
+                        message: "Please Enter a valid URL",
+                      },
+                    }}
+                    render={({ field, fieldState }) => (
+                      <CRow>
+                        <CCol span={fields.length > 1 ? 22 : 24}>
+                          <CForm.Item
+                            label={index === 0 ? "Domains" : ""}
+                            validateStatus={fieldState.error ? "error" : ""}
+                            help={fieldState.error && fieldState.error.message}
+                          >
+                            <CInput {...field} />
+                          </CForm.Item>
+                        </CCol>
+                        <CCol span={fields.length > 1 ? 2 : 0}>
+                          <CForm.Item>
+                            {fields.length > 1 ? (
+                              <CMinusCircleOutlined
+                                style={{
+                                  marginLeft: "0.5rem",
+                                  ...(index === 0
+                                    ? { paddingTop: "2.5rem" }
+                                    : {}),
+                                }}
+                                onClick={() => remove(index)}
+                              />
+                            ) : null}
+                          </CForm.Item>
+                        </CCol>
+                      </CRow>
+                    )}
+                  />
+                ))}
+                <CRow>
+                  <CCol xs={{ span: 24 }} sm={{ span: 12 }}>
+                    <CButton
+                      type="dashed"
+                      style={{ width: "100%" }}
+                      onClick={() => append({ domain: "" })}
+                      icon={<CPlusOutlined />}
+                    >
+                      Add domain
+                    </CButton>
+                  </CCol>
+                </CRow>
 
                 <Controller
                   name="description"
@@ -175,6 +248,7 @@ const Setting = () => {
                   render={({ field }) => (
                     <CForm.Item
                       label="Description"
+                      style={{ marginTop: "1rem" }}
                       validateStatus={errors.description ? "error" : ""}
                       help={errors.description && errors.description.message}
                       required
@@ -184,7 +258,7 @@ const Setting = () => {
                   )}
                 />
                 <CRow>
-                  <CCol span={12}>
+                  <CCol xs={{ span: 24 }} sm={{ span: 12 }}>
                     <CButton
                       type="primary"
                       htmlType="submit"

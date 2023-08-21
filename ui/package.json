@@ -60,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/he": "^1.2.0",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20.4.9",
