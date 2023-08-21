@@ -17,7 +17,7 @@ import {
   Controller,
   useFieldArray,
 } from "react-hook-form";
-import { IChatbotSetting } from "../../../../interfaces";
+import { IChatbotSetting, IDomain } from "../../../../interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import {
@@ -93,7 +93,7 @@ const Setting = () => {
     formData.append("promptMessage", promptMessage);
     formData.append("temperature", temperature.toString());
     formData.append("description", description);
-    formData.append("domains", JSON.stringify(domains));
+    formData.append("domains", JSON.stringify(domains.map(({domain}:IDomain)=>domain)));
 
     setIsSubmitting(true);
 
@@ -248,6 +248,7 @@ const Setting = () => {
                   render={({ field }) => (
                     <CForm.Item
                       label="Description"
+                      style={{ marginTop: "1rem" }}
                       validateStatus={errors.description ? "error" : ""}
                       help={errors.description && errors.description.message}
                       required

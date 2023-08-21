@@ -26,6 +26,7 @@ class ChatbotService:
         self.channel_repository = channel_repository
 
         web_domain_repository = WebDomainRepository()
+        self.web_domain_repository = web_domain_repository
         self.web_domain_service = WebDomainService(web_domain_repository)
 
     def process_source(self, files):
@@ -188,11 +189,23 @@ class ChatbotService:
                     channel,
                     ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
 
+            domains_json = []
             web_channels_json = []
-
             for web_channel in web_channels:
                 web_channel_json = web_channel.json()
+                domains = web_channel.chatbot_channel_web_domain
+                for domain in domains:
+                    domain_json = domain.json()
+                    domains_json.append(domain_json)
+                web_channel_json['domains'] = domains_json
                 web_channels_json.append(web_channel_json)
+            #
+            #
+            # web_channels_json = []
+            #
+            # for web_channel in web_channels:
+            #     web_channel_json = web_channel.json()
+            #     web_channels_json.append(web_channel_json)
 
             chatbot_json['webChannels'] = web_channels_json
 
@@ -326,7 +339,27 @@ class ChatbotService:
                 }), 404
 
             chatbot_json = chatbot.json()
+            channels = chatbot.channels
+            domains_json = []
+
+            web_channels = [
+                channel for channel in channels if isinstance(
+                    channel,
+                    ChatbotChannelMain) and channel.type == channel_web_type and channel.deleted_at is None]
+
+            web_channels_json = []
+            for web_channel in web_channels:
+                web_channel_json = web_channel.json()
+                domains = web_channel.chatbot_channel_web_domain
+                for domain in domains:
+                    domain_json = domain.json()
+                    domains_json.append(domain_json)
+                web_channel_json['domains'] = domains_json
+                web_channels_json.append(web_channel_json)
+
+            chatbot_json['web_channels'] = web_channels_json
             return chatbot_json, 200
+
         except Exception as error:
             return jsonify({
                 'error': {
@@ -370,7 +403,9 @@ class ChatbotService:
             chatbot.description = request.form.get(
                 'description', chatbot.description)
 
-            domains_to_delete = self.web_domain_service.get_web_domains_by_channel_id(chatbot.channels.id)
+            channel_main_id = chatbot.channels[0].chatbot_channel_id
+
+            domains_to_delete = self.web_domain_service.get_web_domains_by_channel_id(channel_main_id)
             if domains_to_delete:
                 for domain in domains_to_delete:
                     self.web_domain_service.delete_web_domain(domain)
@@ -378,13 +413,12 @@ class ChatbotService:
             domain_request = request.form.get('domains')
             domains = json.loads(domain_request)
             channel_web_domains = []
-            if domains != '':
-                domain_names = [domain['domain'] for domain in domains]
+            if len(domains) != 0:
+                domain_names = [domain.strip() for domain in domains]
                 for domain_name in domain_names:
                     channel_web_domains.append(ChatBotChannelWebDomain(domain_name=domain_name))
+                    self.web_domain_repository.add_web_domain(ChatBotChannelWebDomain(domain_name=domain_name,chatbot_channel_main_id=channel_main_id))
 
-            # web_channel.chatbot_channel_web_domain = channel_web_domains
-            chatbot.channels.chatbot_channel_web_domain = channel_web_domains
             self.chatbot_repository.update_chatbot_setting(chatbot)
             return jsonify({
                 'title': common_constants.chatbot_updated_success_title,
@@ -392,6 +426,7 @@ class ChatbotService:
             }), 200
 
         except Exception as error:
+            print(error)
             return jsonify({
                 'error': {
                     'type': common_constants.internal_server_error_type,

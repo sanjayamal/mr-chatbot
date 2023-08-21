@@ -11,3 +11,8 @@ class WebDomainRepository:
 
     def delete_web_domain(self, domain):
         db.session.delete(domain)
+
+    def add_web_domain(self, domain):
+        db.session.add(domain)
+        db.session.commit()
+

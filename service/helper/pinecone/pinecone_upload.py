@@ -2,7 +2,7 @@ import asyncio
 import os
 import traceback
 
-from langchain.document_loaders import PyPDFLoader, S3DirectoryLoader, S3FileLoader
+from langchain.document_loaders import PyPDFLoader, S3FileLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Pinecone
@@ -16,6 +16,8 @@ load_dotenv()
 embeddings = OpenAIEmbeddings(
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     model="text-embedding-ada-002")
+
+os.environ['AWS_DEFAULT_PROFILE'] = os.getenv("AWS_PROFILE_NAME")
 
 
 def get_text_source_chunks(text_source):
@@ -51,8 +53,7 @@ async def upload_to_pinecone(app, files, text, namespace, chatbot_id):
                 store_vector_db(text_source_chunks, namespace)
 
             for file in files:
-                url = create_presigned_url(os.getenv("S3_BUCKET_NAME"), file)
-                loader = PyPDFLoader(url)
+                loader = S3FileLoader(os.getenv("S3_BUCKET_NAME"), file)
                 document = loader.load()
 
                 # split the documents into chunks

@@ -11,7 +11,6 @@ export interface IChatbot {
   description: string;
   createdDate: string;
   updatedData: string;
-  domains: Array<{ domain: string }>;
 }
 
 export type IChatbotSetting = Pick<
@@ -23,8 +22,7 @@ export type IChatbotSetting = Pick<
   | "numberOfCharacters"
   | "description"
   | "textSource"
-  | "domains"
->;
+> & { domains: Array<IDomain> };
 
 export interface IPublishChatbot {
   displayName: string;
@@ -53,3 +51,8 @@ export interface IInitialChatbotState {
   chatbotSetting: { data: IChatbotSetting; isLoading: boolean };
   publishChatbot: { data: IPublishChatbot; isLoading: boolean };
 }
+
+export interface IDomain{
+   domain: string 
+}
+
