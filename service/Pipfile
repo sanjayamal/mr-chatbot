@@ -4,10 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-start = "flask --debug run"
+start = "python app.py"
 infra_up = "docker compose -f infra/docker-compose.yaml up -d"
 infra_down = "docker compose -f infra/docker-compose.yaml down"
 db_upgrade = "flask db upgrade"
+build_prod = "docker compose -f deployments/docker-compose.yaml build"
 
 [packages]
 alembic = "~=1.11.1"
@@ -23,7 +24,11 @@ pypdf = "~=3.10.0"
 sqlalchemy = "~=2.0.16"
 sqlalchemy-easy-softdelete = "~=0.8.2"
 environs = "==9.5.*"
+python-jose = {version = "==3.3.*", extras = ["cryptography"]}
+pinecone-client = "~=2.2.2"
+psycopg2-binary = "~=2.9.6"
 jose = "*"
+
 
 [dev-packages]
 autopep8 = "*"
