@@ -34,6 +34,7 @@ const Publish = () => {
     if (botId) {
       dispatch(getPublishBotDetails(botId));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [botId]);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const Publish = () => {
       displayName,
       chatbotChannelId,
     });
-  }, [publishChatbotDetailsData]);
+  }, [settingDetail]);
 
   const handleFormChange = (field: string, value: string | number) => {
     setFormData({

@@ -1,14 +1,12 @@
-import React from "react";
 import { CCard, CCol, CRow, CTypography } from "../../../../components";
 import { featureList } from "../../constants";
-import { IFeature } from "../../interfaces";
-import "./Feature.scss";
 import Lottie from "lottie-react";
-import mainSectionBot from "../../../../assets/jsons/home-main-bot.json";
 import customizationBot from "../../../../assets/jsons/customization.json";
 import costEffect from "../../../../assets/jsons/cost-effect.json";
 import userFriendly from "../../../../assets/jsons/user-friendly.json";
 import easyIntegration from "../../../../assets/jsons/integration.json";
+import "./Feature.scss";
+
 const Features = () => {
   return (
     <>

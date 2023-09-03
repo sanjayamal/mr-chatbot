@@ -12,8 +12,7 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isCheckingAuthState, setIsCheckingAuthState] =
-    useState<boolean>(true);
+  const [isCheckingAuthState, setIsCheckingAuthState] = useState<boolean>(true);
 
   const login = useCallback(async (username: string, password: string) => {
     try {
@@ -33,7 +32,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return result;
   }, []);
 
-  const checkAuthState = async () => {
+  const checkAuthState = useCallback(async () => {
     try {
       setIsCheckingAuthState(true);
       const user = await currentAuthenticatedUser();
@@ -43,7 +42,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(false);
       setIsCheckingAuthState(false);
     }
-  };
+  }, []);
+  
   const contextValue = useMemo(
     () => ({
       login,

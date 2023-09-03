@@ -24,6 +24,7 @@ interface IFormInput {
   confirmPassword: string;
 }
 
+/* eslint-disable no-useless-escape */
 const Registration = () => {
   const navigate = useNavigate();
 

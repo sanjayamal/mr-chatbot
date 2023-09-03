@@ -27,6 +27,8 @@ environs = "==9.5.*"
 python-jose = {version = "==3.3.*", extras = ["cryptography"]}
 pinecone-client = "~=2.2.2"
 psycopg2-binary = "~=2.9.6"
+jose = "*"
+
 
 [dev-packages]
 autopep8 = "*"

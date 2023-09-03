@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   IChatbot,
   IChatbotSetting,
+  IDomain,
   IInitialChatbotState,
   IPublishChatbot,
 } from "../../interfaces";
@@ -50,6 +51,7 @@ const chatbotSetting: IChatbotSetting = {
   textSource: "",
   description: "",
   numberOfCharacters: 0,
+  domains: [{ domain: "" }],
 };
 
 const publishChatbot: IPublishChatbot = {
@@ -62,6 +64,13 @@ const publishChatbot: IPublishChatbot = {
   id: "",
   type: "",
   createdDate: "",
+};
+
+const getDomains = ({ domains }: IChatbotSetting): Array<IDomain> => {
+  try {
+    return domains.map(({ domainName }: any) => ({ domain: domainName }));
+  } catch (error) {}
+  return [{ domain: "" }];
 };
 const initialChatbotState: IInitialChatbotState = {
   chatbot: { data: chatbot, isLoading: false },
@@ -170,7 +179,12 @@ export const getBotSettings = createAsyncThunk(
   async (chatbotId: string, { dispatch, rejectWithValue }) => {
     try {
       const response: any = await getChatbotSettingAPI(chatbotId);
-      dispatch(setChatbotSettings(response));
+      dispatch(
+        setChatbotSettings({
+          ...response,
+          domains: getDomains(response?.web_channels[0]),
+        })
+      );
     } catch (e: any) {
       return rejectWithValue(e);
     }
