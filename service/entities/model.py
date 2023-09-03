@@ -273,3 +273,113 @@ class Review(db.Model):
             'createdDate': str(self.created_at),
             'updatedData': str(self.updated_at)
         }
+
+
+class Plan(db.Model):
+    __tablename__ = 'plan'
+
+    id = db.Column(db.String(), primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    price = db.Column(db.Float(), nullable=False)
+
+    def __init__(self,id, name, price):
+        self.id = id,
+        self.name = name
+        self.price = price
+
+    def __repr__(self):
+        return f"<Plan {self.name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+        }
+
+
+class Feature(db.Model):
+    __tablename__ = 'feature'
+
+    id = db.Column(db.String(), primary_key=True)
+    name = db.Column(db.String())
+    display_name = db.Column(db.String(), nullable=False)
+
+    def __init__(self,id, name, display_name):
+        self.id = id,
+        self.name = name
+        self.display_name = display_name
+
+    def __repr__(self):
+        return f"<Feature {self.name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'displayName': self.display_name,
+        }
+
+
+class PlanFeature(db.Model):
+    __tablename__ = 'plan_feature'
+
+    id = db.Column(db.String(), primary_key=True)
+    plan_id = db.Column(db.String(), db.ForeignKey('plan.id'))
+    feature_id = db.Column(db.String(), db.ForeignKey('feature.id'))
+    limit = db.Column(db.Float(), nullable=False)
+    is_enabled = db.Column(db.Boolean())
+
+    plan = relationship("Plan", backref="plan_features")
+    feature = relationship("Feature", backref="plan_features")
+
+    def __init__(self, id, plan_id, feature_id, limit, is_enabled):
+        self.id = id
+        self.limit = limit
+        self.is_enabled = is_enabled
+        self.plan_id = plan_id
+        self.feature_id = feature_id
+
+    def __repr__(self):
+        return f"<PlanFeature {self.id}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'planId': self.plan_id,
+            'featureId': self.feature_id,
+            'limit': self.limit,
+            'isEnabled': self.is_enabled
+        }
+
+
+class UserSubscription(db.Model):
+    __tablename__ = 'user_subscription'
+
+    id = db.Column(db.String(), primary_key=True)
+    user_id = db.Column(db.String(), db.ForeignKey('users.id'))
+    plan_id = db.Column(db.String(), db.ForeignKey('plan.id'))
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+
+    user = relationship("User", backref="subscriptions")
+    plan = relationship("Plan", backref="subscribers")
+
+    def __init__(self, id,  user_id, plan_id, start_date, end_date):
+        self.id = id
+        self.user_id = user_id
+        self.plan_id = plan_id
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def __repr__(self):
+        return f"<UserSubscription {self.id}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'userId': self.user_id,
+            'planId': self.plan_id,
+            'startDate': self.start_date,
+            'endDate': self.end_date
+        }
