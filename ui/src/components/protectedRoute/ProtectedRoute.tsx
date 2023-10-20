@@ -9,9 +9,10 @@ const Protected: React.FC<IProtected> = ({ children }) => {
   const auth = useAuth();
 
   const { isAuthenticated, isCheckingAuthState } = auth;
-  if (!isAuthenticated && !isCheckingAuthState) {
-    return <Navigate to="/login" replace />;
-  }
+  //TODO Please comment out when auth is enabled
+  // if (!isAuthenticated && !isCheckingAuthState) {
+  //   return <Navigate to="/login" replace />;
+  // }
   return <>{children}</>;
 };
 

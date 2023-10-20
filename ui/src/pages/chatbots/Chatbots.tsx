@@ -17,6 +17,21 @@ import { useEffect, useState } from "react";
 import _ from "lodash";
 import moment from "moment";
 
+const mockChatbots = [
+  {
+    id: "4545ad665dsfj",
+    name: "Main Bot",
+    description: "Main bot of company",
+    status: 1,
+  },
+  {
+    id: "dhsjdhjf6664s",
+    name: "RS Bot",
+    description: "Personal Bot",
+    status: 0,
+  },
+];
+
 const Chatbots = () => {
   const navigate = useNavigate();
   const chatbots = useAppSelector(selectChatbots);
@@ -78,40 +93,37 @@ const Chatbots = () => {
             </CCol>
           </CRow>
           <CRow gutter={{ xs: 8, sm: 8, md: 8 }}>
-            {chatbotsData.length === 0 ? (
+            {/* {chatbotsData.length === 0 ? (
               <div className="empty">
                 <CEmpty />
               </div>
-            ) : (
-              sortChatbot(chatbotsData).map(
-                ({
-                  id,
-                  name,
-                  description,
-                  status,
-                }: Pick<
-                  IChatbot,
-                  "id" | "name" | "description" | "status"
-                >) => (
-                  <CCol
-                    className="gutter-row"
-                    xs={24}
-                    sm={12}
-                    md={6}
-                    lg={8}
-                    key={id}
-                  >
-                    <BotItem
-                      botId={id}
-                      name={name}
-                      description={description}
-                      profilePictureUrl={BotIcon}
-                      status={status}
-                    />
-                  </CCol>
-                )
+            ) : (  // sortChatbot(chatbotsData) */}
+            {mockChatbots.map(
+              ({
+                id,
+                name,
+                description,
+                status,
+              }: Pick<IChatbot, "id" | "name" | "description" | "status">) => (
+                <CCol
+                  className="gutter-row"
+                  xs={24}
+                  sm={12}
+                  md={6}
+                  lg={8}
+                  key={id}
+                >
+                  <BotItem
+                    botId={id}
+                    name={name}
+                    description={description}
+                    profilePictureUrl={BotIcon}
+                    status={status}
+                  />
+                </CCol>
               )
             )}
+            {/* )} */}
           </CRow>
         </div>
       )}
