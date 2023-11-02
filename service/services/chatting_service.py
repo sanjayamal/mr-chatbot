@@ -1,11 +1,11 @@
 from datetime import datetime
 from flask import jsonify
-from constants.common_constants import not_found_error_type, get_chatbot_not_found_error_title, \
-    get_chatbot_not_found_error_msg, internal_server_error_type, internal_server_error_title, \
-    add_chat_history_error_msg
+
+from constants import common_constants
 from controllers.chatbot_controller import chatbot_service
 from entities.model import ChatbotChannelHistory
 from helper.pinecone.generate import process_content
+from helper.validate_bot_access import validate_bot_access
 
 
 class ChattingService:
@@ -14,7 +14,6 @@ class ChattingService:
 
     def get_bot_answer(
             self,
-            user_id,
             chatbot_id,
             referrer,
             data,
@@ -25,15 +24,25 @@ class ChattingService:
         if status != 200:
             return jsonify({
                 'error': {
-                    'type': not_found_error_type,
-                    'title': get_chatbot_not_found_error_title,
-                    'message': get_chatbot_not_found_error_msg
+                    'type': common_constants.not_found_error_type,
+                    'title': common_constants.get_chatbot_not_found_error_title,
+                    'message': common_constants.get_chatbot_not_found_error_msg
                 }
             }), 404
 
         web_channel_id = None
         if len(chatbot['webChannels']) > 0:
             web_channel_id = chatbot['webChannels'][0]['chatbotChannelId']
+
+        is_bot_accessible = validate_bot_access(chatbot, referrer)
+        if not is_bot_accessible:
+            return jsonify({
+                'error': {
+                    'type': common_constants.unauthorized_error_type,
+                    'title': common_constants.unauthorized_error_title,
+                    'message': common_constants.unauthorized_bot_error_msg
+                }
+            }), 500
 
         session_id = data['id']
 
@@ -59,9 +68,9 @@ class ChattingService:
         if not update_history_response:
             return jsonify({
                 'error': {
-                    'type': internal_server_error_type,
-                    'title': internal_server_error_title,
-                    'message': get_chatbot_not_found_error_msg
+                    'type': common_constants.internal_server_error_type,
+                    'title': common_constants.internal_server_error_title,
+                    'message': common_constants.get_chatbot_not_found_error_msg
                 }
             }), 500
 
@@ -91,9 +100,9 @@ class ChattingService:
             return None, (
                 {
                     'error': {
-                        'type': internal_server_error_type,
-                        'title': internal_server_error_title,
-                        'message': add_chat_history_error_msg
+                        'type': common_constants.internal_server_error_type,
+                        'title': common_constants.internal_server_error_title,
+                        'message': common_constants.add_chat_history_error_msg
                     }
                 }
             ), 500
@@ -133,9 +142,9 @@ class ChattingService:
             return None, (
                 {
                     'error': {
-                        'type': internal_server_error_type,
-                        'title': internal_server_error_title,
-                        'message': add_chat_history_error_msg
+                        'type': common_constants.internal_server_error_type,
+                        'title': common_constants.internal_server_error_title,
+                        'message': common_constants.add_chat_history_error_msg
                     }
                 }
             ), 500

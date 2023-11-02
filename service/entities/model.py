@@ -136,7 +136,7 @@ class ChatbotChannel(db.Model, SoftDeleteMixin):
 class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
     __tablename__ = 'chatbot_channel_main'
 
-    id = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.String(), primary_key=True,unique=True)
     chatbot_channel_id = db.Column(
         db.String(), db.ForeignKey('chatbot_channels.id'))
     initial_message = db.Column(db.String())
@@ -144,11 +144,10 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
     profile_picture_url = db.Column(db.String())
     user_message_color = db.Column(db.String())
     chat_bubble_color = db.Column(db.String())
-    type = db.Column(db.String())
-    created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=None, onupdate=datetime.now)
 
     chatbot_channels = db.relationship('ChatbotChannel', backref='channel_main')
+    chatbot_channel_web_domain = relationship('ChatBotChannelWebDomain',back_populates='chatbot_channel_main')
 
     __mapper_args__ = {
         'polymorphic_identity': 'web',
@@ -162,8 +161,8 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
             display_name,
             profile_picture_url,
             user_message_color,
-            chat_bubble_color,
-            type):
+            chat_bubble_color):
+        super().__init__(id, chatbot_id)
         self.id = id
         self.chatbot_id = chatbot_id
         self.initial_message = initial_message
@@ -171,7 +170,6 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
         self.profile_picture_url = profile_picture_url
         self.user_message_color = user_message_color
         self.chat_bubble_color = chat_bubble_color
-        self.type = type
 
     def __repr__(self):
         return f"<ChatBotChannelWeb {self.display_name}>"
@@ -182,7 +180,6 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
             'chatbotChannelId': self.chatbot_channel_id,
             'initialMessage': self.initial_message,
             'displayName': self.display_name,
-            'type': self.type,
             'profilePictureUrl': self.profile_picture_url,
             'userMessageColor': self.user_message_color,
             'chatBubbleColor': self.chat_bubble_color,
@@ -191,7 +188,7 @@ class ChatbotChannelMain(ChatbotChannel, SoftDeleteMixin):
 
 
 class ChatbotChannelHistory(db.Model):
-    _tablename_ = 'chatbot_channel_history'
+    __tablename__ = 'chatbot_channel_history'
 
     id = db.Column(db.Integer, primary_key=True)
     chatbot_channel_id = db.Column(
@@ -217,6 +214,25 @@ class ChatbotChannelHistory(db.Model):
         return {
             'id': self.id,
             'chatbotChannelId': self.chatbot_channel_id,
+        }
+
+
+class ChatBotChannelWebDomain(db.Model, SoftDeleteMixin):
+    __tablename__ = 'chatbot_channel_web_domain'
+
+    id = db.Column(db.Integer, primary_key=True)
+    domain_name = db.Column(db.String())
+
+    chatbot_channel_main_id = db.Column(db.String(), db.ForeignKey('chatbot_channel_main.id'))
+    chatbot_channel_main = db.relationship('ChatbotChannelMain', back_populates='chatbot_channel_web_domain')
+
+    def __repr__(self):
+        return f"<ChatBotChannelWebDomain {self.domain_name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'domainName': self.domain_name,
         }
 
 
@@ -256,4 +272,114 @@ class Review(db.Model):
             'isApproved': self.is_approved,
             'createdDate': str(self.created_at),
             'updatedData': str(self.updated_at)
+        }
+
+
+class Plan(db.Model):
+    __tablename__ = 'plan'
+
+    id = db.Column(db.String(), primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    price = db.Column(db.Float(), nullable=False)
+
+    def __init__(self,id, name, price):
+        self.id = id,
+        self.name = name
+        self.price = price
+
+    def __repr__(self):
+        return f"<Plan {self.name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+        }
+
+
+class Feature(db.Model):
+    __tablename__ = 'feature'
+
+    id = db.Column(db.String(), primary_key=True)
+    name = db.Column(db.String())
+    display_name = db.Column(db.String(), nullable=False)
+
+    def __init__(self,id, name, display_name):
+        self.id = id,
+        self.name = name
+        self.display_name = display_name
+
+    def __repr__(self):
+        return f"<Feature {self.name}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'displayName': self.display_name,
+        }
+
+
+class PlanFeature(db.Model):
+    __tablename__ = 'plan_feature'
+
+    id = db.Column(db.String(), primary_key=True)
+    plan_id = db.Column(db.String(), db.ForeignKey('plan.id'))
+    feature_id = db.Column(db.String(), db.ForeignKey('feature.id'))
+    limit = db.Column(db.Float(), nullable=False)
+    is_enabled = db.Column(db.Boolean())
+
+    plan = relationship("Plan", backref="plan_features")
+    feature = relationship("Feature", backref="plan_features")
+
+    def __init__(self, id, plan_id, feature_id, limit, is_enabled):
+        self.id = id
+        self.limit = limit
+        self.is_enabled = is_enabled
+        self.plan_id = plan_id
+        self.feature_id = feature_id
+
+    def __repr__(self):
+        return f"<PlanFeature {self.id}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'planId': self.plan_id,
+            'featureId': self.feature_id,
+            'limit': self.limit,
+            'isEnabled': self.is_enabled
+        }
+
+
+class UserSubscription(db.Model):
+    __tablename__ = 'user_subscription'
+
+    id = db.Column(db.String(), primary_key=True)
+    user_id = db.Column(db.String(), db.ForeignKey('users.id'))
+    plan_id = db.Column(db.String(), db.ForeignKey('plan.id'))
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+
+    user = relationship("User", backref="subscriptions")
+    plan = relationship("Plan", backref="subscribers")
+
+    def __init__(self, id,  user_id, plan_id, start_date, end_date):
+        self.id = id
+        self.user_id = user_id
+        self.plan_id = plan_id
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def __repr__(self):
+        return f"<UserSubscription {self.id}>"
+
+    def json(self):
+        return {
+            'id': self.id,
+            'userId': self.user_id,
+            'planId': self.plan_id,
+            'startDate': self.start_date,
+            'endDate': self.end_date
         }

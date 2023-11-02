@@ -51,6 +51,7 @@ function ChatbotCreation() {
     return () => {
       dispatch(resetBotDataSourceDetail());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     if (filesCharacterCount + text.length < TextCharacterCountLimit) {

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import joinedload
-from entities.model import db, Chatbot, ChatbotChannel
+from entities.model import db, Chatbot, ChatbotChannel, ChatbotChannelMain
 from config.logger import createLogger
 
 
@@ -29,7 +29,7 @@ class ChatbotRepository:
                     Chatbot.channels),
                 joinedload(
                     Chatbot.channels).joinedload(
-                    ChatbotChannel.channel_main),
+                    ChatbotChannel.channel_main).joinedload(ChatbotChannelMain.chatbot_channel_web_domain)
             ) .filter_by(
                 id=chatbot_id).first()
             return chatbot

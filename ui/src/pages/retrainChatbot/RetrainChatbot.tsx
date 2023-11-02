@@ -57,6 +57,7 @@ function RetrainChatbot() {
     return () => {
       dispatch(resetBotDataSourceDetail());
     };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [botId]);
 
   const handleNavigation = () => {

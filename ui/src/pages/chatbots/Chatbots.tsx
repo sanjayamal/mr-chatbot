@@ -26,22 +26,23 @@ const Chatbots = () => {
   const { data: chatbotsData, isLoading } = chatbots;
 
   useEffect(() => {
+    const getBots = () => {
+      dispatch(getChatbots())
+        .then(() => {
+          setIsPageRefresh(false);
+        })
+        .catch(() => {
+          setIsPageRefresh(false);
+        });
+    };
     getBots();
     const getBotIntervalId = setInterval(getBots, 30000);
     return () => {
       clearInterval(getBotIntervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getBots = () => {
-    dispatch(getChatbots())
-      .then(() => {
-        setIsPageRefresh(false);
-      })
-      .catch(() => {
-        setIsPageRefresh(false);
-      });
-  };
   const handleOnClick = () => {
     const path = `/bot/create`;
     navigate(path);

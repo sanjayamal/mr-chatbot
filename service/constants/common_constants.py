@@ -1,6 +1,7 @@
 internal_server_error_type = 'Internal server error'
 not_found_error_type = 'Not found'
 forbidden_error_type = 'Forbidden'
+unauthorized_error_type = 'Unauthorized'
 
 chatbot_creation_success_title = 'Bot Created Successfully'
 chatbot_updated_success_title = 'Bot Updated Successfully'
@@ -10,6 +11,7 @@ review_creation_success_title = 'Review Created Successfully'
 internal_server_error_title = 'Something went wrong'
 get_chatbot_not_found_error_title = 'Chatbot is not found'
 forbidden_error_title = 'Forbidden'
+unauthorized_error_title = 'Unauthorized'
 
 
 chatbot_creation_success_msg = 'Bot has been created successfully'
@@ -31,3 +33,4 @@ delete_chatbot_data_source_error_msg = 'Unable to delete chatbot data source'
 retrain_chatbot_error_msg = 'Unable to retrain chatbot data source'
 add_review_error_msg = 'Unable to add review'
 get_reviews_error_msg = 'Unable to fetch reviews'
+unauthorized_bot_error_msg = 'Not allow to access this chatbot'

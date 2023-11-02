@@ -25,4 +25,4 @@ app.register_blueprint(user_bp)
 if __name__ == '__main__':
     with app.app_context():
         upgrade()
-    app.run(port=config.port)
+    app.run(host=config.host, port=config.port, debug=config.debug)

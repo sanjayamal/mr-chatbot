@@ -10,7 +10,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.36",
     "@types/react": "^18.2.12",
     "@types/react-dom": "^18.2.5",
     "antd": "^5.6.1",
@@ -39,7 +38,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:dev": "cross-env MR_CHATBOT_FRONT_DEPLOY_STACK=mr-chatbot-front-dev MR_CHATBOT_FRONT_DEPLOY_PROFILE=mrchatbot-sam node scripts/deploy.js"
   },
   "eslintConfig": {
     "extends": [
@@ -60,8 +60,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/he": "^1.2.0",
     "@types/lodash": "^4.14.195",
-    "@types/uuid": "^9.0.2"
+    "@types/node": "^20.4.9",
+    "@types/uuid": "^9.0.2",
+    "cross-env": "^7.0.3"
   }
 }
